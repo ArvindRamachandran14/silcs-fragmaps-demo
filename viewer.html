@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SILCS FragMaps Demo — Visualization</title>
+    <link rel="stylesheet" href="src/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">SILCS FragMaps Demo</div>
+      <nav class="site-nav">
+        <a href="index.html">Overview</a>
+        <a class="active" href="viewer.html">Visualization</a>
+      </nav>
+    </header>
+
+    <main class="demo-shell">
+      <section class="demo-panel">
+        <div class="demo-panel__nav">
+          <button class="btn secondary" id="prevSlide">Previous</button>
+          <button class="btn primary" id="nextSlide">Next</button>
+        </div>
+
+        <div class="demo-panel__content">
+          <h1 id="slideTitle">Starting structure</h1>
+          <div id="slideBody" class="slide-text"></div>
+        </div>
+
+        <div class="fragmaps-card">
+          <div class="fragmaps-card__title">FragMaps</div>
+          <div class="fragmaps-list" id="fragmapsList">
+            <label class="fragmaps-item">
+              <input type="checkbox" data-map="donor" />
+              <span>Generic Donor</span>
+            </label>
+            <label class="fragmaps-item">
+              <input type="checkbox" data-map="acceptor" />
+              <span>Generic Acceptor</span>
+            </label>
+            <label class="fragmaps-item">
+              <input type="checkbox" data-map="apolar" />
+              <span>Generic Apolar</span>
+            </label>
+          </div>
+          <div id="fragmapStatus" class="fragmaps-status">FragMaps ready.</div>
+        </div>
+      </section>
+
+      <section class="viewer-panel">
+        <div id="viewer" class="viewer-canvas"></div>
+        <div class="viewer-controls">
+          <div class="viewer-control">
+            <span class="viewer-pill">SCROLL UP/DOWN</span>
+            <span>Zoom in/out</span>
+          </div>
+          <div class="viewer-control">
+            <span class="viewer-pill">LEFT + MOVE</span>
+            <span>Rotation</span>
+          </div>
+          <div class="viewer-control">
+            <span class="viewer-pill">RIGHT + MOVE</span>
+            <span>Move (pan)</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://3dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+    <script src="src/viewer.js"></script>
+  </body>
+</html>
