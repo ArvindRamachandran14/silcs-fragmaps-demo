@@ -1,5 +1,6 @@
 .DS_Store
 
 # Confidential documents: do not commit to public repo
-docs
+docs/SilcsBio_Candidate_Exercise_Instructions.pdf
+docs/SilcsBio_Candidate_Exercise_Instructions.md
 
