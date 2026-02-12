@@ -1,21 +1,24 @@
 # Technical Implementation Plan: SILCS FragMaps Interactive Demo (3FLY)
 
 ## Brief Summary
-This plan defines a decision-complete implementation for the PRD at `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/SilcsBio_Candidate_Exercise_Instructions.md` using a client-side React + TypeScript app hosted on GitHub Pages.
-It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and uses the SilcsBio site only for UX inspiration.
+This plan defines a decision-complete implementation for the PRD at `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/SilcsBio_Candidate_Exercise_Instructions.md` using a client-side Vue 2 + TypeScript app hosted on GitHub Pages.
+It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and incorporates confirmed live-site technical findings (Vue/Vuetify/Webpack architecture) from `https://landing.silcsbio.com/newlandingpage`.
 
 ## 1. Executive Summary
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
 - Use `NGL Viewer` for protein/ligand rendering and volumetric `.dx` FragMap overlays.
 - Implement ligand workflow for `crystal + 5 ligands` (selected set below), each with baseline and refined poses.
+- Follow a Vue architecture compatible with the observed SilcsBio reference stack: `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
 - Deploy to GitHub Pages with reproducible local validation checklist mapped to AC-1..AC-6.
 
 ## 2. Technical Approach
-- Frontend stack: `React + TypeScript + Vite`.
-- Rendering engine: `NGL` embedded in a React container.
+- Frontend stack: `Vue 2 + TypeScript + Vue CLI (Webpack)`.
+- UI framework: `Vuetify 2`.
+- Routing/state: `Vue Router + Vuex`.
+- Rendering engine: `NGL` embedded in a Vue component container.
 - Data loading: static assets served from app `public/assets`, fetched on demand.
-- State management: React reducer + typed state model (no external global state library).
+- State management: Vuex module with typed state/actions/mutations.
 - Scope decision: include `crystal` ligand plus these 5 paired ligands:
 - `p38_goldstein_05_2e`
 - `p38_goldstein_06_2f`
@@ -25,19 +28,28 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and us
 - FragMaps used at runtime: `.dx` only (all 8 maps). `.map` retained but not parsed in v1.
 - UX patterns may mirror SilcsBio interaction style (sidebar controls + viewport-first layout), but requirements come only from PRD.
 
+### 2.1 Live-Site Findings and Plan Impact
+- Confirmed fact: `https://landing.silcsbio.com/newlandingpage` is a Vue SPA with `Vue Router`, `Vuex`, `Vuetify 2.5.14`, and Webpack chunking.
+- Confirmed fact: `NEXT` flow is in-route state progression (no URL change per step), with a later gated request dialog.
+- Confirmed fact: site responses indicate static delivery via `nginx`.
+- Plan impact: choose a Vue-based implementation to reduce mismatch risk with the demonstrated interaction model.
+- Plan impact: keep gated lead-capture dialog behavior as optional parity work, not AC-critical scope unless explicitly requested.
+
 ## 3. System Architecture
-- Route 1: `HomePage` with scientific narrative and interaction instructions.
-- Route 2: `ViewerPage` split into `ControlsPanel` and `NglViewport`.
+- Route 1: `HomePage.vue` with scientific narrative and interaction instructions.
+- Route 2: `ViewerPage.vue` split into `ControlsPanel.vue` and `NglViewport.vue`.
 - Core modules:
 - `data/manifest.ts` for typed asset definitions.
 - `viewer/nglStage.ts` for stage lifecycle.
 - `viewer/loaders.ts` for protein/ligand/map load functions.
 - `viewer/reps.ts` for representation creation/update.
-- `state/viewerState.ts` for reducer/actions/selectors.
+- `store/viewer.ts` for Vuex state/actions/mutations/getters.
+- `router/index.ts` for route configuration and navigation behavior.
 - `perf/metrics.ts` for interaction timing.
 - Runtime flow:
 - App initializes stage and loads protein (`3fly.pdb`).
 - Loads default ligand pair (`crystal`: baseline/refined toggle).
+- Optional parity path: manage narrative slide progression as viewer-local state (not route changes), aligned with observed live flow.
 - FragMaps remain unloaded until toggled on.
 - On map toggle: load `.dx`, create surface rep, cache component+rep handle.
 - On iso change: update visible map reps via parameter update path.
@@ -107,7 +119,7 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and us
 - PRD Requirement: iso-value adjustment with fast response.
 - Implementation: global iso slider + parameter update on visible map reps.
 - PRD Requirement: client-side only, open source, Chrome/Safari.
-- Implementation: static Vite bundle + no backend code + cross-browser validation runbook.
+- Implementation: static Vue bundle (Webpack via Vue CLI) + no backend code + cross-browser validation runbook.
 
 ## 8. Acceptance Criteria Test Plan (AC-1..AC-6)
 - AC-1 (`<=5s load`):
@@ -144,6 +156,8 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and us
 - Mitigation: include per-ligand load error state and fallback to previous valid ligand.
 - Risk: browser variance between Chrome/Safari.
 - Mitigation: lock validation script and run both browsers before final delivery.
+- Risk: Vue 2 ecosystem is legacy compared with modern Vue 3 tooling.
+- Mitigation: pin dependencies, keep scope narrow, and avoid non-essential third-party plugins.
 - Unknown: exact iso defaults for best scientific readability.
 - Mitigation: set map-specific defaults from quick visual calibration and expose slider for adjustment.
 
@@ -168,7 +182,7 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and us
 - No medicinal chemistry recommendation layer.
 
 ## Explicit Assumptions and Defaults
-- Framework fixed: React + TypeScript.
+- Framework fixed: Vue 2 + TypeScript + Vue Router + Vuex + Vuetify 2.
 - Viewer fixed: NGL.
 - Hosting fixed: GitHub Pages.
 - Ligand scope fixed: crystal + 5 ligands (`05_2e` to `09_2i`) for v1.
