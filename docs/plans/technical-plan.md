@@ -25,6 +25,7 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - `p38_goldstein_07_2g`
 - `p38_goldstein_08_2h`
 - `p38_goldstein_09_2i`
+- Runtime format policy: protein `.pdb` primary, ligands `.sdf` primary with `.pdb` fallback only when needed, FragMaps `.dx` primary.
 - FragMaps used at runtime: `.dx` only (all 8 maps). `.map` retained but not parsed in v1.
 - UX patterns may mirror SilcsBio interaction style (sidebar controls + viewport-first layout), but requirements come only from PRD.
 
@@ -61,11 +62,19 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Internal TypeScript contracts:
 - `type PoseKind = "baseline" | "refined"`
 - `type LigandId = "crystal" | "p38_goldstein_05_2e" | "p38_goldstein_06_2f" | "p38_goldstein_07_2g" | "p38_goldstein_08_2h" | "p38_goldstein_09_2i"`
-- `interface LigandAsset { id: LigandId; label: string; baselineSdf: string; refinedSdf: string }`
+- `interface ProteinAsset { pdbUrl: string; mmcifUrl?: string }`
+- `interface LigandAsset { id: LigandId; label: string; baselineSdf: string; refinedSdf: string; baselinePdbFallback?: string; refinedPdbFallback?: string }`
 - `interface FragMapAsset { id: string; label: string; dxUrl: string; color: string; defaultIso: number }`
 - `interface ViewerState { ligandId: LigandId; pose: PoseKind; iso: number; visibleMapIds: string[]; cameraSnapshot?: object }`
 
 ## 4. Data & File Handling Plan (.pdb, .sdf, .map/.dx)
+- Runtime primary format by category:
+- Protein: `.pdb` (primary runtime format).
+- Ligands (baseline/refined): `.sdf` (primary runtime format).
+- FragMaps: `.dx` (primary runtime format).
+- Retained but not parsed at runtime:
+- FragMaps `.map` files.
+- Ligand `.pdb` files when corresponding `.sdf` loads successfully.
 - Source of truth files:
 - Protein: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly.pdb`
 - Crystal baseline: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly_cryst_lig.sdf`
@@ -78,8 +87,14 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Load protein eagerly.
 - Load ligand and map files lazily based on user actions.
 - Cache parsed/loaded components keyed by ligand/map ID.
+- Ligand load order policy:
+- Baseline pose: load `baselineSdf` first; if missing/unreadable and baseline fallback exists, load fallback PDB.
+- Refined pose: load `refinedSdf` first; if missing/unreadable and refined fallback exists, load fallback PDB.
+- If both primary and fallback fail for a ligand pose, disable that pose option and show actionable error.
 - Data validation checks at startup:
-- Confirm selected ligand baseline/refined file pair exists.
+- Confirm `3fly.pdb` resolves.
+- Confirm selected ligand baseline `.sdf` exists.
+- Confirm selected ligand refined `.sdf` exists, or refined fallback `.pdb` exists.
 - Confirm all 8 `.dx` map files resolve.
 - If asset missing: show non-blocking UI error toast and disable that control item.
 
@@ -113,7 +128,7 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - PRD Requirement: Interactive viewer with 3FLY protein.
 - Implementation: `NglViewport` initialization + `3fly.pdb` load at route entry.
 - PRD Requirement: show different ligands and baseline/refined without reload.
-- Implementation: typed ligand manifest + in-place component swap + pose toggle control.
+- Implementation: typed ligand manifest + in-place component swap + pose toggle control using `.sdf` as primary and `.pdb` fallback only when required.
 - PRD Requirement: show/hide individual FragMap surfaces.
 - Implementation: map checklist controls + per-map component cache + visibility toggle.
 - PRD Requirement: iso-value adjustment with fast response.
@@ -154,6 +169,8 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Mitigation: do not preload maps; load on first toggle only.
 - Risk: file parsing edge cases for specific ligands.
 - Mitigation: include per-ligand load error state and fallback to previous valid ligand.
+- Risk: mixed ligand source format (`.sdf` primary, occasional `.pdb` fallback) can cause representation inconsistencies.
+- Mitigation: normalize post-load representations (color/radius/selection policies) independent of source file type.
 - Risk: browser variance between Chrome/Safari.
 - Mitigation: lock validation script and run both browsers before final delivery.
 - Risk: Vue 2 ecosystem is legacy compared with modern Vue 3 tooling.
@@ -186,4 +203,6 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Viewer fixed: NGL.
 - Hosting fixed: GitHub Pages.
 - Ligand scope fixed: crystal + 5 ligands (`05_2e` to `09_2i`) for v1.
-- FragMap runtime format fixed: `.dx` only.
+- Protein runtime format fixed: `.pdb` primary.
+- Ligand runtime format fixed: `.sdf` primary with optional `.pdb` fallback.
+- FragMap runtime format fixed: `.dx` only; `.map` retained but not parsed in v1.
