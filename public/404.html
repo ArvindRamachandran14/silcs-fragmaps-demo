@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <script>
+      (function () {
+        var base = "/silcs-fragmaps-demo";
+        var path = window.location.pathname;
+        var redirectPath = path.startsWith(base) ? path.slice(base.length) : path;
+        if (!redirectPath.startsWith("/")) {
+          redirectPath = "/" + redirectPath;
+        }
+        var redirect = redirectPath + window.location.search + window.location.hash;
+        sessionStorage.setItem("gh_pages_redirect", redirect);
+        window.location.replace(base + "/");
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

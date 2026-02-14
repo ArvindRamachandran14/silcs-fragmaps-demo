@@ -5,6 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>SILCS FragMaps Demo</title>
+    <script>
+      (function () {
+        var redirect = sessionStorage.getItem("gh_pages_redirect");
+        if (!redirect) {
+          return;
+        }
+        sessionStorage.removeItem("gh_pages_redirect");
+        var base = "<%= BASE_URL %>";
+        var normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+        window.history.replaceState(null, "", normalizedBase + redirect);
+      })();
+    </script>
   </head>
   <body>
     <noscript>
