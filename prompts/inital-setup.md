@@ -349,7 +349,7 @@ Rules:
 - Be explicit about assumptions.
 - If something is ambiguous, mark it as ambiguity (not fact).
 - Prioritize high-risk gaps and conflicts first.
-
+```
 --- 
 
 Apply the recommended edits 
@@ -423,3 +423,99 @@ Regarding Unresolved decision: specific test tooling stack (unit/e2e framework) 
 I think I have Playwright in Codex. It says "Integrate browser automation to implement design and test UI." Could we use that?
 
 ---
+
+Are we at implementation ready stage? If there are still blockers and conflics, can we reconcile them later? Or will they prove to be fatal?
+
+Answer: You’re **functionally implementation-ready** now, with one caveat: stay disciplined about milestone gates.
+
+Short answer:
+- **Not fatal right now**: minor wording ambiguities, optional tooling details, doc polish.
+- **Potentially fatal if deferred too long**: any conflict in core behavior contracts (framework, route/state model, per-map iso model, AC pass rules, camera-reset contract).
+
+Can you reconcile later?
+- **Yes**, but only if done **before the affected milestone starts**.
+- If you push core conflicts into active implementation, it becomes rework-heavy and can break AC validation late.
+
+Practical rule:
+1. Freeze current specs + execution plan as baseline.
+2. Allow only clarifications that do not change behavior.
+3. If behavior changes, update spec + plan first, then implement.
+
+So: proceed to M1, but treat unresolved **behavioral** conflicts as gate blockers, not “fix later.”
+
+--- 
+
+Ok. When working on M1. How to tell an agent to work on that? And how can I ask the agent to check it did the job? And how can I manually verify that was done?
+
+Answer: Yes. Use a tight “scope + gate” prompt.
+
+**1) Prompt to assign M1 to another agent**
+```text
+Implement only M1 from docs/plans/execution-plan.md.
+
+Scope:
+- M1 only: project scaffold + routing foundation.
+- Use stack from docs/plans/technical-plan.md (Vue 2 + TypeScript + Vue Router + Vuex + Vuetify).
+- Create routes `/` and `/viewer`.
+- Ensure client-side navigation between `/` and `/viewer` (no full page reload).
+
+Do NOT do:
+- M2+ work (no data manifest, no viewer features, no ligand/fragmap logic).
+
+Required deliverables:
+1) Files created/updated.
+2) Commands run.
+3) Validation evidence for M1 gate:
+   - production build succeeds
+   - `/` renders
+   - `/viewer` renders
+   - navigation `/` <-> `/viewer` is SPA (no full page reload)
+   - unknown route does not crash app
+4) Residual risks/blockers.
+
+Return format:
+- M1 status: PASS/FAIL
+- Gate checklist with pass/fail per item
+- File list
+- Command outputs summary
+```
+
+**2) Prompt to make the agent prove it did the job**
+```text
+Run the M1 gate verification now and return a PASS/FAIL table with evidence.
+
+For each gate item include:
+- check name
+- exact command or manual step used
+- observed result
+- pass/fail
+
+Also include:
+- `git status --short`
+- `git diff --name-only`
+- any failures and exact fix needed
+```
+
+**3) Manual verification you can do yourself**
+```bash
+# from repo root
+git diff --name-only
+git status --short
+```
+Confirm scaffold files exist (package, src, router, pages).
+
+Then run:
+```bash
+npm install
+npm run build
+npm run serve   # or npm run dev (use whichever scripts were added)
+```
+
+In browser:
+1. Open `/` -> page loads.
+2. Navigate to `/viewer` -> page loads.
+3. Navigate back to `/` via app nav.
+4. Open DevTools Network, filter `document`: should stay at initial document load during in-app nav (no new full document request).
+5. Go to an unknown route like `/not-found` and confirm app does not hard-crash.
+
+If all 5 pass, M1 is done and you can start M2.
