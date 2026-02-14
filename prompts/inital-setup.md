@@ -53,7 +53,7 @@ Investigate the frontend technology stack used by [https://landing.silcsbio.com/
 
 Requirements:
 - Primary evidence must come from live-site technical signals (HTML source, script bundles, meta tags, framework/runtime fingerprints, network/static asset patterns).
-- Use files in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/screenshots` only as secondary corroboration.
+- Use files in `docs/screenshots` only as secondary corroboration.
 - Do not treat visual style alone as proof of stack.
 
 Output format:
@@ -72,7 +72,7 @@ Constraints:
 You are a computational chemistry + web-visualization architect.
 
 Context:
-- Project root: /Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo
+- Project root: repository root
 - Available data includes protein (.pdb), ligands (.sdf and some .pdb), and FragMaps (.dx and .map).
 - Target app behavior: fast interactive visualization with ligand switching, pose toggles, FragMap toggles, and iso-value updates.
 - Constraints: client-side app, no backend, prioritize scientific correctness and interactive performance.
@@ -98,7 +98,7 @@ Important:
 
 --- 
 
-I now want to move on to revisting and potentially revising "Scope decision: include `3fly_cryst_lig` (display label `Crystal Ligand`) plus these 5 paired ligands:" 
+I now want to move on to revisting and potentially revising "Scope decision: include `crystal` ligand plus these 5 paired ligands:" 
 
 Do achieve the goals outlined in docs/SilcsBio_Candidate_Exercise_Instructions.pdf, what is the best strategy? Should be have 5 pre selected ligands or have the user choose any of the 30 ligands? SHould we have a drop down to choose from the 30? Maybe with autocomplete suggestions for names? I think including an option to choose the file form local computer is an overkill? What are your thoughts?
 
@@ -130,10 +130,10 @@ Follow instruction precedence from `AGENTS.md`. Use `docs/plans/technical-plan.m
 Use `docs/screenshots/GUI_Layout.png` as the visual guide for layout decision #6 (structure and emphasis), while keeping scope aligned to PRD + technical plan.
 
 Lock these decisions:
-1) Default viewer state: `3fly_cryst_lig` selected (display label `Crystal Ligand`), `baseline` pose selected, no FragMaps visible.
+1) Default viewer state: crystal ligand selected, `baseline` pose selected, no FragMaps visible.
 2) Initial visual baseline: fixed default camera orientation + protein cartoon representation.
 3) Scope boundary: this spec covers only viewer stage lifecycle, layout, and navigation. Do not define ligand/map/iso behavior details here; those belong in later specs.
-4) Load UX: explicit loading state during initial viewer load (protein + default crystal ligand), then normal interactive state.
+4) Load UX: explicit loading state during initial viewer load (protein + default ligand), then normal interactive state.
 5) Error UX: non-blocking toast + disable affected control; no persistent inline error panel in v1.
 6) Layout contract: top bar + viewport-dominant two-column desktop layout (`NglViewport` + `ControlsPanel`), with responsive mobile behavior where controls collapse and viewport stays primary. Base this on the layout direction shown in `docs/screenshots/GUI_Layout.png` (large central viewport, controls panel on the side, minimal top navigation).
 
@@ -168,8 +168,8 @@ Lock these decisions:
 1. Ligand UI is in the right panel and focused on ligand selection/pose visibility only.
 2. Remove GFE analysis section from this workflow (out of scope).
 3. Ligand selection uses `featured quick-picks + searchable dropdown`.
-4. Ligand scope in UI: `Crystal Ligand` (`3fly_cryst_lig`) + all provided ligands.
-5. Default selected ligand is `3fly_cryst_lig` (display label `Crystal Ligand`).
+4. Ligand scope in UI: crystal + all provided ligands.
+5. Default selected ligand is the bound crystal ligand.
 6. Pose controls use checkboxes (not radio/segmented).
 7. Users can view baseline only, refined only, both, or both unchecked.
 8. If both unchecked, define a clear empty-state message and recovery action in the ligand panel.
@@ -203,15 +203,213 @@ Include these sections:
 
 ## FragMaps 
 
-1. Should **all FragMaps default to hidden** on viewer load? (recommended: yes)  
-2. Do you want **per-map checkboxes** only, or checkboxes + quick actions (`Show all`, `Hide all`, `Reset defaults`)?  
-3. Should iso be a **single global slider** for all visible maps, or per-map iso controls? (recommended: global)  
-4. What iso slider contract do you want: **range, step, default** (or I define practical defaults)?  
-5. When toggling a map on first time, should it **lazy-load + cache** and reuse thereafter? (recommended: yes)  
-6. On map toggle, should camera always be **fully preserved** (position, zoom, orientation)? (recommended: yes)  
-7. Do you want a fixed **map color/label legend** in-panel, and should labels match provided file names or friendly names?  
-8. If map load fails, should behavior be **toast + disable only that map control**? (recommended: yes)  
-9. Should toggling multiple maps be allowed with **no exclusivity** (any combination visible)? (recommended: yes)  
-10. Should map surface style be fixed (wire/surface + opacity) or user-adjustable in v1? (recommended: fixed in v1)  
-11. For AC-2, do you want this spec to include only behavior requirements, with timing protocol deferred to `docs/specs/performance-and-validation-spec.md`? (recommended: yes)  
-12. On mobile, should map controls stay in the same collapsed controls panel pattern defined in `docs/specs/viewer-core-spec.md`? (recommended: yes)
+Create `docs/specs/fragmap-controls-spec.md` as an implementation-ready spec.
+
+Follow instruction precedence from `AGENTS.md`.
+If any source conflicts with this prompt, follow this prompt and explicitly flag the conflict in the spec (do not silently resolve).
+
+Primary sources:
+1. `docs/plans/technical-plan.md`
+2. `docs/SilcsBio_Candidate_Exercise_Instructions.md`
+3. `docs/specs/viewer-core-spec.md`
+4. `docs/specs/ligand-workflow-spec.md`
+
+UI reference sources:
+1. `docs/screenshots/GUI/GUI_fragmaps.png`
+2. `docs/screenshots/Ideas/fragmap-primary3-advanced-per-map-iso.svg` (canonical)
+3. `docs/screenshots/Ideas/fragmap-primary3-advanced-per-map-iso.png` (preview)
+
+Lock these product decisions:
+1. FragMap controls are in the right panel, viewport remains dominant.
+2. Control model is `Primary 3 + Advanced full list`.
+3. Primary 3 rows are always visible: `Generic Donor`, `Generic Acceptor`, `Generic Apolar`.
+4. Advanced section is expandable and contains the remaining provided 3FLY maps (full coverage retained).
+5. Visibility is per-map checkbox, multi-select, any combination allowed.
+6. Default state on viewer load: all FragMaps hidden.
+7. Include quick actions: `Hide all`, `Reset defaults`, `Reset view`.
+8. Preserve camera on map toggle and iso edits; only `Reset view` can change camera.
+9. No global iso control. Use per-map iso controls only.
+10. Each map row has per-map iso controls (`-`, value, `+`) similar to `GUI_fragmaps.png`.
+11. Each map has independent default iso and current iso state.
+12. No local upload controls in v1.
+13. Friendly labels in UI; raw filenames are implementation detail only.
+14. Include UI constraints so labels do not overlap and controls never overflow panel bounds.
+15. Mobile behavior follows `viewer-core-spec.md` collapsed-controls pattern.
+
+Lock these robustness/reliability decisions (based on prior `dev-AR` failure analysis):
+1. Lazy-load each map on first toggle.
+2. Cache loaded map component/representation handles for reuse.
+3. Do in-place visibility updates; do not clear/rebuild all surfaces on each toggle.
+4. Add async race protection for rapid toggle/iso edits (request-id or single-flight guard).
+5. Per-map failure isolation: toast + disable only failed map row + retry action.
+6. Keep previously valid visible maps stable when one map load fails.
+
+Include a brief “why this strategy is more robust” section:
+1. Prior approach issues: heavy eager preload, global clear/rebuild per toggle, race-prone async updates, weak error isolation.
+2. New approach benefits: lower latency, better reliability, stable camera/context, per-map fault isolation.
+
+Required spec sections:
+1. Purpose
+2. Scope / Out of Scope
+3. Map Inventory and Label Contract
+4. Layout and Control Organization
+5. State and Data Contracts
+6. Default State Contract
+7. Interaction Flows (toggle, bulk actions, per-map iso edit, reset actions)
+8. Loading/Caching Strategy
+9. Concurrency and Reliability Guardrails
+10. Error and Empty States
+11. Accessibility and Usability Constraints
+12. Spec-Level Acceptance Checks
+13. Traceability to PRD and technical plan
+14. Open Dependencies
+
+Acceptance checks must explicitly cover:
+1. AC-2 behavior intent: map show/hide fast and camera preserved.
+2. AC-5 behavior intent: per-map iso updates are fast and only affect intended map surfaces.
+3. No page reload for map toggles, bulk actions, or iso edits.
+4. Primary 3 + Advanced behavior works with full provided map set.
+
+
+## Performance and Validation Spec
+
+What is the point of this spec foc, when AC-1 thorugh AC-6 is already defined in the technical plan
+
+---
+
+Got it. Do you have any open questions to make performance-and-validation-spec.md?
+
+---
+
+Got it. Please go ahead and make docs/specs/performance-and-validation-spec.md
+
+## Audit Spec Docs 
+
+Help me create a prompt to do a through audit of all the spec docs in docs/specs. 
+
+We want to make sure all the features are well defined and implementation-ready
+
+We also want to ensure there are no conflicts between the files in docs/specs amd docs/plans
+
+--- 
+
+Updated version with relative paths only:
+
+```text
+You are a senior technical program architect doing a documentation audit.
+
+Repository root:
+Current working directory (use relative paths only).
+
+Audit scope:
+1) All spec docs in `docs/specs`
+2) All planning docs in `docs/plans`
+
+Goal:
+- Verify every feature in `docs/specs` is clearly defined and implementation-ready.
+- Detect and report any conflicts between `docs/specs` and `docs/plans`.
+
+Instructions:
+1) Read all files in both directories before concluding anything.
+2) Build a feature inventory from `docs/specs` (feature name, owner/module, status).
+3) For each feature, assess implementation readiness using this checklist:
+   - Problem statement and scope are explicit
+   - Functional requirements are testable
+   - Inputs/outputs and data contracts are defined
+   - Error states and edge cases are defined
+   - Non-functional requirements are stated (performance, reliability, security, usability)
+   - Dependencies and assumptions are listed
+   - Acceptance criteria are measurable
+   - Open questions/unknowns are explicitly called out
+4) Cross-check each spec item against `docs/plans` for:
+   - Scope mismatches
+   - Contradictory behavior
+   - Timeline/dependency conflicts
+   - Naming/terminology inconsistencies
+   - Missing implementation tasks for required features
+5) Do not rewrite docs. Produce an audit report with exact file references.
+
+Output format (strict):
+A) Executive summary (5-10 bullets)
+B) Readiness scorecard table:
+   - Columns: Feature | Spec File | Ready? (Yes/Partial/No) | Gaps | Severity (High/Med/Low)
+C) Conflict report table:
+   - Columns: Conflict ID | Spec Reference | Plan Reference | Conflict Type | Why It Matters | Recommended Resolution
+D) Missing-definition list:
+   - Prioritized by implementation risk
+E) Recommended edits:
+   - Concrete, minimal wording suggestions per file
+F) Final gate decision:
+   - “Implementation-ready” or “Not implementation-ready”
+   - If not ready, list top 5 blockers
+
+Rules:
+- Cite every finding with relative path + section heading (or nearest line reference).
+- Use only relative paths in all outputs (for example, `docs/specs/viewer-core-spec.md`).
+- Be explicit about assumptions.
+- If something is ambiguous, mark it as ambiguity (not fact).
+- Prioritize high-risk gaps and conflicts first.
+
+--- 
+
+Apply the recommended edits 
+
+--- 
+
+Use the one canonical internal ID 3fly_cryst_lig. Display label should be bound ligand. Ensure this is set consistently across all relevant files in the repo
+
+--- 
+
+Set default iso values for each map type based on the values in docs/screenshots/GUI/GUI_fragmaps_isovalues_default.png
+
+# Execution Plan 
+
+First let's make a prompt to create this execution-plan.md. Besides what you already mentioned, it should have a clear order of features to implement, and how to test each feature before moving on to the next.
+
+--- 
+
+Create `docs/plans/execution-plan.md` as a concrete implementation runbook for this project.
+
+Context:
+- Project root: repository root
+- Specs: `docs/specs/*.md`
+- Technical plan: `docs/plans/technical-plan.md`
+- PRD: `docs/SilcsBio_Candidate_Exercise_Instructions.md`
+
+Requirements:
+1. Read all spec docs and `docs/plans/technical-plan.md` before drafting.
+2. Define a strict, dependency-aware feature execution order.
+3. For each feature/milestone, define exactly how to validate it before moving to the next.
+4. Include explicit gating: no milestone starts until prior milestone exit criteria pass.
+5. Keep scope aligned with current specs and technical plan only (no new feature scope).
+
+Mandatory feature order to use:
+1. Project scaffold + routing foundation (`/`, `/viewer`)
+2. Data manifest + asset pipeline + startup data validation
+3. Viewer core lifecycle/layout/default state/error fallback
+4. Ligand workflow (featured + searchable list, 4 pose visibility states, zoom, empty/error handling)
+5. FragMap controls (Primary/Advanced sections, per-map toggles, per-map iso, exclusion-map behavior, retry/failure isolation)
+6. Overview page narrative + CTA + external links behavior
+7. Performance instrumentation + AC-1..AC-6 validation evidence (`docs/validation.md`)
+8. Hardening, final regression pass, README/deploy readiness
+
+Output format (strict):
+1. Execution strategy summary (5-8 bullets)
+2. Milestone dependency diagram (text or mermaid)
+3. Ordered milestone table with columns:
+   - Milestone ID
+   - Feature scope
+   - Depends on
+   - Implement first (files/modules)
+   - Test/validation steps
+   - Exit gate (pass/fail criteria)
+   - Risks and mitigations
+4. “Stop/Go” checklist to run before advancing from each milestone
+5. AC coverage matrix (AC-1..AC-6 mapped to milestone + validation step)
+6. Open assumptions and unresolved decisions
+
+Quality bar:
+- Make each milestone implementation-ready (another engineer should execute without guessing).
+- Test steps must be explicit and measurable (not generic).
+- Include both functional checks and failure-path checks.
+- Call out ambiguity as ambiguity; do not invent hidden requirements.

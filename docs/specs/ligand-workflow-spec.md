@@ -44,8 +44,28 @@ State rules:
 - Duplicate entries are invalid.
 - Order should be normalized as `["baseline","refined"]` when both are selected.
 
+### 3.1 Canonical Ligand Manifest Contract
+Source of truth for full ligand scope:
+- Crystal ligand baseline: `from_silcsbio/3fly_cryst_lig.sdf` (`id = 3fly_cryst_lig`, display label `Crystal Ligand`).
+- Crystal ligand refined: `from_silcsbio/3fly_cryst_lig_posref.sdf` (fallback `from_silcsbio/3fly_cryst_lig_posref.pdb`).
+- Baseline ligand pool: all `.sdf` files in `from_silcsbio/ligands`.
+- Refined ligand pool: files in `from_silcsbio/ligands_posref`.
+
+ID derivation and inclusion rules:
+- `LigandId` is derived from baseline `.sdf` basename without extension.
+- Full selectable set is `3fly_cryst_lig` plus every baseline ligand ID derived from `from_silcsbio/ligands/*.sdf`.
+- A ligand is included in the runtime manifest only if a baseline `.sdf` exists.
+- For each included ligand ID, refined pose resolution is attempted in this order:
+  1. `from_silcsbio/ligands_posref/<LigandId>.sdf`
+  2. `from_silcsbio/ligands_posref/<LigandId>.pdb` (fallback)
+
+Deterministic ordering rules:
+- Empty-query dropdown order: `Crystal Ligand` first, then remaining ligands sorted by display label ascending, ties by ligand ID ascending.
+- Search-result order follows Section 6.1 ordering rules.
+- Ordering must be stable across renders in the same session.
+
 ## 4. Layout and Control Organization
-Use `docs/screenshots/GUI_ligand_analysis.png`, `docs/screenshots/GUI_ligand_dropdown.png`, `docs/screenshots/ligand-controls-wireframe-collapsed-square.svg.png`, and `docs/screenshots/ligand-controls-wireframe-expanded-square.svg.png` as structure references.
+Use `docs/screenshots/GUI/GUI_ligand_analysis.png`, `docs/screenshots/GUI/GUI_ligand_dropdown.png`, `docs/screenshots/Ideas/ligand-controls-wireframe-collapsed-square.svg.png`, and `docs/screenshots/Ideas/ligand-controls-wireframe-expanded-square.svg.png` as structure references.
 
 Right-panel ligand section order:
 1. `Featured quick picks` chips (Crystal Ligand + 5 featured ligands).
@@ -159,6 +179,8 @@ Ligand workflow is accepted when all checks pass:
 8. Camera is preserved on ligand switch; zoom occurs only when user invokes `Zoom`.
 9. Pose load failures trigger non-blocking toast and disable only affected pose control.
 10. No GFE panel, frame control, or local upload control appears in v1 ligand workflow.
+11. Runtime ligand manifest includes `3fly_cryst_lig` plus all baseline `.sdf` ligand IDs from `from_silcsbio/ligands`.
+12. Empty-query dropdown ordering is deterministic: `Crystal Ligand` first, then label/ID sorted entries.
 
 ## 11. Traceability
 - PRD mapping: `2.B Interactive Visualization Page (Required)` for multi-ligand and baseline/refined interaction.

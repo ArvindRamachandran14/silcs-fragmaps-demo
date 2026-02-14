@@ -1,15 +1,15 @@
 # Technical Implementation Plan: SILCS FragMaps Interactive Demo (3FLY)
 
 ## Brief Summary
-This plan defines a decision-complete implementation for the PRD at `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/SilcsBio_Candidate_Exercise_Instructions.md` using a client-side Vue 2 + TypeScript app hosted on GitHub Pages.
-It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and incorporates confirmed live-site technical findings (Vue/Vuetify/Webpack architecture) from `https://landing.silcsbio.com/newlandingpage`.
-Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/plans` must mirror this document's framework and control-model decisions.
+This plan defines a decision-complete implementation for the PRD at `docs/SilcsBio_Candidate_Exercise_Instructions.md` using a client-side Vue 2 + TypeScript app hosted on GitHub Pages.
+It prioritizes AC-1 through AC-6 and uses PRD plus repository specs as authoritative requirements.
+Companion planning artifacts in `docs/plans` must mirror this document's framework and control-model decisions.
 
 ## 1. Executive Summary
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
 - Use `NGL Viewer` for protein/ligand rendering and volumetric `.dx` FragMap overlays.
 - Implement ligand workflow with a two-tier model: curated `featured` set (`3fly_cryst_lig` shown as `Crystal Ligand` + 5) for guided narrative and full access to all provided ligands for exploratory analysis.
-- Follow a Vue architecture compatible with the observed SilcsBio reference stack: `Vue Router + Vuex + Vuetify`.
+- Follow a Vue architecture with `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
 - Deploy to GitHub Pages with reproducible local validation checklist mapped to AC-1..AC-6.
 
@@ -32,14 +32,13 @@ Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/S
 - UI decision: include ligand autocomplete for full set access; no local file-upload control in v1.
 - Runtime format policy: protein `.pdb` primary, ligands `.sdf` primary with `.pdb` fallback only when needed, FragMaps `.dx` primary.
 - FragMaps used at runtime: `.dx` only (all 8 maps). `.map` retained but not parsed in v1.
-- UX patterns may mirror SilcsBio interaction style (sidebar controls + viewport-first layout), but requirements come only from PRD.
+- UX patterns use sidebar controls + viewport-first layout; requirements come only from PRD and repository specs.
 
-### 2.1 Live-Site Findings and Plan Impact
-- Confirmed fact: `https://landing.silcsbio.com/newlandingpage` is a Vue SPA with `Vue Router`, `Vuex`, `Vuetify 2.5.14`, and Webpack chunking.
-- Confirmed fact: `NEXT` flow is in-route state progression (no URL change per step), with a later gated request dialog.
-- Confirmed fact: site responses indicate static delivery via `nginx`.
-- Plan impact: choose a Vue-based implementation to reduce mismatch risk with the demonstrated interaction model.
-- Plan impact: keep gated lead-capture dialog behavior as optional parity work, not AC-critical scope unless explicitly requested.
+### 2.1 Authority Note
+- Authoritative implementation inputs for this project are:
+  - `docs/SilcsBio_Candidate_Exercise_Instructions.md`
+  - Repository specs under `docs/specs/`
+- External product observations are context only and non-authoritative.
 
 ## 3. System Architecture
 - Route 1: `HomePage.vue` with scientific narrative and interaction instructions.
@@ -56,7 +55,7 @@ Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/S
 - App initializes stage and loads protein (`3fly.pdb`).
 - Loads default crystal ligand state (`3fly_cryst_lig`, displayed as `Crystal Ligand`, with baseline visible by default and refined available) and exposes featured quick-select controls.
 - Provides searchable ligand selector for all provided ligands (featured + non-featured).
-- Optional parity path: manage narrative slide progression as viewer-local state (not route changes), aligned with observed live flow.
+- Optional parity path: manage narrative slide progression as viewer-local state (not route changes).
 - FragMaps remain unloaded until toggled on.
 - On map toggle: load `.dx`, create surface rep, cache component+rep handle.
 - On per-map iso change (GFE maps only): update only the targeted map representation via parameter update path.
@@ -83,12 +82,12 @@ Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/S
 - FragMaps `.map` files.
 - Ligand `.pdb` files when corresponding `.sdf` loads successfully.
 - Source of truth files:
-- Protein: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly.pdb`
-- Crystal-ligand baseline (`3fly_cryst_lig`): `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly_cryst_lig.sdf`
-- Crystal-ligand refined (`3fly_cryst_lig`): `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly_cryst_lig_posref.sdf`
-- Ligand baseline dir: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/ligands`
-- Ligand refined dir: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/ligands_posref`
-- FragMaps runtime format: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/maps/*.dx`
+- Protein: `from_silcsbio/3fly.pdb`
+- Crystal-ligand baseline (`3fly_cryst_lig`): `from_silcsbio/3fly_cryst_lig.sdf`
+- Crystal-ligand refined (`3fly_cryst_lig`): `from_silcsbio/3fly_cryst_lig_posref.sdf`
+- Ligand baseline dir: `from_silcsbio/ligands`
+- Ligand refined dir: `from_silcsbio/ligands_posref`
+- FragMaps runtime format: `from_silcsbio/maps/*.dx`
 - Runtime asset strategy:
 - Copy required assets into `/public/assets/protein`, `/public/assets/ligands`, `/public/assets/maps`.
 - Load protein eagerly.
@@ -155,7 +154,7 @@ Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/S
 - AC-2 (`map toggle <200 ms` + camera preserved):
 - Scenario: toggle representative maps on/off with camera at non-default orientation using `3fly.hbdon.gfe.dx` (`Primary 3`) and `3fly.mamn.gfe.dx` (`Advanced`).
 - Method: interaction timer around toggle action; compare pre/post camera matrices.
-- Pass: median per tested representative map <200 ms in each browser; camera unchanged within defined tolerances.
+- Pass: every measured run per tested representative map <200 ms in each browser; median reported for observability; camera unchanged within defined tolerances.
 - AC-3 (baseline/refined pose visibility changes no reload):
 - Scenario: selected ligand pose visibility changes repeatedly across baseline-only, refined-only, both-visible, and both-hidden states.
 - Method: verify no navigation, no full app remount, and in-place component add/remove only.
@@ -167,7 +166,7 @@ Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/S
 - AC-5 (iso update <200 ms):
 - Scenario: adjust per-map iso controls across 3 values on representative visible iso-adjustable GFE maps.
 - Method: timer from per-map input event to target map visual update complete.
-- Pass: each per-map update <200 ms.
+- Pass: every measured per-map update run <200 ms; median reported for observability.
 - AC-6 (no uncaught runtime errors in 5-minute exploration):
 - Scenario: scripted manual session covering all controls.
 - Method: monitor console errors and UI error boundaries.
@@ -222,3 +221,8 @@ Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/S
 - Protein runtime format fixed: `.pdb` primary.
 - Ligand runtime format fixed: `.sdf` primary with optional `.pdb` fallback.
 - FragMap runtime format fixed: `.dx` only; `.map` retained but not parsed in v1.
+
+## Appendix A: External Product Observations (Context Only)
+- Snapshot observations of `https://landing.silcsbio.com/newlandingpage` may inform non-binding UX inspiration.
+- These observations are not requirements and must not override PRD or repository specs.
+- Any parity behavior derived from external products remains optional unless explicitly added to repository specs.

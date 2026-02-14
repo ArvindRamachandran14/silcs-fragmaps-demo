@@ -53,6 +53,22 @@ Labeling rules:
 - Filenames remain implementation details.
 - Screenshot labels are reference-only and do not override this mapping.
 
+### 4.1 Canonical Color Mapping (v1)
+Each map has one canonical display color for row legend and surface rendering:
+- `Generic Donor` (`3fly.hbdon.gfe.dx`): `blue` (`#1976d2`)
+- `Generic Acceptor` (`3fly.hbacc.gfe.dx`): `red` (`#d32f2f`)
+- `Generic Apolar` (`3fly.apolar.gfe.dx`): `green` (`#2e7d32`)
+- `Positively Charged` (`3fly.mamn.gfe.dx`): `orange` (`#f57c00`)
+- `Negatively Charged` (`3fly.acec.gfe.dx`): `magenta` (`#c2185b`)
+- `Hydroxyl Oxygen` (`3fly.meoo.gfe.dx`): `cyan` (`#0097a7`)
+- `Water Oxygen` (`3fly.tipo.gfe.dx`): `yellow` (`#f9a825`)
+- `Exclusion Map` (`3fly.excl.dx`): `gray` (`#9e9e9e`) with fixed translucent volume style
+
+Color contract:
+- The first three mappings above are fixed user-provided inputs and must not be changed without explicit spec update.
+- Legend and rendered map surfaces must use this same canonical mapping.
+- Color choices do not replace text labels; labels remain required for accessibility.
+
 ## 5. Layout and Control Organization
 Use structure direction from:
 - `docs/screenshots/GUI/GUI_fragmaps.png`
@@ -202,6 +218,7 @@ FragMap controls are accepted when all checks pass:
 11. Camera preserved for map toggle/iso updates; only `Reset view` changes camera.
 12. Map failures are isolated to affected row and surfaced with toast + retry.
 13. UI labels and controls remain non-overlapping and in-bounds at supported widths.
+14. Row legends and rendered surfaces use the canonical map-color mapping defined in Section 4.1.
 
 AC intent coverage:
 - AC-2 behavior intent: map show/hide updates are fast and preserve camera.

@@ -29,7 +29,8 @@ Primary references:
 ## 4. Validation Principles
 - Run validation on production build only.
 - Use measured timings (`performance.now`) over subjective judgment.
-- Use median of 3 runs for timing scenarios unless otherwise specified.
+- Use 3 runs for timing scenarios unless otherwise specified.
+- For strict threshold criteria (AC-2 and AC-5), every run must satisfy the threshold; median is reported as supporting evidence, not as the only pass gate.
 - Capture evidence for both latest stable Chrome and latest stable Safari.
 - Treat uncaught runtime errors as hard failures.
 
@@ -96,10 +97,11 @@ Scenario:
   - `Advanced`: `3fly.mamn.gfe.dx`
 
 Run count:
-- 3 runs per tested map and browser; median used per map.
+- 3 runs per tested map and browser.
 
 Pass:
-- Median <200 ms per tested map in each browser.
+- Every measured toggle run is <200 ms per tested map in each browser.
+- Median is reported for observability and trend tracking.
 - Camera preservation tolerances satisfied on each toggle.
 
 ### AC-3
@@ -137,10 +139,11 @@ Scenario:
 - Measure update for the targeted map row each run.
 
 Run count:
-- 3 runs per browser, median used for pass/fail.
+- 3 runs per browser.
 
 Pass:
-- Median <200 ms per run set in each browser.
+- Every measured iso-update run is <200 ms in each browser.
+- Median is reported for observability and trend tracking.
 - The targeted map reflects the updated iso state correctly on every run.
 - `Exclusion Map` is excluded from AC-5 iso timing because its iso controls are disabled/non-editable by spec.
 
@@ -158,7 +161,25 @@ Pass:
 - Zero uncaught runtime errors.
 - Handled toasts/warnings are allowed if non-fatal and documented.
 
-## 8. Reporting and Evidence Contract
+## 8. Validation Execution Procedure (Reproducible Runbook)
+Use this fixed sequence for every validation run set:
+1. Checkout the target commit SHA to validate.
+2. Install dependencies using the project package manager.
+3. Build production artifacts.
+4. Serve the built artifacts locally using a static file server.
+5. Open the served app and navigate to `/viewer`.
+6. Execute AC scenarios in this order for Chrome: AC-1, AC-2, AC-3, AC-4, AC-5, AC-6.
+7. Repeat step 6 in Safari using the same served build and run-day browser versions.
+8. Record raw runs, medians, and pass/fail outcomes immediately in `docs/validation.md`.
+9. Record uncaught runtime errors and camera preservation checks during the same run set.
+
+Runbook constraints:
+- Do not switch commits, rebuild options, dataset files, or browser versions mid run set.
+- AC-1 must be measured from a cold viewer start per run.
+- AC-2 and AC-5 timings must use the strict pass rules from Section 7.
+- Evidence must be captured on the same day and tied to one Git commit SHA.
+
+## 9. Reporting and Evidence Contract
 Evidence file:
 - `docs/validation.md` is required.
 
@@ -182,7 +203,7 @@ Required AC results table fields:
 - Pass/Fail.
 - Notes.
 
-## 9. Failure Classification and Triage
+## 10. Failure Classification and Triage
 Failure classes:
 - `Performance regression`: threshold exceeded.
 - `Behavioral regression`: scenario behavior mismatches spec.
@@ -194,12 +215,12 @@ Triage rules:
 - If still failing, classify and document root-cause hypothesis.
 - Do not mark final validation complete while any AC remains failing.
 
-## 10. Exit Criteria
+## 11. Exit Criteria
 Validation is complete when:
 - AC-1..AC-6 all pass per this spec.
 - `docs/validation.md` is complete and committed.
 - `README.md` includes a link to `docs/validation.md`.
 
-## 11. Open Dependencies
+## 12. Open Dependencies
 - Implementation must expose or log sufficient timing hooks for AC-1, AC-2, and AC-5.
 - Map-level iso update instrumentation must support targeted-row checks for iso-adjustable GFE maps per run.

@@ -2,8 +2,8 @@
 
 ## 1. Purpose
 Define the required behavior, content, and acceptance checks for the `Home / Overview` route so implementation is consistent with:
-- PRD requirements in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/SilcsBio_Candidate_Exercise_Instructions.md`
-- Technical decisions in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/plans/technical-plan.md`
+- PRD requirements in `docs/SilcsBio_Candidate_Exercise_Instructions.md`
+- Technical decisions in `docs/plans/technical-plan.md`
 
 ## 2. Scope
 In scope:

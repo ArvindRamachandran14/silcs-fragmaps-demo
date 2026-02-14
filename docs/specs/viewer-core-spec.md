@@ -3,26 +3,27 @@
 ## 1. Purpose
 Define the implementation contract for the `Interactive Viewer` page core shell and lifecycle, consistent with:
 - `AGENTS.md` instruction precedence.
-- Technical decisions in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/plans/technical-plan.md`.
-- Product requirements in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/SilcsBio_Candidate_Exercise_Instructions.md`.
+- Technical decisions in `docs/plans/technical-plan.md`.
+- Product requirements in `docs/SilcsBio_Candidate_Exercise_Instructions.md`.
 
 This spec establishes the viewer page foundation only: route, layout, rendering stage lifecycle, startup state, and shared UX/system behavior.
 
 ## 2. Scope
 In scope:
 - Viewer route contract for `/viewer`.
-- Viewer shell layout contract based on `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/screenshots/GUI_Layout.png`.
+- Viewer shell layout contract based on `docs/screenshots/GUI/GUI_Layout.png`.
 - NGL stage lifecycle: initialize, ready, resize, cleanup.
 - Initial default state contract: crystal ligand selected (`3fly_cryst_lig`, display label `Crystal Ligand`), baseline visible and refined hidden by default (with both-allowed support defined in ligand workflow spec), no FragMaps visible.
 - Initial display baseline: fixed default camera orientation and protein cartoon representation.
 - Initial loading UX and core error UX.
+- Viewer caption/sidebar context describing what is currently shown in the viewport.
 - Accessibility/usability requirements for viewer shell.
 
 Out of scope:
 - Detailed ligand workflow behavior (selection, pose availability rules, switching logic).
 - Detailed FragMap behavior (per-map toggles, map labels/colors, iso semantics).
 - Performance measurement protocol and AC timing evidence process.
-- Scientific narrative text (covered by overview spec).
+- Long-form scientific narrative text (covered by overview spec).
 
 ## 3. Route Contract
 - Route path: `/viewer`.
@@ -31,7 +32,7 @@ Out of scope:
 - Route leave/unmount must dispose stage resources and listeners cleanly.
 
 ## 4. Layout Contract
-Layout direction must follow the structure emphasis in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/screenshots/GUI_Layout.png`:
+Layout direction must follow the structure emphasis in `docs/screenshots/GUI/GUI_Layout.png`:
 - dominant central viewport
 - side controls region
 - lightweight top navigation/header
@@ -102,14 +103,21 @@ Error UX (core-level):
 - Do not render a persistent inline error panel in v1.
 - Catastrophic startup failure (stage cannot initialize) must show a clear fallback message and a retry/navigation option.
 
-## 8. Accessibility and Usability Constraints
+## 8. Viewer Context Caption Contract
+- Viewer page must include a compact caption/sidebar context block describing what is currently being shown (protein, selected ligand, visible map context).
+- This block is concise and task-oriented (not long-form narrative).
+- Caption/sidebar content updates in place as ligand/map visibility changes.
+- Caption/sidebar updates must not trigger route navigation or full page reload.
+- Caption/sidebar failure must be non-blocking to core viewer interaction.
+
+## 9. Accessibility and Usability Constraints
 - Viewer page must provide a clear, unique top-level heading or page title.
 - Interactive controls in the shell must be keyboard-focusable and visible on focus.
 - Layout must not require horizontal scrolling at common mobile widths.
 - Viewer shell must preserve usability when controls are collapsed (mobile) or expanded (desktop).
 - Navigation back to Home must remain discoverable from viewer shell.
 
-## 9. Spec-Level Acceptance Checks
+## 10. Spec-Level Acceptance Checks
 Viewer core is accepted when all checks pass:
 1. Navigating to `/viewer` renders shell with top bar, viewport, and controls container.
 2. Initial load shows explicit loading state, then transitions to interactive viewer.
@@ -119,15 +127,17 @@ Viewer core is accepted when all checks pass:
 6. Mobile layout keeps viewport primary and provides collapsed controls access pattern.
 7. Route unmount/remount does not produce duplicate listeners or stale stage artifacts.
 8. Core errors are surfaced via non-blocking toast behavior; no persistent inline error panel.
+9. Viewer includes a compact caption/sidebar context block that updates in place with viewer state changes.
 
-## 10. Traceability
+## 11. Traceability
 - PRD mapping: `2.B Interactive Visualization Page (Required)` for viewer availability and control environment.
+- PRD mapping: `2.B Interactive Visualization Page (Required)` caption/sidebar describing what the user is seeing.
 - PRD mapping: `2.C Navigation / Structure` for route-level organization.
 - Technical plan mapping: `System Architecture` for `ViewerPage.vue`, `ControlsPanel.vue`, `NglViewport.vue`.
 - Technical plan mapping: runtime flow for stage init, startup load, and route-level behavior.
 - Technical plan mapping: `Requirement-to-Implementation Mapping` for route and viewer-shell intent.
 
-## 11. Open Dependencies
+## 12. Open Dependencies
 The following are intentionally deferred to subsequent specs:
 - `ligand-workflow-spec.md`: ligand selection and baseline/refined pose-visibility behavior details, including both-visible mode.
 - `fragmap-controls-spec.md`: FragMap toggle semantics, map labels/colors, iso control details.
