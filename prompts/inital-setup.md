@@ -413,3 +413,13 @@ Quality bar:
 - Test steps must be explicit and measurable (not generic).
 - Include both functional checks and failure-path checks.
 - Call out ambiguity as ambiguity; do not invent hidden requirements.
+
+--- 
+
+Looks good. I have some follow up questions  
+
+Regarding Unresolved decision: specific test tooling stack (unit/e2e framework) is not fixed by current specs; choose tooling in M1 and keep outputs compatible with milestone gates.  
+
+I think I have Playwright in Codex. It says "Integrate browser automation to implement design and test UI." Could we use that?
+
+---
