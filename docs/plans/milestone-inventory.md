@@ -55,6 +55,16 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Navigation `/` <-> `/viewer` is SPA (no full page reload): PASS
 - Unknown route does not crash app: PASS
 
+### Post-M1 Deployment Verification (GitHub Pages)
+- Live URL verified working: `https://arvindramachandran14.github.io/silcs-fragmaps-demo/`.
+- Deployment-fix commit tied to this verification: `c611f70` (`fix(deploy): configure GitHub Pages base path and SPA fallback`).
+- Files changed for deployment fix:
+  - `.github/workflows/deploy-pages.yml`: Added GitHub Actions workflow to build/deploy `dist` to GitHub Pages.
+  - `vue.config.js`: Added production `publicPath` for project pages (`/silcs-fragmaps-demo/`).
+  - `src/router/index.ts`: Added router `base: process.env.BASE_URL` for subpath hosting.
+  - `public/index.html`: Added redirect recovery script for SPA deep-link restoration.
+  - `public/404.html`: Added SPA fallback redirect page for GitHub Pages.
+
 ### Residual Risks/Blockers
 - No M1 gate blockers.
 - Non-blocking:
