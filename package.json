@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "stage:assets": "node scripts/stage-assets.js",
     "serve": "vue-cli-service serve",
+    "preserve": "npm run stage:assets",
     "build": "vue-cli-service build",
-    "validate:m1": "node scripts/validate-m1.js"
+    "prebuild": "npm run stage:assets",
+    "validate:m1": "node scripts/validate-m1.js",
+    "validate:m2": "node scripts/validate-m2.js",
+    "prevalidate:m2": "npm run stage:assets"
   },
   "dependencies": {
     "core-js": "^3.41.0",

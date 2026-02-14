@@ -79,12 +79,87 @@ If all 5 pass, M1 is done and you can start M2.
 
 ### Prompt to assign M2
 ```text
-TODO: Add M2 implementation prompt.
+Implement only M2 from docs/plans/execution-plan.md.
+
+Scope:
+- M2 only: data manifest + asset pipeline + startup data validation.
+- Keep stack/architecture aligned with docs/plans/technical-plan.md.
+- Use from_silcsbio as source input, and stage runtime assets into:
+  - public/assets/protein
+  - public/assets/ligands
+  - public/assets/maps
+- Add deterministic staging/copy logic (scripted, repeatable; no manual one-off copying).
+- Add typed manifest definitions for protein, ligands, and fragmaps.
+- Add startup validation utility for required runtime assets.
+
+M2 required behavior:
+1) Manifest coverage:
+- Include `3fly_cryst_lig`.
+- Include all baseline ligand IDs from `from_silcsbio/ligands/*.sdf`.
+2) Startup validation:
+- Check required protein/ligand/map runtime assets.
+- If an asset is missing: non-blocking error path and disable-intent metadata/state (no app crash).
+3) FragMap mapping:
+- FragMap IDs and labels must match spec inventory exactly.
+
+Do NOT do:
+- M3+ work (no viewer lifecycle features, no ligand interaction UI behavior, no fragmap control UI behavior, no perf instrumentation work).
+
+Required deliverables:
+1) Files created/updated.
+2) What each changed file does (new file purpose or delta for existing file).
+3) Commands run.
+4) M2 gate evidence with pass/fail for each item in execution-plan M2 exit criteria.
+5) Residual risks/blockers.
+6) Update docs/plans/milestone-inventory.md for M2 using the existing table format.
+
+Validation requirements:
+- Run relevant checks (at minimum build + any new script checks introduced for M2).
+- If environment blocks execution (tooling/network), report ENV-BLOCKED (not FAIL) and provide exact local commands to run.
+
+Return format:
+- M2 status: PASS/FAIL/ENV-BLOCKED
+- Gate checklist (item -> pass/fail/blocked + evidence)
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
 ```
 
 ### Prompt to verify M2
 ```text
-TODO: Add M2 verification prompt.
+Run the M2 gate verification now and return a PASS/FAIL table with evidence.
+
+For each gate item include:
+- check name
+- exact command or manual step used
+- observed result
+- pass/fail (or blocked)
+
+M2 gate items to verify (from docs/plans/execution-plan.md):
+1) Manifest includes `3fly_cryst_lig` and all baseline ligand IDs from `from_silcsbio/ligands/*.sdf`.
+2) Startup validation checks required protein/ligand/map runtime assets.
+3) Missing-asset simulation triggers non-blocking error and local control-disable intent (no app crash).
+4) FragMap IDs and labels match spec inventory exactly.
+5) Build succeeds in production mode.
+
+Required evidence to include:
+- `git status --short`
+- `git diff --name-only`
+- file list changed for M2
+- command output summary for each verification command
+- exact path(s) of generated/staged runtime assets under `public/assets/...`
+- residual risks/blockers + exact fix needed
+
+If environment/tooling prevents checks:
+- mark status as `ENV-BLOCKED` (not FAIL)
+- provide exact local commands to run to complete verification
+
+Return format:
+- M2 status: PASS/FAIL/ENV-BLOCKED
+- Gate checklist table (item | command/step | observed result | status)
+- Files changed
+- Commands run
+- Risks/blockers and fixes
 ```
 
 ### Manual verification for M2

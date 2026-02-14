@@ -1,11 +1,15 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import startup, { StartupState } from "@/store/modules/startup";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {},
+export interface RootState {
+  startup: StartupState;
+}
+
+export default new Vuex.Store<RootState>({
+  modules: {
+    startup,
+  },
 });

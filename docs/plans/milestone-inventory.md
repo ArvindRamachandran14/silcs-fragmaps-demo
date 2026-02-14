@@ -76,21 +76,54 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ## M2 - Data Manifest + Assets + Startup Validation
 
 ### Summary
-- Pending.
+- Added deterministic runtime asset staging from `from_silcsbio` into `public/assets/{protein,ligands,maps}`.
+- Added typed manifest contracts and canonical FragMap inventory mapping checks.
+- Added startup validation workflow that reports missing assets as non-blocking issues with disable-intent metadata.
+- Added M2 validation script and npm command wiring for staging + gate verification.
+- M2 gate verification completed locally with passing `validate:m2` output.
 
 ### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M2 and why.` |
+| `package.json` | Updated | Defines project scripts and dependencies. | Added `stage:assets`, `prebuild`, `preserve`, `validate:m2`, and `prevalidate:m2` to enforce deterministic asset staging and M2 verification flow. |
+| `scripts/stage-assets.js` | Created | Deterministic staging pipeline for runtime assets. | Copies protein/ligands/maps from `from_silcsbio` into `public/assets`, enforces required files, and emits `public/assets/manifest.json` with canonical FragMap mapping metadata. |
+| `scripts/validate-m2.js` | Created | M2 gate verification utility. | Verifies manifest coverage (`3fly_cryst_lig` + all baseline ligands), runtime asset existence, non-blocking missing-asset simulation with disable-intent metadata, and exact FragMap ID/label mapping. |
+| `src/data/manifest.ts` | Created | Typed manifest contracts and manifest loading helpers. | Added asset interfaces (protein/ligands/fragmaps), runtime manifest loading from `/assets/manifest.json`, and strict FragMap inventory mapping validation against spec labels. |
+| `src/viewer/loaders.ts` | Created | Runtime asset reachability helper(s). | Added fetch-based asset existence check (`HEAD` with `GET` fallback) to support startup validation without introducing M3 viewer behavior. |
+| `src/startup/startupValidation.ts` | Created | Startup validation engine and report types. | Added non-blocking startup checks for protein/ligands/maps and FragMap mapping, including structured disabled-control intent metadata for local UI controls. |
+| `src/store/modules/startup.ts` | Created | Vuex startup validation state module. | Added `runValidation` action that loads manifest + startup report while preserving app availability on errors. |
+| `src/store/index.ts` | Updated | Root Vuex store bootstrap. | Registered namespaced `startup` module and typed root state to expose startup validation report globally. |
+| `src/main.ts` | Updated | App bootstrap entrypoint. | Triggers startup validation dispatch (`startup/runValidation`) immediately after app mount. |
+| `src/App.vue` | Updated | App shell and global notifications. | Added non-blocking warning banner and debug-visible disable-intent payload output when startup validation reports missing assets. |
 
 ### Commands Run
-- Pending.
+- Local run: `npm run stage:assets` (pass)
+- Local run: `npm run build` (pass)
+- Local run: `npm run validate:m2` (pass)
+- `validate:m2` evidence:
+  - Manifest covers crystal and all baseline ligands
+  - Startup validation checks runtime assets
+  - Missing-asset simulation is non-blocking and sets disable intent metadata
+  - FragMap IDs and labels match spec inventory
+
+### Manual Verification
+- Step 1 (run M2 commands): Verified.
+- Step 2 (staged runtime structure exists under `public/assets/...`): Verified.
+- Step 3 (manifest coverage includes crystal + all baseline ligand IDs): Verified.
+- Step 4 (FragMap ID/label mapping matches canonical inventory): Verified.
+- Step 5 (missing-asset behavior is non-blocking with disable-intent metadata): Verified.
 
 ### Gate Checklist
-- Pending.
+- Manifest includes `3fly_cryst_lig` and all baseline ligand IDs: PASS
+- Startup validation checks required protein/ligand/map assets: PASS
+- Missing-asset simulation triggers non-blocking error and local disable intent: PASS
+- FragMap IDs and labels match spec inventory exactly: PASS
+- Build succeeds in production mode: PASS
 
 ### Residual Risks/Blockers
-- Pending.
+- No M2 gate blockers after local validation pass.
+- Non-blocking:
+  - This execution environment still cannot run npm commands directly, so command evidence is host-reported for this milestone.
 
 ---
 

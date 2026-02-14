@@ -12,3 +12,5 @@ new Vue({
   vuetify,
   render: (h) => h(App),
 }).$mount("#app");
+
+void store.dispatch("startup/runValidation");
