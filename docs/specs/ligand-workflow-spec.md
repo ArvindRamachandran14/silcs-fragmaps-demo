@@ -80,6 +80,14 @@ On ligand selection:
 - Apply current `visiblePoseKinds` intent where possible.
 - Do not trigger route change or full page reload.
 
+Search/dropdown behavior contract:
+- Matching: case-insensitive substring match against ligand display label and ligand ID.
+- Ordering:
+  - If query matches `Crystal Ligand` (`3fly_cryst_lig`), pin it first.
+  - Remaining matches sorted alphabetically by display label.
+  - Ties broken by ligand ID ascending.
+- Empty results: show explicit `No ligands found` state with no side effects to current selection.
+
 ### 6.2 Pose Visibility (Checkbox-Based)
 Controls:
 - Checkbox `Baseline`.

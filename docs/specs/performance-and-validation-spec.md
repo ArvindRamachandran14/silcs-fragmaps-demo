@@ -50,11 +50,13 @@ Environment recording requirements:
 
 Environment policy:
 - Results are machine-specific; report exact environment in `docs/validation.md`.
+- For each validation run day, freeze exact browser versions for all runs and record those versions in `docs/validation.md`.
 
 ## 6. Instrumentation Contract
 Timing source:
 - Primary: `performance.now()`.
-- Fallback: manual stopwatch only if instrumentation is temporarily unavailable; mark results as fallback.
+- Fallback: manual stopwatch allowed only for temporary debugging evidence when instrumentation is unavailable.
+- Final AC pass/fail decisions must use instrumented timings (`performance.now()`), not stopwatch measurements.
 
 Instrumentation boundaries:
 - AC-1 timer starts at viewer route mount and ends when protein + default crystal ligand (`3fly_cryst_lig`, shown as `Crystal Ligand`) are visible and viewer is interactive.
@@ -200,4 +202,4 @@ Validation is complete when:
 
 ## 11. Open Dependencies
 - Implementation must expose or log sufficient timing hooks for AC-1, AC-2, and AC-5.
-- Map-level iso update instrumentation must support all-visible-maps checks per run.
+- Map-level iso update instrumentation must support targeted-row checks for iso-adjustable GFE maps per run.

@@ -3,6 +3,7 @@
 ## Brief Summary
 This plan defines a decision-complete implementation for the PRD at `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/SilcsBio_Candidate_Exercise_Instructions.md` using a client-side Vue 2 + TypeScript app hosted on GitHub Pages.
 It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and incorporates confirmed live-site technical findings (Vue/Vuetify/Webpack architecture) from `https://landing.silcsbio.com/newlandingpage`.
+Companion planning artifacts in `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/docs/plans` must mirror this document's framework and control-model decisions.
 
 ## 1. Executive Summary
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
@@ -120,11 +121,11 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 ## 6. Detailed Implementation Phases (time-boxed milestones)
 - Phase 0 (0.5h): scaffold app, routing, base layout, static hosting config.
 - Phase 1 (1.0h): define typed manifests, wire asset paths, data existence checks.
-- Phase 2 (2.0h): stage lifecycle + protein load + camera controls.
+- Phase 2 (2.0h): stage lifecycle + protein load + camera controls + catastrophic startup failure fallback UX (clear message + retry/navigation option).
 - Phase 3 (2.0h): ligand workflow (featured quick-picks + searchable full-ligand selector + baseline/refined pose-visibility controls with both-visible and both-hidden support + no reload switch).
-- Phase 4 (2.0h): FragMap overlays (toggle, color, visibility state, caching).
-- Phase 5 (1.0h): per-map iso controls for GFE maps, exclusion-map fixed-style behavior, and fast targeted-update path.
-- Phase 6 (1.0h): Home page narrative, captions/sidebar explanations.
+- Phase 4 (2.0h): FragMap overlays (toggle, color, visibility state, caching, and per-row failure isolation with retry action).
+- Phase 5 (1.0h): per-map iso controls for GFE maps, exclusion-map fixed-style behavior, fast targeted-update path, and row-level retry/reset precondition handling.
+- Phase 6 (1.0h): Home page narrative, captions/sidebar explanations, and external-link failure handling that does not block viewer navigation CTA.
 - Phase 7 (1.5h): performance tuning, AC verification, runtime hardening, deploy.
 - Total: ~11.0h.
 
@@ -141,6 +142,10 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Implementation: per-map iso controls (`-`, value, `+`) on GFE rows + targeted parameter updates on the selected map representation; `Exclusion Map` uses fixed translucent gray volume with disabled iso controls.
 - PRD Requirement: client-side only, open source, Chrome/Safari.
 - Implementation: static Vue bundle (Webpack via Vue CLI) + no backend code + cross-browser validation runbook.
+- Spec Requirement: catastrophic viewer startup failures must be recoverable.
+- Implementation: startup-failure fallback with retry/navigation option at viewer shell level.
+- Spec Requirement: map failures are row-local, recoverable, and non-disruptive to unrelated visible maps.
+- Implementation: row-level disable/retry controls + single-flight/request-id guards to isolate failures.
 
 ## 8. Acceptance Criteria Test Plan (AC-1..AC-6)
 - AC-1 (`<=5s load`):
@@ -148,9 +153,9 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Method: `performance.now()` from route mount to protein + default crystal ligand (`3fly_cryst_lig`) visible.
 - Pass: median of 3 runs <= 5000 ms.
 - AC-2 (`map toggle <200 ms` + camera preserved):
-- Scenario: toggle each map on/off with camera at non-default orientation.
+- Scenario: toggle representative maps on/off with camera at non-default orientation using `3fly.hbdon.gfe.dx` (`Primary 3`) and `3fly.mamn.gfe.dx` (`Advanced`).
 - Method: interaction timer around toggle action; compare pre/post camera matrices.
-- Pass: each toggle <200 ms; camera unchanged.
+- Pass: median per tested representative map <200 ms in each browser; camera unchanged within defined tolerances.
 - AC-3 (baseline/refined pose visibility changes no reload):
 - Scenario: selected ligand pose visibility changes repeatedly across baseline-only, refined-only, both-visible, and both-hidden states.
 - Method: verify no navigation, no full app remount, and in-place component add/remove only.

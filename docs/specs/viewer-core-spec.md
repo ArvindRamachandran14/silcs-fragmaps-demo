@@ -81,6 +81,12 @@ On first successful viewer load:
 - Protein representation baseline: cartoon style.
 - Camera baseline: fixed default orientation.
 
+Canonical camera baseline contract:
+- Define one canonical camera snapshot constant in implementation (single source of truth) with shape:
+  - `{ position: [x, y, z], target: [x, y, z], up: [x, y, z], zoom: number }`
+- Startup initialization and `Reset view` must both restore this same snapshot.
+- Conformance is measured using AC-2 tolerances defined in `docs/specs/performance-and-validation-spec.md`.
+
 Constraint:
 - This spec defines only startup/default state. Detailed user interaction behavior for ligands/maps/iso is defined in later specs.
 

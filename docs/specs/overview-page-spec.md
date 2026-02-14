@@ -50,6 +50,7 @@ Overview page should include external references as standard links, placed below
 Link behavior:
 - Open in a new tab.
 - Include clear text labels indicating destination.
+- If a link fails to open, behavior must remain non-blocking for page interaction and must not affect primary CTA/navigation behavior; optional non-blocking toast is allowed.
 
 ## 6. Presentation and UX Requirements
 - Text-first presentation: prioritize readable body text and CTA; no required hero image or figure.

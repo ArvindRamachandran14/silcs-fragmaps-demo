@@ -127,11 +127,19 @@ Default iso values (v1 canonical):
 - `Reset defaults`:
 1. Reset all map visibility to default (all hidden).
 2. Reset all iso-adjustable map `perMapIso` values to defaults.
-3. Clear row-level error disables only if retry preconditions pass.
+3. For rows currently disabled by prior errors, execute one retry per disabled row.
+4. Clear row disable state only when that row retry succeeds; keep row disabled when retry fails.
 - `Reset view`: restore the viewer camera to the same baseline state defined by viewer startup defaults (fixed orientation, position, and zoom captured after initial protein + default crystal ligand (`3fly_cryst_lig`) ready state), without changing ligand selection, map visibility, or per-map iso values.
 
 ### 8.3 Per-Map Iso Controls
 - Controls for iso-adjustable rows: decrement button, numeric value, increment button.
+- Numeric contract for iso-adjustable rows:
+  - `step = 0.1`
+  - `min = -3.0`
+  - `max = 0.0`
+  - Display precision: `1` decimal place
+  - Out-of-range inputs clamp to `[min, max]`
+  - Invalid typed input reverts to the last valid row value
 - Iso change updates only that map’s visible representation(s).
 - If map is hidden, store iso value and apply when map becomes visible.
 - `Exclusion Map` iso controls are disabled/read-only in the row and do not trigger iso updates.
