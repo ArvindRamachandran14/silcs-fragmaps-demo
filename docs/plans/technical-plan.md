@@ -7,7 +7,7 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 ## 1. Executive Summary
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
 - Use `NGL Viewer` for protein/ligand rendering and volumetric `.dx` FragMap overlays.
-- Implement ligand workflow with a two-tier model: curated `featured` set (`crystal + 5`) for guided narrative and full access to all provided ligands for exploratory analysis.
+- Implement ligand workflow with a two-tier model: curated `featured` set (`3fly_cryst_lig` shown as `Crystal Ligand` + 5) for guided narrative and full access to all provided ligands for exploratory analysis.
 - Follow a Vue architecture compatible with the observed SilcsBio reference stack: `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
 - Deploy to GitHub Pages with reproducible local validation checklist mapped to AC-1..AC-6.
@@ -20,13 +20,14 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Data loading: static assets served from app `public/assets`, fetched on demand.
 - State management: Vuex module with typed state/actions/mutations.
 - Scope decision: use `featured` ligands for defaults while exposing all provided ligands through searchable selection.
-- Featured ligands (`crystal + 5`) for guided flow:
+- Featured ligands (`3fly_cryst_lig` shown as `Crystal Ligand` + 5) for guided flow:
+- `3fly_cryst_lig` (display label: `Crystal Ligand`)
 - `p38_goldstein_05_2e`
 - `p38_goldstein_06_2f`
 - `p38_goldstein_07_2g`
 - `p38_goldstein_08_2h`
 - `p38_goldstein_09_2i`
-- Full exploratory set: all 30 provided ligand IDs (plus crystal ligand) available from a searchable autocomplete/dropdown.
+- Full exploratory set: all 30 provided ligand IDs plus `3fly_cryst_lig` (displayed as `Crystal Ligand`) available from a searchable autocomplete/dropdown.
 - UI decision: include ligand autocomplete for full set access; no local file-upload control in v1.
 - Runtime format policy: protein `.pdb` primary, ligands `.sdf` primary with `.pdb` fallback only when needed, FragMaps `.dx` primary.
 - FragMaps used at runtime: `.dx` only (all 8 maps). `.map` retained but not parsed in v1.
@@ -52,24 +53,25 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - `perf/metrics.ts` for interaction timing.
 - Runtime flow:
 - App initializes stage and loads protein (`3fly.pdb`).
-- Loads default ligand pair (`crystal`: baseline/refined toggle) and exposes featured quick-select controls.
+- Loads default crystal ligand state (`3fly_cryst_lig`, displayed as `Crystal Ligand`, with baseline visible by default and refined available) and exposes featured quick-select controls.
 - Provides searchable ligand selector for all provided ligands (featured + non-featured).
 - Optional parity path: manage narrative slide progression as viewer-local state (not route changes), aligned with observed live flow.
 - FragMaps remain unloaded until toggled on.
 - On map toggle: load `.dx`, create surface rep, cache component+rep handle.
-- On iso change: update visible map reps via parameter update path.
-- On ligand change: remove current ligand component, load selected ligand pose component.
+- On per-map iso change (GFE maps only): update only the targeted map representation via parameter update path.
+- On `Exclusion Map` toggle: render fixed translucent gray volume; iso controls remain disabled/non-editable.
+- On ligand change: remove current ligand pose components and load selected ligand pose component(s) based on pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden).
 
 ### Important APIs/Interfaces/Types
 - No public backend APIs are introduced.
 - Public app interface: static web UI + optional URL state (if added later, not required in v1).
 - Internal TypeScript contracts:
 - `type PoseKind = "baseline" | "refined"`
-- `type LigandId = string` (derived from runtime manifest keys; includes crystal + all provided ligands)
+- `type LigandId = string` (derived from runtime manifest keys; includes `3fly_cryst_lig` + all provided ligands)
 - `interface ProteinAsset { pdbUrl: string; mmcifUrl?: string }`
 - `interface LigandAsset { id: LigandId; label: string; featured: boolean; baselineSdf: string; refinedSdf: string; baselinePdbFallback?: string; refinedPdbFallback?: string }`
-- `interface FragMapAsset { id: string; label: string; dxUrl: string; color: string; defaultIso: number }`
-- `interface ViewerState { ligandId: LigandId; pose: PoseKind; iso: number; visibleMapIds: string[]; cameraSnapshot?: object }`
+- `interface FragMapAsset { id: string; label: string; dxUrl: string; color: string; isoAdjustable: boolean; defaultIso?: number }`
+- `interface ViewerState { ligandId: LigandId; visiblePoseKinds: PoseKind[]; perMapIso: Record<string, number>; visibleMapIds: string[]; cameraSnapshot?: object }`
 
 ## 4. Data & File Handling Plan (.pdb, .sdf, .map/.dx)
 - Runtime primary format by category:
@@ -81,8 +83,8 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Ligand `.pdb` files when corresponding `.sdf` loads successfully.
 - Source of truth files:
 - Protein: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly.pdb`
-- Crystal baseline: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly_cryst_lig.sdf`
-- Crystal refined: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly_cryst_lig_posref.sdf`
+- Crystal-ligand baseline (`3fly_cryst_lig`): `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly_cryst_lig.sdf`
+- Crystal-ligand refined (`3fly_cryst_lig`): `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/3fly_cryst_lig_posref.sdf`
 - Ligand baseline dir: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/ligands`
 - Ligand refined dir: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/ligands_posref`
 - FragMaps runtime format: `/Users/arvindramachandran/Dropbox/Development/SilcsBio_Exercise/silcs-fragmaps-demo/from_silcsbio/maps/*.dx`
@@ -119,9 +121,9 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Phase 0 (0.5h): scaffold app, routing, base layout, static hosting config.
 - Phase 1 (1.0h): define typed manifests, wire asset paths, data existence checks.
 - Phase 2 (2.0h): stage lifecycle + protein load + camera controls.
-- Phase 3 (2.0h): ligand workflow (featured quick-picks + searchable full-ligand selector + baseline/refined toggle + no reload switch).
+- Phase 3 (2.0h): ligand workflow (featured quick-picks + searchable full-ligand selector + baseline/refined pose-visibility controls with both-visible and both-hidden support + no reload switch).
 - Phase 4 (2.0h): FragMap overlays (toggle, color, visibility state, caching).
-- Phase 5 (1.0h): iso-value control and fast update path for visible maps.
+- Phase 5 (1.0h): per-map iso controls for GFE maps, exclusion-map fixed-style behavior, and fast targeted-update path.
 - Phase 6 (1.0h): Home page narrative, captions/sidebar explanations.
 - Phase 7 (1.5h): performance tuning, AC verification, runtime hardening, deploy.
 - Total: ~11.0h.
@@ -132,35 +134,35 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - PRD Requirement: Interactive viewer with 3FLY protein.
 - Implementation: `NglViewport` initialization + `3fly.pdb` load at route entry.
 - PRD Requirement: show different ligands and baseline/refined without reload.
-- Implementation: typed ligand manifest + featured quick-picks + searchable full-ligand selector + in-place component swap + pose toggle control using `.sdf` as primary and `.pdb` fallback only when required.
+- Implementation: typed ligand manifest + featured quick-picks + searchable full-ligand selector + in-place component swap + pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden) using `.sdf` as primary and `.pdb` fallback only when required.
 - PRD Requirement: show/hide individual FragMap surfaces.
-- Implementation: map checklist controls + per-map component cache + visibility toggle.
+- Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`, `Reset view`).
 - PRD Requirement: iso-value adjustment with fast response.
-- Implementation: global iso slider + parameter update on visible map reps.
+- Implementation: per-map iso controls (`-`, value, `+`) on GFE rows + targeted parameter updates on the selected map representation; `Exclusion Map` uses fixed translucent gray volume with disabled iso controls.
 - PRD Requirement: client-side only, open source, Chrome/Safari.
 - Implementation: static Vue bundle (Webpack via Vue CLI) + no backend code + cross-browser validation runbook.
 
 ## 8. Acceptance Criteria Test Plan (AC-1..AC-6)
 - AC-1 (`<=5s load`):
 - Scenario: cold start on local production build.
-- Method: `performance.now()` from route mount to protein + default ligand visible.
+- Method: `performance.now()` from route mount to protein + default crystal ligand (`3fly_cryst_lig`) visible.
 - Pass: median of 3 runs <= 5000 ms.
 - AC-2 (`map toggle <200 ms` + camera preserved):
 - Scenario: toggle each map on/off with camera at non-default orientation.
 - Method: interaction timer around toggle action; compare pre/post camera matrices.
 - Pass: each toggle <200 ms; camera unchanged.
-- AC-3 (baseline/refined toggle no reload):
-- Scenario: selected ligand pose toggle repeatedly.
-- Method: verify no navigation, no full app remount, component swap only.
-- Pass: toggles occur in-place with continuous interaction.
+- AC-3 (baseline/refined pose visibility changes no reload):
+- Scenario: selected ligand pose visibility changes repeatedly across baseline-only, refined-only, both-visible, and both-hidden states.
+- Method: verify no navigation, no full app remount, and in-place component add/remove only.
+- Pass: pose visibility changes occur in-place with continuous interaction.
 - AC-4 (ligand switching no reload):
 - Scenario: switch among featured and non-featured ligands from the full provided set.
 - Method: in-app selector switches and pose options update in same session.
-- Pass: no page reload; pose toggle remains functional post-switch.
+- Pass: no page reload; pose-visibility controls remain functional post-switch.
 - AC-5 (iso update <200 ms):
-- Scenario: adjust slider across 3 values with at least one visible map.
-- Method: timer from input event to visual rep update complete.
-- Pass: each update <200 ms.
+- Scenario: adjust per-map iso controls across 3 values on representative visible iso-adjustable GFE maps.
+- Method: timer from per-map input event to target map visual update complete.
+- Pass: each per-map update <200 ms.
 - AC-6 (no uncaught runtime errors in 5-minute exploration):
 - Scenario: scripted manual session covering all controls.
 - Method: monitor console errors and UI error boundaries.
@@ -168,7 +170,7 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 
 ## 9. Risks, Unknowns, and Mitigations
 - Risk: volume update performance exceeds 200 ms when many maps are visible.
-- Mitigation: lazy load, cache reps, throttle slider updates to animation frame, update visible reps only.
+- Mitigation: lazy load, cache reps, coalesce rapid per-map iso inputs to animation frame, and update only the targeted visible iso-adjustable map rep.
 - Risk: large map payloads increase initial latency.
 - Mitigation: do not preload maps; load on first toggle only.
 - Risk: file parsing edge cases for specific ligands.
@@ -181,8 +183,8 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Mitigation: lock validation script and run both browsers before final delivery.
 - Risk: Vue 2 ecosystem is legacy compared with modern Vue 3 tooling.
 - Mitigation: pin dependencies, keep scope narrow, and avoid non-essential third-party plugins.
-- Unknown: exact iso defaults for best scientific readability.
-- Mitigation: set map-specific defaults from quick visual calibration and expose slider for adjustment.
+- Default per-map iso values are fixed by spec from `docs/screenshots/GUI/GUI_fragmaps_isovalues_default.png`.
+- Mitigation for future tuning: adjust per-map defaults only through controlled spec updates and re-validation.
 
 ## 10. Deliverables Checklist
 - Source code for static client-side app.
@@ -196,6 +198,7 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - design tradeoffs.
 - GitHub Pages deployment.
 - Final validation note documenting AC-1..AC-6 pass results.
+- `docs/validation.md` with environment details, AC-by-AC evidence tables, raw timings, camera checks, and runtime error summary.
 
 ## 11. Out-of-Scope Guardrails
 - No backend services or APIs.
@@ -209,7 +212,8 @@ It prioritizes AC-1 through AC-6, uses PRD as authoritative requirements, and in
 - Framework fixed: Vue 2 + TypeScript + Vue Router + Vuex + Vuetify 2.
 - Viewer fixed: NGL.
 - Hosting fixed: GitHub Pages.
-- Ligand scope fixed: all provided ligands are selectable; featured defaults are crystal + 5 (`05_2e` to `09_2i`).
+- Ligand scope fixed: all provided ligands are selectable; featured defaults are `3fly_cryst_lig` (displayed as `Crystal Ligand`) + 5 (`05_2e` to `09_2i`).
+- Pose visibility fixed: users can view baseline only, refined only, both simultaneously, or temporarily hide both for decluttered context.
 - Protein runtime format fixed: `.pdb` primary.
 - Ligand runtime format fixed: `.sdf` primary with optional `.pdb` fallback.
 - FragMap runtime format fixed: `.dx` only; `.map` retained but not parsed in v1.
