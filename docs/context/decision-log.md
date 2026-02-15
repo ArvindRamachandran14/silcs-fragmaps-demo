@@ -5,6 +5,22 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-15 - Enforce startup context reads in repository policy
+- Decision: add required startup-context section to `AGENTS.md` so agents must read/update context files each task.
+- Why: prevent future reliance on ephemeral thread memory and ensure deterministic handoffs.
+- Alternatives considered: rely on optional team convention without AGENTS enforcement.
+- Evidence:
+  - `AGENTS.md` (`## Agent Startup Context (Required)`)
+- Validation/risk impact: improves process reliability; no runtime app behavior impact.
+
+### 2026-02-15 - Standardize handoff with reusable 4-prompt template
+- Decision: add `docs/context/handoff-template.md` with prompts for pre-handoff update, kickoff, payload generation, and QA review.
+- Why: reduce handoff drift and make next-agent expectations explicit and repeatable.
+- Alternatives considered: ad hoc handoff messaging in chat only.
+- Evidence:
+  - `docs/context/handoff-template.md`
+- Validation/risk impact: improves operational consistency; no runtime app behavior impact.
+
 ### 2026-02-15 - Repo-native context pack is canonical handoff memory
 - Decision: maintain project memory in `docs/context/current-state.md`, `docs/context/decision-log.md`, `docs/context/next-agent-brief.md`.
 - Why: local Codex thread history can be lost; repo-tracked context is durable and reviewable.

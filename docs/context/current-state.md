@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-15
+Last updated: 2026-02-15 (handoff refresh)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -146,6 +146,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Ran `npm run validate:m2` -> PASS.
 - 2026-02-15: Ran `npm run validate:m3` -> PASS.
 - 2026-02-15: Reconstruction audit established evidence-based milestone status M1-M8.
+- 2026-02-15: Handoff protocol hardening completed (`AGENTS.md` startup-context requirement + `docs/context/handoff-template.md` with 4 prompt blocks). No new milestone validator commands run in this handoff refresh.
 
 ## Open Risks
 - Major feature milestones (M4-M6) remain unimplemented while M1-M3 are complete.

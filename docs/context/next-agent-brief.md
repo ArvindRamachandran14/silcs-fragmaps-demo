@@ -11,17 +11,18 @@ Last updated: 2026-02-15
 - After implementing milestone `Mn`, run sequential regression from `validate:m1` through `validate:mn`.
 
 ## Priority Tasks (ordered)
-1. Implement ligand workflow UI section in controls panel:
+1. Commit current governance/context baseline (`AGENTS.md` + `docs/context/*`) before starting M4 implementation.
+2. Implement ligand workflow UI section in controls panel:
    - featured quick-pick chips
    - searchable all-ligands dropdown
    - baseline/refined checkbox controls
    - zoom action
-2. Implement four-state pose visibility model (`baseline-only`, `refined-only`, `both-visible`, `both-unchecked`) in store + viewer orchestration.
-3. Implement both-unchecked persistent empty-state with recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
-4. Implement pose loading/fallback/error behavior per ligand (`.sdf` primary, `.pdb` fallback) with per-pose disable + non-blocking toast.
-5. Implement style differentiation + legend when both poses are visible.
-6. Add M4 validation script (`scripts/validate-m4.js`) and npm command.
-7. Align automation contract incrementally toward execution plan Section 1.1 (introduce missing Playwright test structure/commands when appropriate for milestone scope).
+3. Implement four-state pose visibility model (`baseline-only`, `refined-only`, `both-visible`, `both-unchecked`) in store + viewer orchestration.
+4. Implement both-unchecked persistent empty-state with recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
+5. Implement pose loading/fallback/error behavior per ligand (`.sdf` primary, `.pdb` fallback) with per-pose disable + non-blocking toast.
+6. Implement style differentiation + legend when both poses are visible.
+7. Add M4 validation script (`scripts/validate-m4.js`) and npm command.
+8. Align automation contract incrementally toward execution plan Section 1.1 (introduce missing Playwright test structure/commands when appropriate for milestone scope).
 
 ## Exact Commands To Run Next
 - `npm run stage:assets`
