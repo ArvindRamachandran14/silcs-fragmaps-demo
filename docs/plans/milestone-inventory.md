@@ -138,7 +138,8 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 ### Summary
 - Implemented the M3 viewer shell with explicit loading/ready lifecycle, desktop/mobile scaffold, default-state store contract, camera baseline/reset contract, and catastrophic startup fallback with retry/home recovery actions.
-- Added an `nglStage` lifecycle adapter with deterministic forced-init failure (`/viewer?m3StageFail=1`), resize camera-preservation contract, and teardown-safe stage controller behavior.
+- Implemented real NGL startup rendering in `nglStage`: 3FLY protein PDB loaded with cartoon representation plus default crystal ligand baseline loaded with ball+stick representation.
+- Added deterministic startup-render debug instrumentation so M3 validation can assert real molecular startup content (not scaffold placeholder behavior).
 - Added a dedicated `validate:m3` Playwright gate script and validated M3 locally with passing output.
 - Validation command contract note: `validate:m3` intentionally runs `build` first via `prevalidate:m3` because the checker validates compiled `dist` output; this differs from milestones that validate staged assets/source contracts without requiring `dist`.
 - Added a desktop layout hardening pass for fullscreen usage so the right controls panel remains fully visible and page-level horizontal overflow is prevented.
@@ -148,13 +149,13 @@ Use this file to track implementation and gate evidence for each milestone in `d
 |---|---|---|---|
 | `src/store/modules/viewer.ts` | Created | Vuex module for viewer shell state/lifecycle. | Added M3 default-state contract (`3fly_cryst_lig`, baseline ON, refined OFF, no maps), camera baseline/snapshot state, and loading/ready/error mutations. |
 | `src/store/index.ts` | Updated | Root Vuex store registration and root typing. | Registered new namespaced `viewer` module so `/viewer` lifecycle and default state are store-backed. |
-| `src/viewer/nglStage.ts` | Created | Viewer-stage lifecycle adapter and camera contract source-of-truth. | Added canonical camera baseline constant, startup asset checks, ready transition delay, resize-preserve behavior, cleanup API, and deterministic forced-failure path (`m3StageFail=1`). |
+| `src/viewer/nglStage.ts` | Created | Viewer-stage lifecycle adapter and camera contract source-of-truth. | Added canonical camera baseline constant, startup asset checks, real NGL stage initialization, protein cartoon + default ligand ball+stick startup rendering, resize-preserve behavior, cleanup API, deterministic forced-failure path (`m3StageFail=1`), and startup-render debug instrumentation for validation. |
 | `src/components/NglViewport.vue` | Created | Viewport host for stage mount plus lifecycle UI states. | Added explicit loading and ready state UX and stage host container for lifecycle binding. |
 | `src/components/ViewerTopBar.vue` | Created | Viewer page top-level shell heading and actions. | Added reset-view action, Home navigation affordance, status label, mobile controls toggle trigger, and overflow-safe topbar text behavior. |
 | `src/components/ControlsPanel.vue` | Created | M3 controls/caption sidebar container. | Added compact viewer context caption, default-state readout, camera baseline/current snapshot contract display, and overflow-safe text/code block handling for narrow side-panel widths. |
 | `src/pages/ViewerPage.vue` | Updated | `/viewer` route container and shell orchestration. | Replaced M1 placeholder with full M3 shell lifecycle and updated desktop grid spacing (`no-gutters`, responsive 8/4 -> 9/3 split, min-width guards) to prevent right-panel clipping. |
 | `src/App.vue` | Updated | App shell container wrapping route content. | Switched to fluid container layout for viewer pages so fullscreen desktop space is fully usable and less prone to clipped right-edge content. |
-| `scripts/validate-m3.js` | Created | Automated M3 gate validator (Playwright). | Added checks for loading->ready transition, default state, camera baseline/reset, resize preservation, remount listener hygiene, forced failure fallback/recovery, deterministic load timing, build-base-path detection, and desktop no-clipping/no-horizontal-overflow assertions. |
+| `scripts/validate-m3.js` | Created | Automated M3 gate validator (Playwright). | Added checks for loading->ready transition, default state, real NGL startup rendering evidence (engine + protein/ligand representation assertions + stage canvas), camera baseline/reset, resize preservation, remount listener hygiene, forced failure fallback/recovery, deterministic load timing, build-base-path detection, and desktop no-clipping/no-horizontal-overflow assertions. |
 | `package.json` | Updated | Project command contracts. | Added `validate:m3` and `prevalidate:m3` scripts so M3 validation always runs on a fresh `dist` build before executing the gate checks. |
 
 ### Commands Run
@@ -181,7 +182,6 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 ### Residual Risks/Blockers
 - No blocker for implementation scope.
-- Residual risk: M3 currently validates lifecycle/layout/default-state contract with a stage scaffold and does not yet include real NGL molecular rendering.
 - Deterministic failure trigger for local validation: navigate to `/viewer?m3StageFail=1`, confirm fallback UI, then click `Retry startup` (clears query flag and re-initializes) or `Go to Home`.
 
 ---

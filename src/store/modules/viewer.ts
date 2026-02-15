@@ -62,12 +62,17 @@ const mutations: MutationTree<ViewerState> = {
   setReady(
     currentState,
     payload?: {
+      cameraBaseline?: CameraSnapshot;
       cameraSnapshot?: CameraSnapshot;
       selectedLigandLabel?: string;
     },
   ) {
     currentState.status = "ready";
     currentState.lastError = null;
+
+    if (payload?.cameraBaseline) {
+      currentState.cameraBaseline = cloneCameraSnapshot(payload.cameraBaseline);
+    }
 
     if (payload?.cameraSnapshot) {
       currentState.cameraSnapshot = cloneCameraSnapshot(payload.cameraSnapshot);

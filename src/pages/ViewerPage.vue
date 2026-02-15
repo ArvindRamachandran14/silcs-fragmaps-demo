@@ -235,6 +235,7 @@ export default Vue.extend({
         this.attachResizeListener();
 
         this.$store.commit("viewer/setReady", {
+          cameraBaseline: stageController.getCameraBaseline(),
           cameraSnapshot: stageController.getCameraSnapshot(),
           selectedLigandLabel: defaultLigand.label,
         });

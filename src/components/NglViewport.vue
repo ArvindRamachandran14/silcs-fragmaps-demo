@@ -90,17 +90,9 @@ export default Vue.extend({
   top: 10px;
 }
 
-.ngl-stage-host ::v-deep .ngl-stage-canvas {
-  align-items: center;
-  color: #124c7f;
-  display: flex;
-  font-size: 14px;
-  font-weight: 600;
-  height: 100%;
-  justify-content: center;
-  letter-spacing: 0.01em;
-  min-height: 460px;
-  text-transform: uppercase;
-  width: 100%;
+.ngl-stage-host ::v-deep canvas {
+  display: block;
+  height: 100% !important;
+  width: 100% !important;
 }
 </style>

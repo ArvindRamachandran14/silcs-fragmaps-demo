@@ -108,8 +108,8 @@ function startServer() {
   });
 }
 
-async function assertVisible(page, selector, message) {
-  await page.waitForSelector(selector, { timeout: 5000 });
+async function assertVisible(page, selector, message, timeout = 15000) {
+  await page.waitForSelector(selector, { timeout });
   const visible = await page.isVisible(selector);
   assert(visible, message);
 }
@@ -118,7 +118,15 @@ async function main() {
   assert(fs.existsSync(INDEX_HTML_PATH), "dist/index.html missing. Run `npm run build`.");
 
   const server = await startServer();
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    headless: true,
+    args: [
+      "--use-gl=angle",
+      "--use-angle=swiftshader",
+      "--enable-webgl",
+      "--ignore-gpu-blocklist",
+    ],
+  });
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 
   try {
@@ -129,6 +137,55 @@ async function main() {
 
     const loadingStillVisible = await page.isVisible('[data-test-id="viewer-loading-state"]');
     assert(!loadingStillVisible, "Loading state remained visible after ready state.");
+
+    const startupRenderDebug = await page.evaluate(() => {
+      return window.__viewerM3Debug
+        ? {
+            startupRenderEngine: window.__viewerM3Debug.startupRenderEngine,
+            startupProteinLoaded: window.__viewerM3Debug.startupProteinLoaded,
+            startupLigandLoaded: window.__viewerM3Debug.startupLigandLoaded,
+            startupProteinRepresentation: window.__viewerM3Debug.startupProteinRepresentation,
+            startupLigandRepresentation: window.__viewerM3Debug.startupLigandRepresentation,
+            startupContentReady: window.__viewerM3Debug.startupContentReady,
+            startupProteinAssetUrl: window.__viewerM3Debug.startupProteinAssetUrl,
+            startupLigandAssetUrl: window.__viewerM3Debug.startupLigandAssetUrl,
+          }
+        : null;
+    });
+
+    assert(startupRenderDebug, "Viewer debug state is unavailable.");
+    assert(startupRenderDebug.startupRenderEngine === "ngl", "Viewer did not initialize with NGL stage.");
+    assert(startupRenderDebug.startupProteinLoaded, "Startup protein did not load.");
+    assert(startupRenderDebug.startupLigandLoaded, "Startup ligand did not load.");
+    assert(
+      startupRenderDebug.startupProteinRepresentation === "cartoon",
+      "Startup protein representation is not cartoon.",
+    );
+    assert(
+      startupRenderDebug.startupLigandRepresentation === "ball+stick",
+      "Startup ligand representation is not ball+stick.",
+    );
+    assert(startupRenderDebug.startupContentReady, "Startup molecular content was not marked ready.");
+    assert(
+      typeof startupRenderDebug.startupProteinAssetUrl === "string" &&
+        startupRenderDebug.startupProteinAssetUrl.includes("/assets/protein/"),
+      "Startup protein asset URL was not recorded.",
+    );
+    assert(
+      typeof startupRenderDebug.startupLigandAssetUrl === "string" &&
+        startupRenderDebug.startupLigandAssetUrl.includes("/assets/ligands/baseline/"),
+      "Startup ligand asset URL was not recorded.",
+    );
+
+    const stageCanvasPresent = await page.evaluate(() => {
+      return Boolean(document.querySelector('[data-test-id="ngl-stage-host"] canvas'));
+    });
+    assert(stageCanvasPresent, "NGL stage canvas did not render.");
+
+    const scaffoldPlaceholderPresent = await page.evaluate(() => {
+      return (document.body.textContent || "").includes("3FLY stage ready");
+    });
+    assert(!scaffoldPlaceholderPresent, "Detected legacy scaffold placeholder instead of real rendering.");
 
     const ligandState = await page.textContent('[data-test-id="default-ligand-id"]');
     const baselineState = await page.textContent('[data-test-id="baseline-pose-state"]');
@@ -200,6 +257,11 @@ async function main() {
     await page.waitForURL(appUrl("/"));
     await page.goto(appUrl("/viewer"), { waitUntil: "domcontentloaded" });
     await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer did not remount to ready state.");
+
+    const startupReadyAfterRemount = await page.evaluate(() => {
+      return window.__viewerM3Debug && window.__viewerM3Debug.startupContentReady;
+    });
+    assert(Boolean(startupReadyAfterRemount), "Startup molecular rendering did not recover after remount.");
 
     const listenerStatsAfterRemount = await page.evaluate(() => {
       return {
