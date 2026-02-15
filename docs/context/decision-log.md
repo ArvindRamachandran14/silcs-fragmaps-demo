@@ -31,6 +31,69 @@ Purpose: persistent technical memory reconstructed from repo evidence.
   - `docs/context/next-agent-brief.md`
 - Validation/risk impact: improves restart reliability; no runtime behavior impact.
 
+### 2026-02-15 - Enforce UI Design Preview Gate before user-facing feature implementation
+- Decision: require UI preview artifacts and explicit approval (`APPROVED UI PREVIEW`) before coding any new or changed user-facing feature.
+- Why: reduce rework and ensure feature implementation follows approved UI direction.
+- Alternatives considered: begin coding immediately and iterate UI after implementation.
+- Evidence:
+  - `AGENTS.md` (`## UI-First Feature Protocol (Required)`)
+  - `docs/plans/execution-plan.md` (`## 1.3 UI Design Preview Gate (Locked)`)
+  - `docs/plans/milestone-inventory.md` (`## How to Update` design preview rules)
+  - `docs/context/feature-kickoff-template.md`
+- Validation/risk impact: increases upfront design alignment; introduces intentional `BLOCKED-DESIGN` stop state when approval is missing.
+
+### 2026-02-15 - Use screenshots preview path for first M4 packet per explicit user request
+- Decision: create the first M4 preview packet in `docs/screenshots/Design_previews/m4-ligand-workflow/`.
+- Why: explicit user request in-thread overrides default artifact path convention.
+- Alternatives considered: use execution-plan default `docs/design-previews/<milestone-or-feature>/`.
+- Evidence:
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/README.md`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/preview-index.md`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/approval-log.md`
+- Validation/risk impact: immediate usability for this workflow; path-convention split should be normalized later to avoid confusion.
+
+### 2026-02-15 - Standardize M4 assignment as two prompts (design gate then implementation)
+- Decision: split M4 assignment prompt in `prompts/implementation.md` into Prompt A (design previews only) and Prompt B (implementation only after approval token).
+- Why: operationalize the UI-first gate and prevent accidental coding before preview approval.
+- Alternatives considered: single combined M4 implementation prompt with optional design pre-step.
+- Evidence:
+  - `prompts/implementation.md` (`## M4 - Ligand Workflow`, `### Prompt to assign M4`)
+- Validation/risk impact: reduces premature implementation risk; adds one extra handoff step that depends on explicit reviewer response.
+
+### 2026-02-15 - Align handoff template order with operational sequence
+- Decision: reorder `docs/context/handoff-template.md` to canonical sequence: pre-handoff update -> required handoff payload -> review gate -> kickoff prompt.
+- Why: prevent ordering confusion between sender and receiver steps during context handoffs.
+- Alternatives considered: keep existing sections and rely on ad hoc interpretation.
+- Evidence:
+  - `docs/context/handoff-template.md` (`## Overall Run Order`)
+  - `docs/context/handoff-template.md` (`## 1) Pre-Handoff Maintainer Checklist` to `## 4) Copy-Paste Kickoff Prompt`)
+- Validation/risk impact: improves handoff consistency; no runtime app behavior impact.
+
+### 2026-02-15 - Add clustered commit planning and optional auto-commit to pre-handoff flow
+- Decision: extend pre-handoff template output to include changed-file clusters (with suggested commit messages) and optional `COMMIT=YES` automation for staged cluster commits.
+- Why: improve commit sequencing quality and reduce manual handoff overhead during time-constrained execution.
+- Alternatives considered: leave commit grouping as manual/free-form after handoff output.
+- Evidence:
+  - `docs/context/handoff-template.md` (`### Prompt: Pre-Handoff Update`, `### Optional Prompt: Pre-Handoff Update + Auto-Commit`)
+- Validation/risk impact: improves commit hygiene and reproducibility; commit automation must still avoid unrelated file staging.
+
+### 2026-02-15 - Use pre-handoff dry-run review before enabling auto-commit
+- Decision: run pre-handoff update in non-commit mode first and review clusters before any `COMMIT=YES` execution.
+- Why: maintain commit safety in a dirty working tree and avoid bundling unrelated changes.
+- Alternatives considered: immediate auto-commit execution from first handoff run.
+- Evidence:
+  - `docs/context/current-state.md` (validation ledger entry for dry-run clustering)
+- Validation/risk impact: reduces accidental commit scope bleed; adds one manual review step.
+
+### 2026-02-15 - Execute clustered auto-commit flow after dry-run review
+- Decision: proceed with `COMMIT=YES` and commit clusters sequentially after dry-run cluster validation.
+- Why: user requested end-to-end test of automated pre-handoff clustering + commit workflow.
+- Alternatives considered: keep dry-run only and defer commits to manual execution.
+- Evidence:
+  - Git commit `9f2e95c` (`docs(preview): add m4 packet and relocate design preview assets`)
+  - `docs/context/current-state.md` validation ledger entry for auto-commit execution
+- Validation/risk impact: confirms automation workflow viability; reinforces requirement to keep cluster boundaries strict.
+
 ### Inferred from repo state - Framework and viewer stack are fixed to Vue 2 + NGL
 - Decision: build on Vue 2 + TypeScript + Vuetify + Vuex + Vue Router; use NGL for 3D.
 - Why: consistent with scaffold and milestones already implemented.

@@ -147,6 +147,15 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Ran `npm run validate:m3` -> PASS.
 - 2026-02-15: Reconstruction audit established evidence-based milestone status M1-M8.
 - 2026-02-15: Handoff protocol hardening completed (`AGENTS.md` startup-context requirement + `docs/context/handoff-template.md` with 4 prompt blocks). No new milestone validator commands run in this handoff refresh.
+- 2026-02-15: Added repo-wide UI-first feature protocol and locked Design Preview Gate requirements to planning artifacts (`AGENTS.md`, `docs/plans/execution-plan.md`, `docs/plans/milestone-inventory.md`) plus kickoff template (`docs/context/feature-kickoff-template.md`). No milestone validator command was run for this documentation policy update.
+- 2026-02-15: Created first M4 design-preview packet skeleton under `docs/screenshots/Design_previews/m4-ligand-workflow/` (README, preview index, approval log, state guidance files, desktop/mobile placeholders). This is a user-requested artifact-location override from the execution-plan default path format. No validator command was run (docs-only change).
+- 2026-02-15: Updated `prompts/implementation.md` M4 assignment pattern to two-step flow: Prompt A (`DESIGN PREVIEW ONLY`) then Prompt B (`post-approval implementation`), with explicit `BLOCKED-DESIGN` behavior when approval token is missing. No validator command was run (prompt-doc update only).
+- 2026-02-15: Generated visual comparison artifacts for existing ligand preview pair (`collapsed` vs `expanded`) at `docs/screenshots/Design_previews/m4-ligand-workflow/ligand-controls-collapsed-vs-expanded-xray.png` and `docs/screenshots/Design_previews/m4-ligand-workflow/ligand-controls-collapsed-vs-expanded-diff-heatmap.png` to support preview review.
+- 2026-02-15: Removed intermediate visual-comparison artifacts (`...xray.png`, `...diff-heatmap.png`) per user request. Current standalone preview files are `ligand-controls-expanded.png` and `ligand-controls-collapsed.png`, where the collapsed file is a dimension-reduced placeholder rather than a validated collapsed-state UI design.
+- 2026-02-15: Updated `docs/context/handoff-template.md` section ordering to explicit operational sequence: `Pre-Handoff Update` -> `Required Handoff Payload` -> `Review Gate` -> `Copy-Paste Kickoff Prompt`.
+- 2026-02-15: Enhanced `docs/context/handoff-template.md` pre-handoff prompt to require changed-file clustering for commit sequencing and added optional `COMMIT=YES` auto-commit workflow (clustered `git add`/`git commit` output contract).
+- 2026-02-15: Executed pre-handoff dry run without `COMMIT=YES`; generated clustered commit plan from current working tree for review before commit execution.
+- 2026-02-15: Executed `COMMIT=YES` pre-handoff automation (cluster order): committed preview-assets cluster via `git add ... && git commit -m "docs(preview): add m4 packet and relocate design preview assets"` -> `PASS` (`9f2e95c`). Remaining non-empty clusters: `docs/context`, `handoff/process docs`.
 
 ## Open Risks
 - Major feature milestones (M4-M6) remain unimplemented while M1-M3 are complete.
