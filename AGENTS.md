@@ -44,6 +44,21 @@ Before marking work complete:
 - Prefer backward-compatible behavior for file formats and outputs unless approved.
 - Document behavior changes in the relevant docs when needed.
 
+## UI-First Feature Protocol (Required)
+For every net-new user-facing feature or significant UI behavior/layout change:
+1. Produce UI preview artifacts before implementation (at least two static mockups; include mobile if layout behavior changes on small screens).
+2. Include key states in the preview set: default, loading, empty, error, and success.
+3. Present previews in-thread and wait for explicit user approval (`APPROVED UI PREVIEW`) before coding.
+4. If approval is not present, report `BLOCKED-DESIGN` (not `FAIL`) and stop implementation for that feature.
+
+Applies to:
+- New controls, panels, workflows, or interaction patterns.
+- Significant visual/layout restructuring.
+- New empty/error/loading/success states.
+
+Does not apply to:
+- Backend-only/internal refactors with no user-visible change.
+
 ## Data and File Format Rules
 - Treat approved input and output formats as spec-level constraints.
 - Validate inputs explicitly and return actionable error messages.

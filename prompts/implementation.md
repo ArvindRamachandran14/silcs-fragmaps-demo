@@ -396,12 +396,39 @@ Return format:
 
 ### Prompt to assign M4
 ```text
+Use a two-step assignment flow for M4.
+
+Prompt A (Design Preview Gate only; no implementation):
+
+Milestone target: M4 only.
+
+Mode: DESIGN PREVIEW ONLY (no code edits).
+Task:
+1. Create/refresh M4 preview packet under `docs/screenshots/Design_previews/m4-ligand-workflow/`.
+2. Provide preview artifacts for: default, loading, empty, error, success.
+3. Update preview packet index/checklist and approval log with status `PENDING`.
+4. Do not modify app source files.
+5. Return only:
+   - files added/updated
+   - preview checklist coverage
+   - open UI questions
+
+Stop after previews and wait for explicit approval token: `APPROVED UI PREVIEW`.
+If approval is not provided, report `BLOCKED-DESIGN` and do not start coding.
+
+Prompt B (Post-approval implementation only):
+
+Milestone target: M4 only.
+
+Gate is satisfied: `APPROVED UI PREVIEW`.
+
 Implement only M4 from docs/plans/execution-plan.md.
 
 Scope:
 - M4 only: ligand workflow (featured + searchable ligand selection, pose visibility states, zoom action, and ligand/pose error handling).
 - Follow docs/specs/ligand-workflow-spec.md and keep architecture aligned with docs/plans/technical-plan.md.
 - Build on existing M1-M3 outputs only.
+- Use approved design previews in `docs/screenshots/Design_previews/m4-ligand-workflow/` as the UI source for implementation.
 - Create/complete M4-focused modules (as needed), such as:
   - src/components/LigandControls.vue
   - ligand state/store actions/getters
@@ -450,7 +477,7 @@ Validation requirements:
 - If environment blocks execution, report ENV-BLOCKED (not FAIL) and provide exact local commands to run.
 
 Return format:
-- M4 status: PASS/FAIL/ENV-BLOCKED
+- M4 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
 - Gate checklist (item -> pass/fail/blocked + evidence)
 - Files changed
 - Command outputs summary

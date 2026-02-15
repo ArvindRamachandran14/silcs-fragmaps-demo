@@ -8,6 +8,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
   - Brief summary
   - Files created/updated with file-level purpose and milestone-specific delta
   - Commands run
+  - Design preview evidence and approval reference for user-facing UI changes
   - Gate checklist (pass/fail)
   - Residual risks/blockers
 - Validation execution context rule:
@@ -20,6 +21,9 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Commands run entry format (recommended):
   - `Agent run:` include command + pass/fail/ENV-BLOCKED.
   - `Local run:` include command + pass/fail and key output lines used for gate evidence.
+- Design preview gate rule:
+  - For milestones that introduce/change user-facing UI, include artifact paths under `docs/design-previews/<milestone-or-feature>/` and an explicit in-thread approval reference (`APPROVED UI PREVIEW`) before implementation evidence.
+  - If approval is missing, mark milestone as `BLOCKED-DESIGN` for that scope.
 
 ## M1 - Project Scaffold + Routing Foundation
 
@@ -56,6 +60,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - `npm run validate:m1`
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): PASS/FAIL/BLOCKED-DESIGN
 - Production build succeeds: PASS
 - `/` renders: PASS
 - `/viewer` renders: PASS
@@ -121,6 +126,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Step 5 (missing-asset behavior is non-blocking with disable-intent metadata): Verified.
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): PASS/FAIL/BLOCKED-DESIGN
 - Manifest includes `3fly_cryst_lig` and all baseline ligand IDs: PASS
 - Startup validation checks required protein/ligand/map assets: PASS
 - Missing-asset simulation triggers non-blocking error and local disable intent: PASS
@@ -172,6 +178,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
     - forced stage-init failure shows fallback with retry/home recovery
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): PASS/FAIL/BLOCKED-DESIGN
 - `/viewer` shows explicit loading then ready state: PASS (evidence: `npm run validate:m3` output).
 - Default state (`3fly_cryst_lig`, baseline ON, refined OFF, no FragMaps): PASS (evidence: `npm run validate:m3` output).
 - Camera baseline snapshot constant + reset target defined: PASS (evidence: `npm run validate:m3` output).
@@ -200,6 +207,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Pending.
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): Pending.
 - Pending.
 
 ### Residual Risks/Blockers
@@ -221,6 +229,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Pending.
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): Pending.
 - Pending.
 
 ### Residual Risks/Blockers
@@ -242,6 +251,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Pending.
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): Pending.
 - Pending.
 
 ### Residual Risks/Blockers
@@ -263,6 +273,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Pending.
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): Pending.
 - Pending.
 
 ### Residual Risks/Blockers
@@ -284,6 +295,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Pending.
 
 ### Gate Checklist
+- Design Preview Gate approved (for UI scope): Pending.
 - Pending.
 
 ### Residual Risks/Blockers
