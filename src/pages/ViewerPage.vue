@@ -48,8 +48,10 @@
           class="d-none d-md-block viewer-page__controls-col"
         >
           <controls-panel
+            :featured-ligands="featuredLigands"
             :selected-ligand-id="viewerState.selectedLigandId"
             :selected-ligand-label="viewerState.selectedLigandLabel"
+            :ligand-switch-loading="viewerState.ligandSwitchLoading"
             :baseline-pose-visible="viewerState.baselinePoseVisible"
             :refined-pose-visible="viewerState.refinedPoseVisible"
             :baseline-pose-disabled="viewerState.baselinePoseDisabled"
@@ -64,6 +66,7 @@
             :can-reset="canResetView"
             @reset-view="handleResetView"
             @toggle-pose="handlePoseToggle"
+            @select-featured-ligand="handleFeaturedLigandSwitch"
             @show-baseline="handleShowBaseline"
             @show-refined="handleShowRefined"
             @show-both="handleShowBoth"
@@ -81,8 +84,10 @@
         data-test-id="viewer-controls-drawer"
       >
         <controls-panel
+          :featured-ligands="featuredLigands"
           :selected-ligand-id="viewerState.selectedLigandId"
           :selected-ligand-label="viewerState.selectedLigandLabel"
+          :ligand-switch-loading="viewerState.ligandSwitchLoading"
           :baseline-pose-visible="viewerState.baselinePoseVisible"
           :refined-pose-visible="viewerState.refinedPoseVisible"
           :baseline-pose-disabled="viewerState.baselinePoseDisabled"
@@ -97,6 +102,7 @@
           :can-reset="canResetView"
           @reset-view="handleResetView"
           @toggle-pose="handlePoseToggle"
+          @select-featured-ligand="handleFeaturedLigandSwitch"
           @show-baseline="handleShowBaseline"
           @show-refined="handleShowRefined"
           @show-both="handleShowBoth"
@@ -133,9 +139,24 @@ import {
   getMinLoadingMsFromQuery,
   getViewerM3DebugState,
   isForcedStageFailureFromQuery,
+  LigandSwitchResult,
   NglStageController,
   initializeNglStage,
 } from "@/viewer/nglStage";
+
+const M4B_FEATURED_LIGAND_IDS = [
+  DEFAULT_LIGAND_ID,
+  "p38_goldstein_05_2e",
+  "p38_goldstein_06_2f",
+  "p38_goldstein_07_2g",
+];
+
+interface FeaturedLigandChip {
+  id: string;
+  label: string;
+  disabled: boolean;
+  disabledReason: string | null;
+}
 
 export default Vue.extend({
   name: "ViewerPage",
@@ -151,6 +172,8 @@ export default Vue.extend({
       catastrophicError: null as string | null,
       mobileControlsOpen: false,
       initSequence: 0,
+      manifest: null as AssetManifest | null,
+      featuredLigands: [] as FeaturedLigandChip[],
       showToast: false,
       toastMessage: "",
     };
@@ -190,6 +213,48 @@ export default Vue.extend({
       }
 
       return ligand;
+    },
+    getLigandById(ligandId: string): LigandAsset | null {
+      if (!this.manifest) {
+        return null;
+      }
+
+      return this.manifest.ligands.find((entry) => entry.id === ligandId) || null;
+    },
+    buildFeaturedLigands(manifest: AssetManifest): FeaturedLigandChip[] {
+      const ligandsById = new Map(manifest.ligands.map((ligand) => [ligand.id, ligand] as const));
+      const disableIntents = this.startupState.report?.disabledControlIntents.ligandPoseControls || {};
+
+      return M4B_FEATURED_LIGAND_IDS.map((ligandId) => {
+        const ligand = ligandsById.get(ligandId);
+        const baselineDisabled = Boolean(disableIntents[ligandId]?.baseline);
+        if (!ligand) {
+          return {
+            id: ligandId,
+            label: ligandId,
+            disabled: true,
+            disabledReason: "Unavailable",
+          };
+        }
+
+        return {
+          id: ligand.id,
+          label: ligand.label,
+          disabled: baselineDisabled,
+          disabledReason: baselineDisabled ? "Unavailable" : null,
+        };
+      });
+    },
+    disableFeaturedLigand(ligandId: string, reason: string) {
+      this.featuredLigands = this.featuredLigands.map((entry) =>
+        entry.id === ligandId
+          ? {
+              ...entry,
+              disabled: true,
+              disabledReason: reason,
+            }
+          : entry,
+      );
     },
     attachResizeListener() {
       this.detachResizeListener();
@@ -235,10 +300,14 @@ export default Vue.extend({
       const currentSequence = ++this.initSequence;
       this.teardownStage();
       this.catastrophicError = null;
+      this.manifest = null;
+      this.featuredLigands = [];
       this.$store.commit("viewer/setLoading");
 
       try {
         const manifest = await this.getManifest();
+        this.manifest = manifest;
+        this.featuredLigands = this.buildFeaturedLigands(manifest);
         const defaultLigand = this.getDefaultLigand(manifest);
         const viewport = this.$refs.viewport as Vue & {
           getHostElement?: () => HTMLElement | null;
@@ -273,6 +342,7 @@ export default Vue.extend({
           cameraSnapshot: stageController.getCameraSnapshot(),
           selectedLigandLabel: defaultLigand.label,
         });
+        this.$store.commit("viewer/setLigandSwitchLoading", false);
       } catch (error) {
         if (currentSequence !== this.initSequence) {
           return;
@@ -304,7 +374,7 @@ export default Vue.extend({
         kind === "baseline" ? this.viewerState.baselinePoseDisabled : this.viewerState.refinedPoseDisabled;
       const loading = kind === "baseline" ? this.viewerState.baselinePoseLoading : this.viewerState.refinedPoseLoading;
 
-      if ((disabled && visible) || loading) {
+      if ((disabled && visible) || loading || this.viewerState.ligandSwitchLoading) {
         return false;
       }
 
@@ -331,6 +401,74 @@ export default Vue.extend({
     },
     async handlePoseToggle(payload: { kind: PoseKind; visible: boolean }) {
       await this.setPoseVisibility(payload.kind, payload.visible);
+    },
+    async handleFeaturedLigandSwitch(ligandId: string) {
+      if (!this.stageController || !this.manifest || this.viewerState.ligandSwitchLoading) {
+        return;
+      }
+
+      if (ligandId === this.viewerState.selectedLigandId) {
+        return;
+      }
+
+      const ligand = this.getLigandById(ligandId);
+      if (!ligand) {
+        this.disableFeaturedLigand(ligandId, "Unavailable");
+        this.toastMessage = `Ligand ${ligandId} is unavailable in this build.`;
+        this.showToast = true;
+        return;
+      }
+
+      const chip = this.featuredLigands.find((entry) => entry.id === ligandId);
+      if (chip?.disabled) {
+        this.toastMessage = `${chip.label} is unavailable.`;
+        this.showToast = true;
+        return;
+      }
+
+      const baselineVisible = this.viewerState.baselinePoseVisible;
+      const refinedVisible = this.viewerState.refinedPoseVisible;
+      this.$store.commit("viewer/setLigandSwitchLoading", true);
+      this.$store.commit("viewer/setPoseError", { kind: "baseline", error: null });
+      this.$store.commit("viewer/setPoseError", { kind: "refined", error: null });
+
+      try {
+        const switchResult: LigandSwitchResult = await this.stageController.switchLigand({
+          baselineLigandUrl: ligand.baselineSdfUrl,
+          refinedLigandUrl: ligand.refinedSdfUrl,
+          refinedLigandFallbackUrl: ligand.refinedPdbFallbackUrl,
+          baselineVisible,
+          refinedVisible,
+        });
+
+        this.$store.commit("viewer/setSelectedLigand", { id: ligand.id, label: ligand.label });
+        this.$store.commit("viewer/setPoseVisibility", { kind: "baseline", visible: switchResult.baselineVisible });
+        this.$store.commit("viewer/setPoseVisibility", { kind: "refined", visible: switchResult.refinedVisible });
+        this.$store.commit("viewer/setPoseDisabled", { kind: "baseline", disabled: false });
+        this.$store.commit("viewer/setPoseDisabled", {
+          kind: "refined",
+          disabled: Boolean(switchResult.refinedError),
+        });
+        this.$store.commit("viewer/setPoseError", {
+          kind: "refined",
+          error: switchResult.refinedError,
+        });
+        this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+
+        if (switchResult.refinedError) {
+          this.toastMessage = `Switched to ${ligand.label}; refined pose unavailable: ${switchResult.refinedError}`;
+        } else {
+          this.toastMessage = `Switched to ${ligand.label}.`;
+        }
+        this.showToast = true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.disableFeaturedLigand(ligand.id, "Load failed");
+        this.toastMessage = `Failed to switch to ${ligand.label}: ${message}`;
+        this.showToast = true;
+      } finally {
+        this.$store.commit("viewer/setLigandSwitchLoading", false);
+      }
     },
     async handleShowBaseline() {
       await this.setPoseVisibility("baseline", true);

@@ -234,22 +234,42 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ## M4B - Featured Ligands Expansion (no full-list search)
 
 ### Summary
-- Pending.
+- Implemented M4B featured-ligand switching with a fixed approved subset (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`) while preserving all M4A pose contracts.
+- Added chip-based in-place ligand switching, camera-preservation behavior, per-switch loading state, and failure fallback that disables failed featured chips without changing routes.
+- Fixed post-switch/reset regression by replaying preserved viewer orientation without center-sign inversion, then resyncing live camera snapshots in stage orchestration.
+- Added dedicated `validate:m4b` milestone gate and passed sequential regression through M4B.
 
 ### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M4B and why.` |
+| `src/components/ControlsPanel.vue` | Updated | Right-side controls panel UI. | Added featured quick-pick chip row, switch-loading feedback, unavailable-chip summary, and switch-aware disabling for pose/zoom controls. |
+| `src/pages/ViewerPage.vue` | Updated | Viewer orchestration and event handling. | Added featured subset orchestration, chip-selection switch handler, per-ligand fallback disabling, and store updates for selected ligand + switch loading while preserving M4A interactions. |
+| `src/store/modules/viewer.ts` | Updated | Vuex viewer state for route-level viewer behavior. | Added `ligandSwitchLoading` and `setSelectedLigand`/`setLigandSwitchLoading` mutations for M4B switching lifecycle state. |
+| `src/viewer/nglStage.ts` | Updated | NGL stage lifecycle and camera orchestration. | Added in-place `switchLigand` API to replace ligand components while preserving camera state, plus deterministic reset-to-baseline restoration to prevent post-switch drift. |
+| `scripts/validate-m4b.js` | Created | Automated M4B milestone validator. | Added checks for featured subset chips, in-place switching, camera preservation, reset-after-switch baseline restoration, post-switch M4A behavior continuity, refined failure isolation, and failed-feature disable fallback. |
+| `package.json` | Updated | Project script command contract. | Added `validate:m4b` and `prevalidate:m4b` commands for reproducible M4B gate runs. |
 
 ### Commands Run
-- Pending.
+- `npm run build` -> PASS
+- `npm run validate:m1` -> PASS
+- `npm run validate:m2` -> PASS
+- `npm run validate:m3` -> PASS
+- `npm run validate:m4a` -> PASS
+- `npm run validate:m4b` -> PASS (rerun confirmed PASS; required unsandboxed run due local port bind restriction)
+- Targeted Playwright manual-sequence smoke (default reset + featured switches + reset-after-switch) -> PASS
 
 ### Gate Checklist
-- Design Preview Gate approved (for UI scope): Pending.
-- Pending.
+- Design Preview Gate approved (for UI scope): PASS.
+- Featured quick-pick chips include approved M4B subset (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`): PASS.
+- Ligand switching across featured set is in-place with no route reload: PASS.
+- Camera snapshot is preserved on ligand switch: PASS.
+- M4A pose/error behavior remains correct after ligand switch: PASS.
+- No searchable full-ligand selector was introduced in M4B: PASS.
+- No M1-M4A regressions in sequential gate run: PASS.
 
 ### Residual Risks/Blockers
-- Pending.
+- No blocker for M4B gate.
+- Residual risk: `docs/specs/ligand-workflow-spec.md` Section 4 still lists a larger canonical featured set; M4B implementation follows the approved 4-ligand subset decision and should be reconciled in spec docs to avoid future ambiguity.
 
 ---
 

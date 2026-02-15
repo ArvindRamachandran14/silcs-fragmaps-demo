@@ -5,6 +5,52 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-15 - Restore switch camera with orientation-only transform replay to avoid scene inversion
+- Decision: in M4B `switchLigand`, replay preserved `viewerControls` orientation only (no extra `center`/`distance` rewrite), then resync `currentCamera` from the live stage snapshot; keep `resetView` on `stage.autoView(0)` with live snapshot reads.
+- Why: manual QA still observed scene disappearance on reset and inconsistent featured-ligand visibility after switches. The prior transform restore called `center` after `orient`, which inverted translation sign and could move the scene off-screen.
+- Alternatives considered: continue transform replay with `center`/`distance` and tune reset logic only; fully revert to camera-only restore.
+- Evidence:
+  - `src/viewer/nglStage.ts` (`readSceneTransformSnapshot`, `applySceneTransformSnapshot`, `switchLigand`, `handleResize`)
+  - targeted Playwright runtime smoke sequence output (default reset + featured switches + reset-after-switch)
+- Validation/risk impact: preserves M4B camera-stability contract while removing reset blanking/switch inconsistency in manual reproduction; sequential validators remain green (`m1` rerun pass, `m2`, `m3`, `m4a`, `m4b`).
+
+### 2026-02-15 - Stabilize post-switch camera behavior with viewer-controls transform restore plus baseline snapshot reset
+- Decision: restore scene transform during featured-ligand switches using `viewerControls` orientation/center/distance, then apply the preserved camera snapshot deterministically; for `Reset view`, apply stored baseline transform and baseline camera snapshot instead of relying only on dynamic `autoView`.
+- Why: manual QA found a regression where switching to featured ligands could drift the protein toward the viewport corner and reset would not reliably recenter.
+- Alternatives considered: keep prior camera restore path (`applyStageCameraSnapshot` only during switch; `autoView` only during reset).
+- Evidence:
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m4b.js` (reset-after-switch assertion added)
+- Validation/risk impact: fixes visible camera drift while preserving M4B in-place switching contract; sequential validators `m1` through `m4b` are green after the change.
+
+### 2026-02-15 - Prefer transform-only restore path and deterministic resize rollback for camera stability
+- Decision: remove mixed transform+direct-camera writes in switch/reset flows and preserve camera via viewer-controls transform snapshots; on resize, rollback to pre-resize snapshot if NGL introduces drift.
+- Why: follow-up manual QA still reported corner drift after reset/switch in some interaction sequences despite initial fix.
+- Alternatives considered: keep mixed restore path and add only more validator assertions.
+- Evidence:
+  - `src/viewer/nglStage.ts` (`switchLigand`, `resetView`, `handleResize`, `getCameraSnapshot`)
+- Validation/risk impact: improves runtime camera stability for user-visible interactions while keeping M3/M4B strict snapshot validators green.
+
+### 2026-02-15 - Implement M4B against approved 4-ligand featured subset and defer larger featured set
+- Decision: implement M4B featured quick-pick switching with the approved fixed subset (`3fly_cryst_lig`, `p38_goldstein_05_2e`, `p38_goldstein_06_2f`, `p38_goldstein_07_2g`) and not the larger canonical list referenced in older spec wording.
+- Why: approved design preview and explicit implementation request in-thread locked M4B to the 4-ligand subset for reduced risk and faster milestone completion.
+- Alternatives considered: implement all canonical featured IDs listed in `docs/specs/ligand-workflow-spec.md` Section 4 in M4B.
+- Evidence:
+  - `src/pages/ViewerPage.vue` (`M4B_FEATURED_LIGAND_IDS`)
+  - `src/components/ControlsPanel.vue`
+  - `scripts/validate-m4b.js`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/m4b-preview-index.md`
+- Validation/risk impact: delivered stable M4B behavior and green gate quickly; residual risk is documentation drift until the larger-set wording is reconciled.
+
+### 2026-02-15 - Use in-place stage component replacement for M4B ligand switching
+- Decision: add a `switchLigand` API to `NglStageController` that replaces ligand components in the existing stage and reapplies the preserved camera snapshot, instead of reinitializing the whole stage per switch.
+- Why: this enforces no-route-reload switching and camera preservation while minimizing lifecycle churn and M1-M3 regression risk.
+- Alternatives considered: destroy/reinitialize entire NGL stage on every ligand switch.
+- Evidence:
+  - `src/viewer/nglStage.ts` (`switchLigand`, component replacement helpers)
+  - `src/pages/ViewerPage.vue` (featured-ligand switch orchestration)
+- Validation/risk impact: supports AC-4 style in-place switching contract and keeps M4A pose controls intact after switches.
+
 ### 2026-02-15 - Enforce non-occluding M4B chip layout in preview artifacts before implementation
 - Decision: reposition right-side viewer-context/info panels in all M4B desktop mockups so featured-ligand chips are fully visible and unobstructed.
 - Why: reviewer identified that the fourth featured chip was partially hidden in the default preview, which would be an unacceptable persistent layout outcome if carried into implementation.

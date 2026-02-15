@@ -11,13 +11,13 @@
 
 ## Review Record (M4B)
 - Date: 2026-02-15
-- Reviewer: pending
-- Thread/message reference: pending
-- Decision: `PENDING`
+- Reviewer: Arvind Ramachandran
+- Thread/message reference: in-thread approval acknowledged before Prompt-B implementation request
+- Decision: `APPROVED UI PREVIEW`
 
 ## Comments (M4B)
-- Awaiting review of M4B featured-ligand switching preview artifacts.
 - Prior overlap issue addressed: featured chips are no longer occluded by the viewer-context panel in M4B desktop previews.
+- Preview accepted; implementation proceeded to M4B Prompt-B.
 
 ## Revision Notes
 - 2026-02-15: Refreshed packet from legacy full-M4 framing to explicit M4A scope; added desktop state mockups.

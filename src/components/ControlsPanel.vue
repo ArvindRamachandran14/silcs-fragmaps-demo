@@ -2,9 +2,44 @@
   <aside class="controls-panel" data-test-id="controls-panel">
     <h2 class="text-subtitle-1 mb-3">Ligand Controls</h2>
 
+    <div class="controls-panel__featured mb-3">
+      <p class="text-caption font-weight-bold mb-2">Featured Ligands</p>
+      <div class="controls-panel__chips" data-test-id="ligand-featured-chip-list">
+        <button
+          v-for="ligand in featuredLigands"
+          :key="ligand.id"
+          type="button"
+          class="controls-panel__chip"
+          :class="{
+            'controls-panel__chip--active': selectedLigandId === ligand.id,
+            'controls-panel__chip--disabled': ligand.disabled,
+          }"
+          :data-test-id="`ligand-featured-chip-${ligand.id}`"
+          :disabled="ligandSwitchLoading || ligand.disabled || selectedLigandId === ligand.id"
+          @click="onFeaturedLigandSelect(ligand.id)"
+        >
+          {{ ligand.label }}
+        </button>
+      </div>
+      <p
+        v-if="ligandSwitchLoading"
+        class="controls-panel__loading mt-2 mb-0"
+        data-test-id="ligand-switch-loading"
+      >
+        Loading selected ligand poses...
+      </p>
+      <p
+        v-else-if="disabledFeaturedLigandLabels"
+        class="controls-panel__muted mt-2 mb-0"
+        data-test-id="ligand-featured-disabled-summary"
+      >
+        Unavailable: {{ disabledFeaturedLigandLabels }}
+      </p>
+    </div>
+
     <p class="mb-2" data-test-id="ligand-selection-summary">
       Active ligand: <strong>{{ selectedLigandLabel }}</strong>
-      <span class="controls-panel__muted">(M4A single-ligand scope)</span>
+      <span class="controls-panel__muted">(M4B featured-ligand scope)</span>
     </p>
 
     <div class="controls-panel__pose-group mb-3">
@@ -13,7 +48,7 @@
           data-test-id="ligand-pose-baseline"
           type="checkbox"
           :checked="baselinePoseVisible"
-          :disabled="baselinePoseDisabled || baselinePoseLoading"
+          :disabled="baselinePoseDisabled || baselinePoseLoading || ligandSwitchLoading"
           @change="onPoseCheckboxChange('baseline', $event)"
         >
         <span>Baseline</span>
@@ -27,7 +62,7 @@
           data-test-id="ligand-pose-refined"
           type="checkbox"
           :checked="refinedPoseVisible"
-          :disabled="refinedPoseDisabled || refinedPoseLoading"
+          :disabled="refinedPoseDisabled || refinedPoseLoading || ligandSwitchLoading"
           @change="onPoseCheckboxChange('refined', $event)"
         >
         <span>Refined</span>
@@ -52,7 +87,7 @@
       color="primary"
       class="mb-3"
       data-test-id="ligand-zoom-action"
-      :disabled="baselinePoseLoading || refinedPoseLoading"
+      :disabled="baselinePoseLoading || refinedPoseLoading || ligandSwitchLoading"
       @click="$emit('zoom-ligand')"
     >
       Zoom
@@ -121,12 +156,20 @@ function formatCamera(snapshot: CameraSnapshot): string {
 export default Vue.extend({
   name: "ControlsPanel",
   props: {
+    featuredLigands: {
+      type: Array,
+      required: true,
+    },
     selectedLigandId: {
       type: String,
       required: true,
     },
     selectedLigandLabel: {
       type: String,
+      required: true,
+    },
+    ligandSwitchLoading: {
+      type: Boolean,
       required: true,
     },
     baselinePoseVisible: {
@@ -190,8 +233,17 @@ export default Vue.extend({
     currentCameraText(): string {
       return formatCamera(this.cameraSnapshot as CameraSnapshot);
     },
+    disabledFeaturedLigandLabels(): string {
+      const entries = (this.featuredLigands as Array<{ label: string; disabled: boolean }>).filter(
+        (entry) => entry.disabled,
+      );
+      return entries.map((entry) => entry.label).join(", ");
+    },
   },
   methods: {
+    onFeaturedLigandSelect(ligandId: string) {
+      this.$emit("select-featured-ligand", ligandId);
+    },
     onPoseCheckboxChange(kind: PoseKind, event: Event) {
       const target = event.target as HTMLInputElement;
       this.$emit("toggle-pose", { kind, visible: target.checked });
@@ -232,6 +284,49 @@ export default Vue.extend({
 
 .controls-panel__muted {
   color: #6b7280;
+  font-size: 12px;
+}
+
+.controls-panel__featured {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.controls-panel__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.controls-panel__chip {
+  background: #edf2fb;
+  border: 1px solid #9fb4d8;
+  border-radius: 999px;
+  color: #26456f;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  min-height: 30px;
+  padding: 7px 12px;
+}
+
+.controls-panel__chip--active {
+  background: #1f6fbf;
+  border-color: #1f6fbf;
+  color: #ffffff;
+}
+
+.controls-panel__chip--disabled {
+  background: #f3f4f6;
+  border-color: #cbd5e1;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.controls-panel__loading {
+  color: #7b5b00;
   font-size: 12px;
 }
 

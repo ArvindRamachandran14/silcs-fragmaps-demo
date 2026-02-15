@@ -4,7 +4,7 @@ This packet covers the M4 Design Preview Gate in phased scope (`M4A`, `M4B`; `M4
 
 ## Gate Status
 - Active milestone preview track: `M4B`
-- Gate state: `PENDING`
+- Gate state: `APPROVED UI PREVIEW`
 - Required approval token: `APPROVED UI PREVIEW`
 
 ## Scope

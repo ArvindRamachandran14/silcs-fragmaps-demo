@@ -9,6 +9,10 @@ export interface CameraSnapshot {
   zoom: number;
 }
 
+interface SceneTransformSnapshot {
+  orientation: any;
+}
+
 export interface StageInitOptions {
   container: HTMLElement;
   proteinUrl: string;
@@ -20,11 +24,26 @@ export interface StageInitOptions {
   minLoadingMs?: number;
 }
 
+export interface LigandSwitchOptions {
+  baselineLigandUrl: string;
+  refinedLigandUrl?: string;
+  refinedLigandFallbackUrl?: string;
+  baselineVisible: boolean;
+  refinedVisible: boolean;
+}
+
+export interface LigandSwitchResult {
+  baselineVisible: boolean;
+  refinedVisible: boolean;
+  refinedError: string | null;
+}
+
 export interface NglStageController {
   getCameraBaseline(): CameraSnapshot;
   getCameraSnapshot(): CameraSnapshot;
   setCameraSnapshot(snapshot: CameraSnapshot): void;
   setPoseVisibility(kind: PoseKind, visible: boolean): Promise<void>;
+  switchLigand(options: LigandSwitchOptions): Promise<LigandSwitchResult>;
   zoomToLigand(): void;
   resetView(): void;
   handleResize(): void;
@@ -203,6 +222,28 @@ function applyStageCameraSnapshot(stage: any, snapshot: CameraSnapshot): void {
   stage?.viewer?.requestRender?.();
 }
 
+function readSceneTransformSnapshot(stage: any): SceneTransformSnapshot | null {
+  const controls = stage?.viewerControls;
+  if (!controls || typeof controls.getOrientation !== "function") {
+    return null;
+  }
+
+  const orientation = controls.getOrientation();
+
+  return {
+    orientation: orientation?.clone ? orientation.clone() : orientation,
+  };
+}
+
+function applySceneTransformSnapshot(stage: any, snapshot: SceneTransformSnapshot): void {
+  const controls = stage?.viewerControls;
+  if (!controls) {
+    return;
+  }
+
+  controls.orient?.(snapshot.orientation);
+}
+
 export async function initializeNglStage(options: StageInitOptions): Promise<NglStageController> {
   const debugState = getDebugState();
   debugState.stageInitAttempts += 1;
@@ -218,6 +259,8 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
   const minLoadingMs = options.minLoadingMs ?? DEFAULT_MIN_LOADING_MS;
   const proteinRuntimeUrl = resolveRuntimeUrl(options.proteinUrl);
   const ligandRuntimeUrl = resolveRuntimeUrl(options.ligandUrl);
+  let currentRefinedLigandUrl = options.refinedLigandUrl;
+  let currentRefinedLigandFallbackUrl = options.refinedLigandFallbackUrl;
   debugState.startupProteinAssetUrl = proteinRuntimeUrl;
   debugState.startupLigandAssetUrl = ligandRuntimeUrl;
 
@@ -269,6 +312,56 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     }
   }
 
+  function removeLigandComponent(component: any): void {
+    if (!component) {
+      return;
+    }
+
+    component.removeAllRepresentations?.();
+    if (stage?.removeComponent) {
+      stage.removeComponent(component);
+      return;
+    }
+
+    component.dispose?.();
+  }
+
+  async function loadBaselineComponent(baselineUrl: string): Promise<{ component: any; representation: any }> {
+    const component = await stage.loadFile(resolveRuntimeUrl(baselineUrl), { defaultRepresentation: false });
+    const representation = component.addRepresentation("ball+stick", {
+      colorScheme: "element",
+      opacity: 1,
+      radiusScale: 1,
+    });
+    return { component, representation };
+  }
+
+  async function loadRefinedComponent(
+    candidateUrls: Array<string | undefined>,
+  ): Promise<{ component: any; representation: any }> {
+    const filteredUrls = candidateUrls.filter((value): value is string => Boolean(value));
+    if (filteredUrls.length === 0) {
+      throw new Error("Refined pose assets are unavailable for the selected ligand.");
+    }
+
+    let lastError: string | null = null;
+    for (const candidateUrl of filteredUrls) {
+      try {
+        const component = await stage.loadFile(resolveRuntimeUrl(candidateUrl), { defaultRepresentation: false });
+        const representation = component.addRepresentation("ball+stick", {
+          colorScheme: "element",
+          opacity: 1,
+          radiusScale: 1,
+        });
+        return { component, representation };
+      } catch (error) {
+        lastError = error instanceof Error ? error.message : String(error);
+      }
+    }
+
+    throw new Error(lastError || "Failed to load refined pose.");
+  }
+
   async function loadRefinedPose(): Promise<void> {
     if (refinedLigandComponent) {
       return;
@@ -278,32 +371,12 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
       throw new Error("Forced refined pose failure (m4FailPose=refined).");
     }
 
-    const candidateUrls = [options.refinedLigandUrl, options.refinedLigandFallbackUrl].filter(
-      (value): value is string => Boolean(value),
-    );
-    if (candidateUrls.length === 0) {
-      throw new Error("Refined pose assets are unavailable for the selected ligand.");
-    }
-
-    let lastError: string | null = null;
-    for (const candidateUrl of candidateUrls) {
-      try {
-        refinedLigandComponent = await stage.loadFile(resolveRuntimeUrl(candidateUrl), { defaultRepresentation: false });
-        refinedLigandRepresentation = refinedLigandComponent.addRepresentation("ball+stick", {
-          colorScheme: "element",
-          opacity: 1,
-          radiusScale: 1,
-        });
-        refinedLigandComponent.setVisibility(refinedPoseVisible);
-        updatePoseStyles();
-        stage?.viewer?.requestRender?.();
-        return;
-      } catch (error) {
-        lastError = error instanceof Error ? error.message : String(error);
-      }
-    }
-
-    throw new Error(lastError || "Failed to load refined pose.");
+    const loadedRefined = await loadRefinedComponent([currentRefinedLigandUrl, currentRefinedLigandFallbackUrl]);
+    refinedLigandComponent = loadedRefined.component;
+    refinedLigandRepresentation = loadedRefined.representation;
+    refinedLigandComponent.setVisibility(refinedPoseVisible);
+    updatePoseStyles();
+    stage?.viewer?.requestRender?.();
   }
 
   let runtimeCameraBaseline = cloneCameraSnapshot(CAMERA_BASELINE_SNAPSHOT);
@@ -324,12 +397,9 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     debugState.startupProteinLoaded = true;
     debugState.startupProteinRepresentation = "cartoon";
 
-    baselineLigandComponent = await stage.loadFile(ligandRuntimeUrl, { defaultRepresentation: false });
-    baselineLigandRepresentation = baselineLigandComponent.addRepresentation("ball+stick", {
-      colorScheme: "element",
-      opacity: 1,
-      radiusScale: 1,
-    });
+    const baselineLoad = await loadBaselineComponent(options.ligandUrl);
+    baselineLigandComponent = baselineLoad.component;
+    baselineLigandRepresentation = baselineLoad.representation;
     debugState.startupLigandLoaded = true;
     debugState.startupLigandRepresentation = "ball+stick";
 
@@ -394,6 +464,61 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
       updatePoseStyles();
       stage?.viewer?.requestRender?.();
     },
+    async switchLigand(options: LigandSwitchOptions): Promise<LigandSwitchResult> {
+      if (forcedPoseFailures.has("baseline")) {
+        throw new Error("Forced baseline pose failure (m4FailPose=baseline).");
+      }
+
+      const preservedCamera = readStageCameraSnapshot(stage, currentCamera);
+      const preservedTransform = readSceneTransformSnapshot(stage);
+      const nextBaseline = await loadBaselineComponent(options.baselineLigandUrl);
+      let nextRefined: { component: any; representation: any } | null = null;
+      let refinedError: string | null = null;
+
+      if (options.refinedVisible) {
+        if (forcedPoseFailures.has("refined")) {
+          refinedError = "Forced refined pose failure (m4FailPose=refined).";
+        } else {
+          try {
+            nextRefined = await loadRefinedComponent([options.refinedLigandUrl, options.refinedLigandFallbackUrl]);
+          } catch (error) {
+            refinedError = error instanceof Error ? error.message : String(error);
+          }
+        }
+      }
+
+      removeLigandComponent(baselineLigandComponent);
+      removeLigandComponent(refinedLigandComponent);
+
+      baselineLigandComponent = nextBaseline.component;
+      baselineLigandRepresentation = nextBaseline.representation;
+      refinedLigandComponent = nextRefined ? nextRefined.component : null;
+      refinedLigandRepresentation = nextRefined ? nextRefined.representation : null;
+
+      currentRefinedLigandUrl = options.refinedLigandUrl;
+      currentRefinedLigandFallbackUrl = options.refinedLigandFallbackUrl;
+
+      baselinePoseVisible = options.baselineVisible;
+      refinedPoseVisible = options.refinedVisible && Boolean(refinedLigandComponent);
+
+      baselineLigandComponent?.setVisibility(baselinePoseVisible);
+      refinedLigandComponent?.setVisibility(refinedPoseVisible);
+
+      updatePoseStyles();
+      if (preservedTransform) {
+        applySceneTransformSnapshot(stage, preservedTransform);
+      } else {
+        applyStageCameraSnapshot(stage, preservedCamera);
+      }
+      currentCamera = readStageCameraSnapshot(stage, preservedCamera);
+      debugState.currentCamera = cloneCameraSnapshot(currentCamera);
+
+      return {
+        baselineVisible: baselinePoseVisible,
+        refinedVisible: refinedPoseVisible,
+        refinedError,
+      };
+    },
     zoomToLigand() {
       const target = refinedPoseVisible && refinedLigandComponent ? refinedLigandComponent : baselineLigandComponent;
       target?.autoView?.(0);
@@ -410,6 +535,11 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     handleResize() {
       const beforeResize = readStageCameraSnapshot(stage, currentCamera);
       stage?.handleResize?.();
+      const afterResize = readStageCameraSnapshot(stage, beforeResize);
+      const preserved = cameraSnapshotsEqual(beforeResize, afterResize);
+      if (!preserved) {
+        applyStageCameraSnapshot(stage, beforeResize);
+      }
       currentCamera = readStageCameraSnapshot(stage, beforeResize);
       debugState.lastResizeCameraPreserved = cameraSnapshotsEqual(beforeResize, currentCamera);
       debugState.currentCamera = cloneCameraSnapshot(currentCamera);

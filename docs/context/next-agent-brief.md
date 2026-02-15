@@ -1,9 +1,9 @@
 # Next Agent Brief
 
-Last updated: 2026-02-15 (M4B preview occlusion fix applied)
+Last updated: 2026-02-15 (post-M4B reset/switch hotfix verification)
 
 ## Current Milestone Target
-- Active target: `M4B Featured Ligands Expansion` (M1-M4A validated complete; M4B is the first incomplete dependency for downstream milestones).
+- Active target: `M5 FragMap Controls` (M1-M4B validated complete; M5 is the first incomplete dependency for downstream milestones).
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -20,11 +20,10 @@ Last updated: 2026-02-15 (M4B preview occlusion fix applied)
   - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
 
 ## Priority Tasks (ordered)
-1. Run M4B `Prompt A` design-preview gate and obtain explicit `APPROVED UI PREVIEW` token.
-2. Deliver `M4B` featured-ligand switching (small fixed set) while preserving all `M4A` behavior.
-3. Add `validate:m4b` gate script and run sequential regression through `validate:m4b`.
-4. Proceed to `M5` once `M4B` gate is green.
-5. Keep `M4C` documented as deferred stretch scope.
+1. Run M5 `Prompt A` design-preview gate and obtain explicit `APPROVED UI PREVIEW` token.
+2. Deliver M5 FragMap controls per `docs/specs/fragmap-controls-spec.md` without changing M4 behavior.
+3. Add `validate:m5` gate script and run sequential regression through `validate:m5`.
+4. Keep `M4C` documented as deferred stretch scope.
 
 ## Exact Commands To Run Next
 - `npm run build`
@@ -37,12 +36,17 @@ Last updated: 2026-02-15 (M4B preview occlusion fix applied)
   - Current signal: PASS.
 - `npm run validate:m4a`
   - Current signal: PASS.
+- `npm run validate:m4b`
+  - Current signal: PASS.
 
-## Stop/Go Criteria For M4B
+## Stop/Go Criteria For M5
 - Stop if Design Preview Gate is not approved (`BLOCKED-DESIGN`).
-- Stop if any M1-M3 validator regresses.
-- Stop if `validate:m4a` regresses while implementing M4B.
-- Go from `M4B` to `M5` only after featured-ligand switching is stable and `M4A` behaviors remain green.
+- Stop if any M1-M4B validator regresses.
+- Go from `M5` to `M6` only after map controls are stable and `validate:m5` is green.
+
+## Recent Hotfix Note
+- Post-M4B manual QA camera drift issues (featured-switch and reset behavior) were addressed in `src/viewer/nglStage.ts`; current regression sequence (`validate:m1`..`validate:m4b`) is green after the second-pass camera fix.
+- Follow-up fix removed transform replay sign inversion during featured switch restore (`viewerControls.center` after `orient`) and resynced live camera snapshots post-switch/resize; targeted runtime smoke sequence now keeps viewport centered across default reset and repeated featured switches.
 
 ## Known Divergences To Resolve Before M5
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
@@ -55,6 +59,8 @@ Last updated: 2026-02-15 (M4B preview occlusion fix applied)
   - Mitigation: per-ligand request-id/single-flight guards.
 - Risk: reintroducing startup instability from prior big-bang M4 attempt.
   - Mitigation: incremental commits and validator checks after each behavior slice.
+- Risk: validator noise when milestone scripts are run concurrently.
+  - Mitigation: run regression commands sequentially in milestone order (`m1` -> `mN`) for authoritative evidence.
 - Escalate if:
   - manifest contract cannot express required featured-ligand scope,
   - NGL representation layering blocks both-visible differentiation,
@@ -66,4 +72,4 @@ Last updated: 2026-02-15 (M4B preview occlusion fix applied)
 3. Refresh this brief with the exact next unresolved `M4A`/`M4B` (or `M5`) task.
 
 ## Immediate Next Concrete Step
-- Review revised M4B Prompt-A preview artifacts (proposed 4-ligand subset: `Crystal Ligand` + 3 featured options; no chip occlusion in desktop states) in `docs/screenshots/Design_previews/m4-ligand-workflow/` and obtain explicit `APPROVED UI PREVIEW` token before any M4B implementation edits.
+- Start M5 Prompt-A design preview packet (default/loading/empty/error/success, desktop + mobile as needed) and obtain explicit `APPROVED UI PREVIEW` before any M5 implementation edits.

@@ -14,7 +14,9 @@
     "validate:m3": "node scripts/validate-m3.js",
     "prevalidate:m3": "npm run build",
     "validate:m4a": "node scripts/validate-m4a.js",
-    "prevalidate:m4a": "npm run build"
+    "prevalidate:m4a": "npm run build",
+    "validate:m4b": "node scripts/validate-m4b.js",
+    "prevalidate:m4b": "npm run build"
   },
   "dependencies": {
     "core-js": "^3.41.0",

@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-15 (M4B Prompt-A preview packet refreshed)
+Last updated: 2026-02-15 (M4B camera-switch/reset hotfix validated)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -73,15 +73,23 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - None for M4A gate.
 
 ### M4B Featured Ligands Expansion
-- Status: `not started (replanned)`
+- Status: `completed`
 - Evidence:
   - Scope is restricted to featured-ligand switching only.
   - Searchable full-ligand selection is intentionally excluded from this phase.
   - Prompt-A preview artifacts were revised so featured chips are fully visible (no right-panel occlusion) across all desktop M4B state mockups.
+  - Featured quick-pick switching implemented in `src/components/ControlsPanel.vue` and `src/pages/ViewerPage.vue` for approved fixed subset (`3fly_cryst_lig`, `p38_goldstein_05_2e`, `p38_goldstein_06_2f`, `p38_goldstein_07_2g`).
+  - In-place ligand switching with camera preservation and per-ligand fallback-disable behavior implemented in `src/viewer/nglStage.ts` and `src/store/modules/viewer.ts`.
+  - Post-switch/reset camera regression was hotfixed in `src/viewer/nglStage.ts` by restoring viewer orientation without re-centering inversion, then reading live stage camera snapshots after switch/resize/reset.
+  - M4B validator added and wired via `scripts/validate-m4b.js` and `package.json` (`validate:m4b`, `prevalidate:m4b`).
 - Validation signal:
-  - No M4B validator command exists yet.
+  - `npm run validate:m1` -> `PASS` (2026-02-15).
+  - `npm run validate:m2` -> `PASS` (2026-02-15).
+  - `npm run validate:m3` -> `PASS` (2026-02-15).
+  - `npm run validate:m4a` -> `PASS` (2026-02-15).
+  - `npm run validate:m4b` -> `PASS` (2026-02-15; rerun confirmed PASS).
 - Gaps to exit criteria:
-  - Implement featured-ligand switching and preserve M4A behavior contracts.
+  - None for M4B gate.
 
 ### M4C Full Ligand List + Search (Deferred)
 - Status: `deferred (non-blocking stretch)`
@@ -138,18 +146,19 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - Viewer core:
   - NGL-based startup rendering, loading/ready states, fallback retry/home flow, camera reset/resize lifecycle are implemented.
 - Ligand workflow:
-  - Startup defaults only (`3fly_cryst_lig`, baseline ON, refined OFF); M4A/M4B implementation is pending.
+  - M4A and M4B are implemented: baseline/refined pose controls with in-place switching plus featured-ligand quick picks (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`) and camera-preserving ligand switches.
+  - M4C full-list searchable ligand selector remains deferred.
 - FragMap controls:
   - Manifest metadata and startup validation exist; interactive controls/render toggles are not implemented.
 - Overview page:
   - Route and CTA scaffold exist; required narrative and links are not implemented.
 - Performance/validation instrumentation:
-  - Milestone scripts exist for M1-M3 only; AC instrumentation/evidence pipeline is not implemented.
+  - Milestone scripts exist through M4B; AC instrumentation/evidence pipeline is not implemented.
 
 ## Spec Divergence Register
-- `high` - `docs/specs/ligand-workflow-spec.md` (M4A/M4B required scope):
-  - Observed: no featured quick picks, pose checkboxes, zoom action, both-visible/both-hidden UX.
-  - Impact: AC-3 and AC-4 cannot be met.
+- `medium` - `docs/specs/ligand-workflow-spec.md` Section 4 canonical featured set:
+  - Observed: spec text still references a larger canonical featured set, while approved M4B implementation is intentionally constrained to 4 featured chips (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`).
+  - Impact: implementation follows approved preview/plan decision, but spec wording should be reconciled to avoid future ambiguity.
 - `medium` - `docs/specs/ligand-workflow-spec.md` (M4C deferred scope):
   - Observed: searchable full-ligand selector and ordering behavior are not implemented.
   - Impact: deferred by plan; non-blocking for M5-M8 progression.
@@ -198,9 +207,17 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Executed M4B Prompt A (design-preview only): added desktop M4B preview artifacts for default, switch-loading, switch-success, per-ligand failure, and fallback/disabled states under `docs/screenshots/Design_previews/m4-ligand-workflow/`; updated packet index/state guidance and approval log. No validator commands were run (design-doc/artifact update only).
 - 2026-02-15: Revised M4B Prompt-A previews to proposed 4-ligand subset (`Crystal Ligand` + 3 featured options) across desktop state artifacts and guidance docs. No validator commands were run (design-doc/artifact update only).
 - 2026-02-15: Addressed reviewer feedback on M4B preview layout by repositioning right-side context panels in all M4B desktop state artifacts so no featured chip is occluded. Updated `m4b-preview-index.md` and `approval-log.md`. No validator commands were run (design-doc/artifact update only).
+- 2026-02-15: Recorded M4B design gate approval in `docs/screenshots/Design_previews/m4-ligand-workflow/approval-log.md` and set packet gate state to `APPROVED UI PREVIEW` in `README.md`.
+- 2026-02-15: Implemented M4B featured-ligand switching (`src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, `src/viewer/nglStage.ts`, `src/store/modules/viewer.ts`) using approved fixed subset (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`), preserving in-place interactions and M4A pose contracts.
+- 2026-02-15: Added `scripts/validate-m4b.js` and `package.json` script wiring (`validate:m4b`, `prevalidate:m4b`).
+- 2026-02-15: Sequential regression outcomes after M4B implementation: `npm run validate:m1` PASS, `npm run validate:m2` PASS, `npm run validate:m3` PASS, `npm run validate:m4a` PASS, `npm run validate:m4b` PASS (rerun confirmed PASS). Initial agent-side `validate:m4b` attempts were `ENV-BLOCKED` by sandbox local-port bind restrictions (`listen EPERM`); unsandboxed rerun succeeded.
+- 2026-02-15: Resolved post-switch camera-position regression reported during manual QA (protein drifting to top-left after selecting featured ligands and reset not restoring center). Updated `src/viewer/nglStage.ts` switch/reset camera restoration strategy and added an explicit reset-after-switch check in `scripts/validate-m4b.js`. Sequential verification in this window: `validate:m1` PASS, `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS, `validate:m4b` PASS (unsandboxed run for local port bind).
+- 2026-02-15: Applied second-pass camera stabilization after additional manual QA: removed mixed transform+direct-camera restore during switch/reset (transform-first deterministic path), enforced resize preservation by restoring prior snapshot when NGL perturbs camera on resize, and kept `validate:m4b` reset-after-switch assertion active. Sequential verification in this window: `validate:m1` PASS, `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS, `validate:m4b` PASS (unsandboxed run for local port bind).
+- 2026-02-15: Resolved follow-up M4B manual QA issues where `Reset view` could blank the scene and featured switching was inconsistent across ligands. Root cause was transform restore sign inversion (`viewerControls.center`) after `orient` in `src/viewer/nglStage.ts`; hotfix switched to orientation-only restore and live snapshot resync. Verification sequence in this window: `validate:m1` FAIL (intermittent snackbar click interception) then rerun `validate:m1` PASS, `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS, `validate:m4b` PASS.
+- 2026-02-15: Ran targeted Playwright runtime smoke script mirroring manual QA sequence (default reset, switch among `05_2e`/`06_2f`/`07_2g`, reset after each switch); camera snapshots remained stable and viewport stayed centered.
 
 ## Open Risks
-- Major feature milestones (M4B/M5/M6) remain unimplemented while M1-M4A are complete.
+- Major feature milestones (M5/M6) remain unimplemented while M1-M4B are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.

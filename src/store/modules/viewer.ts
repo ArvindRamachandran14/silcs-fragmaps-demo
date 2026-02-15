@@ -12,6 +12,7 @@ export interface ViewerState {
   status: ViewerStatus;
   selectedLigandId: string;
   selectedLigandLabel: string;
+  ligandSwitchLoading: boolean;
   baselinePoseVisible: boolean;
   refinedPoseVisible: boolean;
   baselinePoseDisabled: boolean;
@@ -39,6 +40,7 @@ function cloneCameraSnapshot(snapshot: CameraSnapshot): CameraSnapshot {
 function applyDefaultViewerState(targetState: ViewerState): void {
   targetState.selectedLigandId = DEFAULT_LIGAND_ID;
   targetState.selectedLigandLabel = DEFAULT_LIGAND_LABEL;
+  targetState.ligandSwitchLoading = false;
   targetState.baselinePoseVisible = true;
   targetState.refinedPoseVisible = false;
   targetState.baselinePoseDisabled = false;
@@ -56,6 +58,7 @@ const state: ViewerState = {
   status: "idle",
   selectedLigandId: DEFAULT_LIGAND_ID,
   selectedLigandLabel: DEFAULT_LIGAND_LABEL,
+  ligandSwitchLoading: false,
   baselinePoseVisible: true,
   refinedPoseVisible: false,
   baselinePoseDisabled: false,
@@ -100,6 +103,19 @@ const mutations: MutationTree<ViewerState> = {
     if (payload?.selectedLigandLabel) {
       currentState.selectedLigandLabel = payload.selectedLigandLabel;
     }
+  },
+  setSelectedLigand(
+    currentState,
+    payload: {
+      id: string;
+      label: string;
+    },
+  ) {
+    currentState.selectedLigandId = payload.id;
+    currentState.selectedLigandLabel = payload.label;
+  },
+  setLigandSwitchLoading(currentState, loading: boolean) {
+    currentState.ligandSwitchLoading = loading;
   },
   setError(currentState, message: string) {
     currentState.status = "error";

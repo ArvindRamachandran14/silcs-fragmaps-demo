@@ -33,7 +33,7 @@
 ## Completion Criteria
 - [x] Required desktop states are present for M4B additions.
 - [x] Reviewer feedback addressed (chip occlusion resolved in all M4B desktop states).
-- [ ] Approval recorded in `approval-log.md` with token `APPROVED UI PREVIEW`.
+- [x] Approval recorded in `approval-log.md` with token `APPROVED UI PREVIEW`.
 
 ## Open UI Questions
 - Should disabled featured chips show tooltip text with failure reason (`asset missing`, `load failed`, or generic `Unavailable`)?
