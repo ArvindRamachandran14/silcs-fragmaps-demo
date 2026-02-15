@@ -23,6 +23,21 @@ If sources conflict:
 - Flag the conflict explicitly.
 - Do not silently make high-impact assumptions.
 
+## Agent Startup Context (Required)
+At the start of every task (before proposing or writing code), read:
+- `docs/context/current-state.md`
+- `docs/context/next-agent-brief.md`
+- `docs/context/decision-log.md`
+
+Before implementation:
+- Confirm the active milestone/next step from `docs/context/next-agent-brief.md`.
+- If context files conflict with higher-precedence sources, follow precedence and log the conflict.
+
+Before marking work complete:
+- Update `docs/context/current-state.md` with status/evidence changes.
+- Append any behavior/architecture decisions to `docs/context/decision-log.md`.
+- Refresh `docs/context/next-agent-brief.md` with the next concrete handoff step.
+
 ## Engineering Guardrails
 - Keep changes scoped to the request; avoid unrelated refactors.
 - Preserve stable interfaces unless change is requested.
