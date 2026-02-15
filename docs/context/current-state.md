@@ -193,6 +193,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Adjusted M4A contract to make both-unchecked recovery panel/actions optional (unchecked pose toggles are sufficient state representation). Updated `docs/specs/ligand-workflow-spec.md`, `docs/plans/execution-plan.md`, `prompts/implementation.md`, and `scripts/validate-m4a.js` accordingly. Validation outcomes in this window: `validate:m1` FAIL (intermittent nav click timeout due snackbar pointer interception), `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS.
 - 2026-02-15: Fixed intermittent `validate:m1` nav interception by making viewer toast non-interactive (`pointer-events: none`) in `src/pages/ViewerPage.vue` (`viewer-page__toast`). Post-fix local validation evidence: `npm run validate:m1` -> PASS (two sequential direct runs).
 - 2026-02-15: Removed both-unchecked yellow recovery panel/buttons from `src/components/ControlsPanel.vue` per UX decision. Validation evidence after removal: `npm run validate:m4a` -> PASS and `npm run validate:m1` -> PASS.
+- 2026-02-15: Updated `prompts/implementation.md` so M4B now follows the same two-step design gate as M4A (`Prompt A` preview-only + `Prompt B` post-approval) with explicit `BLOCKED-DESIGN` verify behavior. No validator commands were run (prompt-doc update only).
 
 ## Open Risks
 - Major feature milestones (M4B/M5/M6) remain unimplemented while M1-M4A are complete.

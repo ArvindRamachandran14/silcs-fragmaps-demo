@@ -474,7 +474,20 @@ Return format:
 
 ### Prompt to assign M4B
 ```text
-Implement only M4B from docs/plans/execution-plan.md.
+Use a two-step assignment flow for M4B.
+
+Prompt A (Design Preview Gate only; no implementation):
+- Milestone target: M4B only.
+- Mode: DESIGN PREVIEW ONLY (no code edits).
+- Scope: featured ligands only (fixed subset), preserving M4A interaction patterns.
+- Create/refresh preview packet under `docs/screenshots/Design_previews/m4-ligand-workflow/` for M4B additions.
+- Provide desktop previews for featured-ligand switching states: default, switch-loading, switch-success, per-ligand failure, and fallback/disabled state.
+- Stop and wait for explicit approval token: `APPROVED UI PREVIEW`.
+- If approval is not provided, return `BLOCKED-DESIGN`.
+- Do not run milestone validation scripts in this phase.
+
+Prompt B (Post-approval implementation only):
+- Implement only M4B from docs/plans/execution-plan.md.
 
 Scope:
 - Expand from M4A to featured ligands only (fixed subset).
@@ -483,15 +496,21 @@ Scope:
 - Do not implement searchable full-ligand selector or full-list ordering/search in this phase (deferred to M4C).
 
 Required deliverables:
-1) Files created/updated.
-2) Behavior deltas per file.
-3) Commands run.
-4) M4B gate evidence with pass/fail per acceptance checks.
-5) Residual risks/blockers.
-6) Update docs/plans/milestone-inventory.md (M4B section).
+1) Prompt A deliverables (preview-only):
+- files created/updated
+- preview checklist coverage
+- open UI questions
+- approval state (`BLOCKED-DESIGN` until token is present)
+2) Prompt B deliverables (post-approval implementation):
+- files created/updated
+- behavior deltas per file
+- commands run
+- M4B gate evidence with pass/fail per acceptance checks
+- residual risks/blockers
+- update docs/plans/milestone-inventory.md (M4B section)
 
 Return format:
-- M4B status: PASS/FAIL/ENV-BLOCKED
+- M4B status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
 - Gate checklist
 - Files changed
 - Command outputs summary
@@ -500,7 +519,15 @@ Return format:
 
 ### Prompt to verify M4B
 ```text
-Run M4B gate verification and return a PASS/FAIL table with evidence.
+Use this only after Prompt B implementation starts.
+
+If work is still in Prompt A (DESIGN PREVIEW ONLY), do not run validation scripts.
+Return:
+- M4B status: BLOCKED-DESIGN
+- preview checklist coverage
+- missing approval token (`APPROVED UI PREVIEW`)
+
+If Prompt B implementation has started, run M4B gate verification and return a PASS/FAIL table with evidence.
 
 Sequential regression commands:
 - `npm run validate:m1`

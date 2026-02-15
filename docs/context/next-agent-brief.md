@@ -20,10 +20,11 @@ Last updated: 2026-02-15 (post-M4A contract adjustment)
   - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
 
 ## Priority Tasks (ordered)
-1. Deliver `M4B` featured-ligand switching (small fixed set) while preserving all `M4A` behavior.
-2. Add `validate:m4b` gate script and run sequential regression through `validate:m4b`.
-3. Proceed to `M5` once `M4B` gate is green.
-4. Keep `M4C` documented as deferred stretch scope.
+1. Run M4B `Prompt A` design-preview gate and obtain explicit `APPROVED UI PREVIEW` token.
+2. Deliver `M4B` featured-ligand switching (small fixed set) while preserving all `M4A` behavior.
+3. Add `validate:m4b` gate script and run sequential regression through `validate:m4b`.
+4. Proceed to `M5` once `M4B` gate is green.
+5. Keep `M4C` documented as deferred stretch scope.
 
 ## Exact Commands To Run Next
 - `npm run build`

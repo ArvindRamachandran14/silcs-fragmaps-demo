@@ -5,6 +5,14 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-15 - Apply two-step design gate workflow to M4B prompts
+- Decision: mirror M4A prompt structure for M4B in `prompts/implementation.md` with `Prompt A` (design preview only) and `Prompt B` (post-approval implementation), including `BLOCKED-DESIGN` verification behavior.
+- Why: user requested the same preview-approval gating strategy for M4B to reduce implementation rework risk.
+- Alternatives considered: keep M4B as direct implementation-only prompt flow.
+- Evidence:
+  - `prompts/implementation.md`
+- Validation/risk impact: enforces UI-first governance consistency across M4 phases; adds one explicit approval checkpoint before code changes.
+
 ### 2026-02-15 - Make viewer toast non-interactive to prevent navigation interception
 - Decision: set the viewer snackbar to `pointer-events: none` so transient toasts cannot block top-nav button clicks.
 - Why: `validate:m1` intermittently failed on `/viewer -> /` navigation because the `Viewer startup failed` toast overlapped and intercepted pointer events.
