@@ -196,22 +196,38 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ## M4A - Ligand Core Workflow (`3fly_cryst_lig` only)
 
 ### Summary
-- Pending.
+- Implemented single-ligand (`3fly_cryst_lig`) ligand-control workflow with four pose states, explicit zoom action, both-visible legend, both-unchecked recovery actions, and per-pose failure isolation.
+- Added dedicated M4A validator and script wiring, then passed sequential regression through `validate:m4a`.
 
 ### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M4A and why.` |
+| `src/store/modules/viewer.ts` | Updated | Vuex viewer state for route-level viewer behavior. | Added M4A pose-control state (`disabled`, `loading`, `error`) and mutations for pose visibility/loading/error transitions. |
+| `src/viewer/nglStage.ts` | Updated | NGL stage lifecycle and camera orchestration. | Added M4A pose APIs (`setPoseVisibility`, `zoomToLigand`), refined-pose lazy loading with fallback URL path, both-visible style differentiation, and deterministic query failure injection (`m4FailPose`). |
+| `src/components/ControlsPanel.vue` | Updated | Right-side controls panel UI. | Added M4A ligand controls UI (baseline/refined checkboxes, legend, both-unchecked recovery actions, zoom button) while preserving existing M3 debug/state selectors. |
+| `src/pages/ViewerPage.vue` | Updated | Viewer orchestration and event handling. | Wired M4A control events to stage/store logic, added per-pose failure isolation toast flow, and passed refined pose/failure-query options into stage initialization. |
+| `scripts/validate-m4a.js` | Created | Automated M4A milestone validator. | Added checks for default state, four pose states, persistent empty-state recovery actions, both-visible legend, explicit zoom behavior, per-pose failure isolation, and no-reload interaction contract. |
+| `package.json` | Updated | Project script command contract. | Added `validate:m4a` and `prevalidate:m4a` commands for reproducible M4A gate runs. |
 
 ### Commands Run
-- Pending.
+- `npm run validate:m1` -> PASS
+- `npm run validate:m2` -> PASS
+- `npm run validate:m3` -> PASS
+- `npm run validate:m4a` -> PASS
 
 ### Gate Checklist
-- Design Preview Gate approved (for UI scope): Pending.
-- Pending.
+- Design Preview Gate approved (for UI scope): PASS.
+- Default ligand is `3fly_cryst_lig` / `Crystal Ligand`: PASS.
+- Four pose states (`baseline-only`, `refined-only`, `both-visible`, `both-unchecked`) work in-place: PASS.
+- Both-unchecked recovery actions (`Show Baseline`, `Show Refined`, `Show Both`) are persistent and functional: PASS.
+- Both-visible legend is shown with baseline/refined differentiation intent: PASS.
+- Zoom is explicit user action only: PASS.
+- Per-pose failure isolates to affected control and keeps unaffected control active: PASS.
+- No M1-M3 regressions: PASS.
 
 ### Residual Risks/Blockers
-- Pending.
+- No blocker for M4A gate.
+- Residual risk: Playwright browser startup can be environment-sensitive; `validate:m4a` uses SwiftShader launch args to keep runs deterministic in headless environments.
 
 ---
 

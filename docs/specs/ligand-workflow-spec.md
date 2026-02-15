@@ -132,7 +132,7 @@ Allowed states:
 
 Behavior:
 - Toggling any checkbox updates ligand pose components in place.
-- If both unchecked, activate a persistent empty state with explicit guidance and recovery actions.
+- If both unchecked, no ligand poses are rendered; optional helper guidance may be shown.
 
 ### 6.3 Zoom Action
 - `Zoom` focuses camera on the currently selected ligand.
@@ -164,12 +164,11 @@ Error handling:
 - If both poses fail for selected ligand, preserve previous valid rendered ligand state and surface error.
 
 Empty state (both unchecked):
-- Show a persistent, non-error empty-state panel in the ligand section (not a transient toast).
-- Message: no ligand poses are currently visible for the selected ligand.
-- Recovery actions are always visible in the empty state: `Show Baseline` (primary), `Show Refined` (secondary), `Show Both` (secondary).
-- Keep actions visible until at least one pose is re-enabled.
+- Showing a dedicated empty-state panel is optional.
+- If shown, keep it non-error and scoped to ligand controls (not a transient toast).
+- Message (if present): no ligand poses are currently visible for the selected ligand.
 - Maintain ligand selection context; do not clear selected ligand when both are unchecked.
-- Ensure keyboard users can reach recovery actions immediately via normal tab order.
+- Ensure both pose checkboxes remain immediately available for keyboard recovery.
 
 ## 9. Accessibility and Usability Constraints
 - All chips, dropdown items, checkboxes, and zoom action must be keyboard accessible.
@@ -184,7 +183,7 @@ Empty state (both unchecked):
 1. Right-panel ligand section contains pose checkboxes and zoom action for `3fly_cryst_lig`.
 2. `3fly_cryst_lig` (display label `Crystal Ligand`) is default selected on first load.
 3. Pose checkboxes support all four states (`baseline-only`, `refined-only`, `both-visible`, `both-unchecked`).
-4. Both-unchecked state shows persistent empty-state guidance with one-click recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
+4. Both-unchecked state is clearly represented by unchecked pose toggles, with optional helper guidance.
 5. Both-visible state applies baseline/refined differentiation rules and shows legend.
 6. Pose visibility changes happen in place with no page reload.
 7. Zoom occurs only when user invokes `Zoom`.

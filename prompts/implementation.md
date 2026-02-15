@@ -410,7 +410,7 @@ Prompt A (Design Preview Gate only; no implementation):
 Prompt B (Post-approval implementation only):
 - Milestone target: M4A only.
 - Scope: `3fly_cryst_lig` only.
-- Implement pose checkboxes, four pose states, both-visible legend, both-unchecked recovery UI, zoom action, and per-pose failure isolation.
+- Implement pose checkboxes, four pose states, both-visible legend, zoom action, and per-pose failure isolation.
 - Keep updates in-place (no route change/full reload).
 - Do not implement featured switching or searchable full-ligand selector in this phase.
 - Keep M5+ work out of scope.
@@ -458,7 +458,7 @@ Sequential regression commands:
 M4A checks:
 1) Default ligand is `3fly_cryst_lig` (`Crystal Ligand`).
 2) Pose controls support baseline-only/refined-only/both-visible/both-unchecked.
-3) Both-unchecked shows persistent recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
+3) Both-unchecked is represented by unchecked pose toggles (helper guidance optional).
 4) Both-visible shows legend and differentiation.
 5) Zoom only on explicit action.
 6) Per-pose failure isolates to affected pose and shows non-blocking toast.

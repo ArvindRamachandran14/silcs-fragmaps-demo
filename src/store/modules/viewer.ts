@@ -3,6 +3,7 @@ import { CameraSnapshot, CAMERA_BASELINE_SNAPSHOT } from "@/viewer/nglStage";
 import type { RootState } from "@/store";
 
 export type ViewerStatus = "idle" | "loading" | "ready" | "error";
+export type PoseKind = "baseline" | "refined";
 
 export const DEFAULT_LIGAND_ID = "3fly_cryst_lig";
 export const DEFAULT_LIGAND_LABEL = "Crystal Ligand";
@@ -13,6 +14,12 @@ export interface ViewerState {
   selectedLigandLabel: string;
   baselinePoseVisible: boolean;
   refinedPoseVisible: boolean;
+  baselinePoseDisabled: boolean;
+  refinedPoseDisabled: boolean;
+  baselinePoseLoading: boolean;
+  refinedPoseLoading: boolean;
+  baselinePoseError: string | null;
+  refinedPoseError: string | null;
   visibleFragMapIds: string[];
   cameraBaseline: CameraSnapshot;
   cameraSnapshot: CameraSnapshot;
@@ -34,6 +41,12 @@ function applyDefaultViewerState(targetState: ViewerState): void {
   targetState.selectedLigandLabel = DEFAULT_LIGAND_LABEL;
   targetState.baselinePoseVisible = true;
   targetState.refinedPoseVisible = false;
+  targetState.baselinePoseDisabled = false;
+  targetState.refinedPoseDisabled = false;
+  targetState.baselinePoseLoading = false;
+  targetState.refinedPoseLoading = false;
+  targetState.baselinePoseError = null;
+  targetState.refinedPoseError = null;
   targetState.visibleFragMapIds = [];
   targetState.cameraBaseline = cloneCameraSnapshot(CAMERA_BASELINE_SNAPSHOT);
   targetState.cameraSnapshot = cloneCameraSnapshot(CAMERA_BASELINE_SNAPSHOT);
@@ -45,6 +58,12 @@ const state: ViewerState = {
   selectedLigandLabel: DEFAULT_LIGAND_LABEL,
   baselinePoseVisible: true,
   refinedPoseVisible: false,
+  baselinePoseDisabled: false,
+  refinedPoseDisabled: false,
+  baselinePoseLoading: false,
+  refinedPoseLoading: false,
+  baselinePoseError: null,
+  refinedPoseError: null,
   visibleFragMapIds: [],
   cameraBaseline: cloneCameraSnapshot(CAMERA_BASELINE_SNAPSHOT),
   cameraSnapshot: cloneCameraSnapshot(CAMERA_BASELINE_SNAPSHOT),
@@ -88,6 +107,38 @@ const mutations: MutationTree<ViewerState> = {
   },
   setCameraSnapshot(currentState, snapshot: CameraSnapshot) {
     currentState.cameraSnapshot = cloneCameraSnapshot(snapshot);
+  },
+  setPoseVisibility(currentState, payload: { kind: PoseKind; visible: boolean }) {
+    if (payload.kind === "baseline") {
+      currentState.baselinePoseVisible = payload.visible;
+      return;
+    }
+
+    currentState.refinedPoseVisible = payload.visible;
+  },
+  setPoseLoading(currentState, payload: { kind: PoseKind; loading: boolean }) {
+    if (payload.kind === "baseline") {
+      currentState.baselinePoseLoading = payload.loading;
+      return;
+    }
+
+    currentState.refinedPoseLoading = payload.loading;
+  },
+  setPoseDisabled(currentState, payload: { kind: PoseKind; disabled: boolean }) {
+    if (payload.kind === "baseline") {
+      currentState.baselinePoseDisabled = payload.disabled;
+      return;
+    }
+
+    currentState.refinedPoseDisabled = payload.disabled;
+  },
+  setPoseError(currentState, payload: { kind: PoseKind; error: string | null }) {
+    if (payload.kind === "baseline") {
+      currentState.baselinePoseError = payload.error;
+      return;
+    }
+
+    currentState.refinedPoseError = payload.error;
   },
 };
 

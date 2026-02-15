@@ -52,11 +52,22 @@
             :selected-ligand-label="viewerState.selectedLigandLabel"
             :baseline-pose-visible="viewerState.baselinePoseVisible"
             :refined-pose-visible="viewerState.refinedPoseVisible"
+            :baseline-pose-disabled="viewerState.baselinePoseDisabled"
+            :refined-pose-disabled="viewerState.refinedPoseDisabled"
+            :baseline-pose-loading="viewerState.baselinePoseLoading"
+            :refined-pose-loading="viewerState.refinedPoseLoading"
+            :baseline-pose-error="viewerState.baselinePoseError"
+            :refined-pose-error="viewerState.refinedPoseError"
             :visible-frag-map-ids="viewerState.visibleFragMapIds"
             :camera-baseline="viewerState.cameraBaseline"
             :camera-snapshot="viewerState.cameraSnapshot"
             :can-reset="canResetView"
             @reset-view="handleResetView"
+            @toggle-pose="handlePoseToggle"
+            @show-baseline="handleShowBaseline"
+            @show-refined="handleShowRefined"
+            @show-both="handleShowBoth"
+            @zoom-ligand="handleZoomLigand"
           />
         </v-col>
       </v-row>
@@ -74,16 +85,34 @@
           :selected-ligand-label="viewerState.selectedLigandLabel"
           :baseline-pose-visible="viewerState.baselinePoseVisible"
           :refined-pose-visible="viewerState.refinedPoseVisible"
+          :baseline-pose-disabled="viewerState.baselinePoseDisabled"
+          :refined-pose-disabled="viewerState.refinedPoseDisabled"
+          :baseline-pose-loading="viewerState.baselinePoseLoading"
+          :refined-pose-loading="viewerState.refinedPoseLoading"
+          :baseline-pose-error="viewerState.baselinePoseError"
+          :refined-pose-error="viewerState.refinedPoseError"
           :visible-frag-map-ids="viewerState.visibleFragMapIds"
           :camera-baseline="viewerState.cameraBaseline"
           :camera-snapshot="viewerState.cameraSnapshot"
           :can-reset="canResetView"
           @reset-view="handleResetView"
+          @toggle-pose="handlePoseToggle"
+          @show-baseline="handleShowBaseline"
+          @show-refined="handleShowRefined"
+          @show-both="handleShowBoth"
+          @zoom-ligand="handleZoomLigand"
         />
       </v-navigation-drawer>
     </template>
 
-    <v-snackbar v-model="showToast" timeout="3200" top right data-test-id="viewer-toast">
+    <v-snackbar
+      v-model="showToast"
+      timeout="3200"
+      top
+      right
+      class="viewer-page__toast"
+      data-test-id="viewer-toast"
+    >
       {{ toastMessage }}
     </v-snackbar>
   </section>
@@ -97,8 +126,10 @@ import ViewerTopBar from "@/components/ViewerTopBar.vue";
 import { AssetManifest, LigandAsset, loadAssetManifest } from "@/data/manifest";
 import { RootState } from "@/store";
 import { ViewerState, DEFAULT_LIGAND_ID } from "@/store/modules/viewer";
+import type { PoseKind } from "@/store/modules/viewer";
 import { StartupState } from "@/store/modules/startup";
 import {
+  getForcedPoseFailuresFromQuery,
   getMinLoadingMsFromQuery,
   getViewerM3DebugState,
   isForcedStageFailureFromQuery,
@@ -222,6 +253,9 @@ export default Vue.extend({
           container: hostElement,
           proteinUrl: manifest.protein.pdbUrl,
           ligandUrl: defaultLigand.baselineSdfUrl,
+          refinedLigandUrl: defaultLigand.refinedSdfUrl,
+          refinedLigandFallbackUrl: defaultLigand.refinedPdbFallbackUrl,
+          forcedPoseFailures: getForcedPoseFailuresFromQuery(this.$route.query.m4FailPose),
           forceInitFailure: isForcedStageFailureFromQuery(this.$route.query.m3StageFail),
           minLoadingMs: getMinLoadingMsFromQuery(this.$route.query.m3LoadMs),
         });
@@ -259,6 +293,65 @@ export default Vue.extend({
       this.stageController.resetView();
       this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
       this.toastMessage = "Camera reset to baseline view.";
+      this.showToast = true;
+    },
+    async setPoseVisibility(kind: PoseKind, visible: boolean): Promise<boolean> {
+      if (!this.stageController) {
+        return false;
+      }
+
+      const disabled =
+        kind === "baseline" ? this.viewerState.baselinePoseDisabled : this.viewerState.refinedPoseDisabled;
+      const loading = kind === "baseline" ? this.viewerState.baselinePoseLoading : this.viewerState.refinedPoseLoading;
+
+      if ((disabled && visible) || loading) {
+        return false;
+      }
+
+      this.$store.commit("viewer/setPoseLoading", { kind, loading: true });
+      this.$store.commit("viewer/setPoseError", { kind, error: null });
+
+      try {
+        await this.stageController.setPoseVisibility(kind, visible);
+        this.$store.commit("viewer/setPoseVisibility", { kind, visible });
+        this.$store.commit("viewer/setPoseDisabled", { kind, disabled: false });
+        return true;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.$store.commit("viewer/setPoseVisibility", { kind, visible: false });
+        this.$store.commit("viewer/setPoseDisabled", { kind, disabled: true });
+        this.$store.commit("viewer/setPoseError", { kind, error: message });
+        this.toastMessage = `${kind === "baseline" ? "Baseline" : "Refined"} pose failed: ${message}`;
+        this.showToast = true;
+        return false;
+      } finally {
+        this.$store.commit("viewer/setPoseLoading", { kind, loading: false });
+        this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+      }
+    },
+    async handlePoseToggle(payload: { kind: PoseKind; visible: boolean }) {
+      await this.setPoseVisibility(payload.kind, payload.visible);
+    },
+    async handleShowBaseline() {
+      await this.setPoseVisibility("baseline", true);
+      await this.setPoseVisibility("refined", false);
+    },
+    async handleShowRefined() {
+      await this.setPoseVisibility("baseline", false);
+      await this.setPoseVisibility("refined", true);
+    },
+    async handleShowBoth() {
+      await this.setPoseVisibility("baseline", true);
+      await this.setPoseVisibility("refined", true);
+    },
+    handleZoomLigand() {
+      if (!this.stageController) {
+        return;
+      }
+
+      this.stageController.zoomToLigand();
+      this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+      this.toastMessage = "Zoomed to selected ligand.";
       this.showToast = true;
     },
     async retryInitialization() {
@@ -303,5 +396,9 @@ export default Vue.extend({
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.viewer-page__toast {
+  pointer-events: none;
 }
 </style>

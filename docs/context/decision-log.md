@@ -5,6 +5,52 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-15 - Make viewer toast non-interactive to prevent navigation interception
+- Decision: set the viewer snackbar to `pointer-events: none` so transient toasts cannot block top-nav button clicks.
+- Why: `validate:m1` intermittently failed on `/viewer -> /` navigation because the `Viewer startup failed` toast overlapped and intercepted pointer events.
+- Alternatives considered: only harden validator clicks with forced click/retry logic while keeping interactive toast behavior.
+- Evidence:
+  - `src/pages/ViewerPage.vue`
+  - `scripts/validate-m1.js` failure traces (`nav-home` click intercepted by snackbar content)
+- Validation/risk impact: improves route-navigation reliability and preserves non-blocking toast intent; tradeoff is toast action affordances would need a different pattern if added later.
+
+### 2026-02-15 - Remove mandatory both-unchecked recovery panel UI from controls
+- Decision: remove the yellow both-unchecked recovery panel/buttons from `ControlsPanel` and rely on checkbox state alone for recovery.
+- Why: user feedback indicated the panel was unnecessary and cluttered the workflow.
+- Alternatives considered: keep panel with toned-down styling instead of full removal.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+- Validation/risk impact: simplifies panel UI and aligns with relaxed M4A contract; recovery remains available through direct checkbox toggles.
+
+### 2026-02-15 - Relax M4A both-unchecked UX requirement from mandatory recovery panel to optional helper guidance
+- Decision: treat both pose checkboxes unchecked as sufficient representation of the both-unchecked state; dedicated recovery panel/buttons are optional, not required.
+- Why: user confirmed toggle semantics are self-explanatory and does not want recovery-panel UX to be a gate blocker.
+- Alternatives considered: keep strict requirement for persistent recovery actions (`Show Baseline`, `Show Refined`, `Show Both`) in M4A.
+- Evidence:
+  - `docs/specs/ligand-workflow-spec.md`
+  - `docs/plans/execution-plan.md`
+  - `prompts/implementation.md`
+  - `scripts/validate-m4a.js`
+- Validation/risk impact: reduces UI and validator coupling for M4A while preserving required four-state behavior; minor risk is discoverability for first-time users if no helper text is shown.
+
+### 2026-02-15 - Implement M4A on top of existing M3 panel instead of introducing a new LigandControls component
+- Decision: add M4A controls directly to `src/components/ControlsPanel.vue` (checkboxes, legend, recovery actions, zoom) and wire behavior through existing `src/pages/ViewerPage.vue`.
+- Why: minimizes integration surface and preserves existing M3 selectors/structure while adding M4A behavior with lower regression risk.
+- Alternatives considered: create a separate `LigandControls.vue` and refactor panel composition before M4A gate.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+- Validation/risk impact: M4A features land with fewer moving parts; residual risk is eventual M4B panel complexity growth, to be managed in next milestone.
+
+### 2026-02-15 - Add dedicated `validate:m4a` gate script with deterministic per-pose failure coverage
+- Decision: add `scripts/validate-m4a.js` and `package.json` scripts (`validate:m4a`, `prevalidate:m4a`) to enforce M4A behavior checks after baseline regression commands.
+- Why: M4A introduces multiple interaction states and failure-isolation rules that are hard to keep stable without a repeatable validator.
+- Alternatives considered: rely on manual checks only or fold M4A assertions into M3 script.
+- Evidence:
+  - `scripts/validate-m4a.js`
+  - `package.json`
+- Validation/risk impact: improves regression confidence for M4A/M4B handoff; requires SwiftShader launch args for robust headless execution in constrained environments.
+
 ### 2026-02-15 - Re-scope ligand milestone into M4A/M4B required and M4C deferred non-blocking
 - Decision: split prior M4 scope into `M4A` (single-ligand core) and `M4B` (featured-ligand subset) as required forward milestones, and move full-list search/ordering into `M4C` deferred stretch scope.
 - Why: previous big-bang M4 integration attempt introduced regression risk and unstable validator outcomes; smaller slices reduce integration blast radius and protect M1-M3 baseline stability.

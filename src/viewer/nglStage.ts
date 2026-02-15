@@ -1,5 +1,6 @@
 import { resolveRuntimeUrl } from "@/data/manifest";
 import { assetExists } from "@/viewer/loaders";
+import type { PoseKind } from "@/store/modules/viewer";
 
 export interface CameraSnapshot {
   position: [number, number, number];
@@ -12,6 +13,9 @@ export interface StageInitOptions {
   container: HTMLElement;
   proteinUrl: string;
   ligandUrl: string;
+  refinedLigandUrl?: string;
+  refinedLigandFallbackUrl?: string;
+  forcedPoseFailures?: PoseKind[];
   forceInitFailure?: boolean;
   minLoadingMs?: number;
 }
@@ -20,6 +24,8 @@ export interface NglStageController {
   getCameraBaseline(): CameraSnapshot;
   getCameraSnapshot(): CameraSnapshot;
   setCameraSnapshot(snapshot: CameraSnapshot): void;
+  setPoseVisibility(kind: PoseKind, visible: boolean): Promise<void>;
+  zoomToLigand(): void;
   resetView(): void;
   handleResize(): void;
   destroy(): void;
@@ -135,6 +141,16 @@ export function getMinLoadingMsFromQuery(queryValue: unknown): number | undefine
   return Math.min(normalized, 20000);
 }
 
+export function getForcedPoseFailuresFromQuery(queryValue: unknown): PoseKind[] {
+  const values = Array.isArray(queryValue) ? queryValue : [queryValue];
+  const parsed = values
+    .flatMap((entry) => (typeof entry === "string" ? entry.split(",") : []))
+    .map((entry) => entry.trim().toLowerCase())
+    .filter((entry) => entry === "baseline" || entry === "refined") as PoseKind[];
+
+  return Array.from(new Set(parsed));
+}
+
 function toCameraSnapshotTuple(values: number[]): [number, number, number] {
   return [values[0], values[1], values[2]];
 }
@@ -228,6 +244,68 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
   options.container.setAttribute("aria-label", "3FLY protein and Crystal Ligand stage");
 
   let stage: any = null;
+  let baselineLigandComponent: any = null;
+  let refinedLigandComponent: any = null;
+  let baselineLigandRepresentation: any = null;
+  let refinedLigandRepresentation: any = null;
+  const forcedPoseFailures = new Set<PoseKind>(options.forcedPoseFailures || []);
+  let baselinePoseVisible = true;
+  let refinedPoseVisible = false;
+
+  function updatePoseStyles(): void {
+    const bothVisible = baselinePoseVisible && refinedPoseVisible;
+    if (baselineLigandRepresentation?.setParameters) {
+      baselineLigandRepresentation.setParameters({
+        opacity: bothVisible ? 0.38 : 1,
+        radiusScale: bothVisible ? 0.75 : 1,
+      });
+    }
+
+    if (refinedLigandRepresentation?.setParameters) {
+      refinedLigandRepresentation.setParameters({
+        opacity: 1,
+        radiusScale: bothVisible ? 1.22 : 1,
+      });
+    }
+  }
+
+  async function loadRefinedPose(): Promise<void> {
+    if (refinedLigandComponent) {
+      return;
+    }
+
+    if (forcedPoseFailures.has("refined")) {
+      throw new Error("Forced refined pose failure (m4FailPose=refined).");
+    }
+
+    const candidateUrls = [options.refinedLigandUrl, options.refinedLigandFallbackUrl].filter(
+      (value): value is string => Boolean(value),
+    );
+    if (candidateUrls.length === 0) {
+      throw new Error("Refined pose assets are unavailable for the selected ligand.");
+    }
+
+    let lastError: string | null = null;
+    for (const candidateUrl of candidateUrls) {
+      try {
+        refinedLigandComponent = await stage.loadFile(resolveRuntimeUrl(candidateUrl), { defaultRepresentation: false });
+        refinedLigandRepresentation = refinedLigandComponent.addRepresentation("ball+stick", {
+          colorScheme: "element",
+          opacity: 1,
+          radiusScale: 1,
+        });
+        refinedLigandComponent.setVisibility(refinedPoseVisible);
+        updatePoseStyles();
+        stage?.viewer?.requestRender?.();
+        return;
+      } catch (error) {
+        lastError = error instanceof Error ? error.message : String(error);
+      }
+    }
+
+    throw new Error(lastError || "Failed to load refined pose.");
+  }
+
   let runtimeCameraBaseline = cloneCameraSnapshot(CAMERA_BASELINE_SNAPSHOT);
   try {
     const nglModule = (await import("ngl")) as any;
@@ -246,8 +324,12 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     debugState.startupProteinLoaded = true;
     debugState.startupProteinRepresentation = "cartoon";
 
-    const ligandComponent = await stage.loadFile(ligandRuntimeUrl, { defaultRepresentation: false });
-    ligandComponent.addRepresentation("ball+stick", { colorScheme: "element" });
+    baselineLigandComponent = await stage.loadFile(ligandRuntimeUrl, { defaultRepresentation: false });
+    baselineLigandRepresentation = baselineLigandComponent.addRepresentation("ball+stick", {
+      colorScheme: "element",
+      opacity: 1,
+      radiusScale: 1,
+    });
     debugState.startupLigandLoaded = true;
     debugState.startupLigandRepresentation = "ball+stick";
 
@@ -288,6 +370,35 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     setCameraSnapshot(snapshot: CameraSnapshot) {
       currentCamera = cloneCameraSnapshot(snapshot);
       applyStageCameraSnapshot(stage, currentCamera);
+      debugState.currentCamera = cloneCameraSnapshot(currentCamera);
+    },
+    async setPoseVisibility(kind: PoseKind, visible: boolean) {
+      if (kind === "baseline") {
+        if (visible && forcedPoseFailures.has("baseline")) {
+          throw new Error("Forced baseline pose failure (m4FailPose=baseline).");
+        }
+
+        baselinePoseVisible = visible;
+        baselineLigandComponent?.setVisibility(visible);
+        updatePoseStyles();
+        stage?.viewer?.requestRender?.();
+        return;
+      }
+
+      if (visible) {
+        await loadRefinedPose();
+      }
+
+      refinedPoseVisible = visible;
+      refinedLigandComponent?.setVisibility(visible);
+      updatePoseStyles();
+      stage?.viewer?.requestRender?.();
+    },
+    zoomToLigand() {
+      const target = refinedPoseVisible && refinedLigandComponent ? refinedLigandComponent : baselineLigandComponent;
+      target?.autoView?.(0);
+      stage?.viewer?.requestRender?.();
+      currentCamera = readStageCameraSnapshot(stage, runtimeCameraBaseline);
       debugState.currentCamera = cloneCameraSnapshot(currentCamera);
     },
     resetView() {

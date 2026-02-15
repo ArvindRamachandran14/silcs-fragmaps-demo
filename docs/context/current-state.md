@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-15 (M4 scope replan to M4A/M4B + M4C deferred)
+Last updated: 2026-02-15 (M4A both-unchecked contract adjusted)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -57,17 +57,20 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Core M3 gate passed; known cross-spec divergences documented below are outside strict M3 script checks.
 
 ### M4A Ligand Core Workflow
-- Status: `not started (replanned)`
+- Status: `completed`
 - Evidence:
-  - Scope is now single-ligand core (`3fly_cryst_lig`) with four pose states, zoom, and error/empty-state handling.
-  - No active M4A implementation files are present yet in current working tree.
+  - Ligand controls UI added in `src/components/ControlsPanel.vue` (baseline/refined checkboxes, both-visible legend, both-unchecked recovery actions, zoom action).
+  - Viewer orchestration wiring added in `src/pages/ViewerPage.vue` for in-place pose toggles/recovery and per-pose failure isolation toast flow.
+  - Stage pose APIs added in `src/viewer/nglStage.ts` (`setPoseVisibility`, `zoomToLigand`) with deterministic `m4FailPose` query failure injection.
+  - Viewer store pose state model extended in `src/store/modules/viewer.ts`.
+  - M4A validator added in `scripts/validate-m4a.js` and wired in `package.json`.
 - Validation signal:
-  - `npm run build` -> `PASS` (2026-02-15).
-  - `npm run validate:m1` -> `PASS` (2026-02-15 after rebuilding `dist`).
+  - `npm run validate:m1` -> `PASS` (2026-02-15).
   - `npm run validate:m2` -> `PASS` (2026-02-15).
   - `npm run validate:m3` -> `PASS` (2026-02-15).
+  - `npm run validate:m4a` -> `PASS` (2026-02-15).
 - Gaps to exit criteria:
-  - Implement M4A behaviors and add dedicated validation coverage.
+  - None for M4A gate.
 
 ### M4B Featured Ligands Expansion
 - Status: `not started (replanned)`
@@ -186,10 +189,15 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Regression-fix-only pass ran strict sequence attempt. Outcomes: `validate:m1` -> FAIL (`nav-viewer` click timeout), `validate:m2` -> PASS, `validate:m3` -> FAIL (missing loading-state selector), `validate:m4` -> ENV-BLOCKED (hung validator process terminated). See `docs/context/failure-report-m4-2026-02-15.md`.
 - 2026-02-15: Re-validated baseline with fresh build chain. Outcomes: `npm run build` -> PASS; `npm run validate:m1` -> PASS; `npm run validate:m2` -> PASS; `npm run validate:m3` -> PASS. Intermittent earlier M1/M3 failures treated as non-deterministic and not currently reproducible after rebuild.
 - 2026-02-15: Planning decision adopted: split prior M4 scope into `M4A` (single-ligand core) + `M4B` (featured ligands only), and defer `M4C` (full list/search/ordering) as non-blocking stretch scope for post-M8 unless explicitly re-promoted.
+- 2026-02-15: Implemented M4A code path (`src/store/modules/viewer.ts`, `src/viewer/nglStage.ts`, `src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`) plus validator (`scripts/validate-m4a.js`, `package.json` script wiring). Sequential regression outcomes: `validate:m1` PASS, `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS.
+- 2026-02-15: Adjusted M4A contract to make both-unchecked recovery panel/actions optional (unchecked pose toggles are sufficient state representation). Updated `docs/specs/ligand-workflow-spec.md`, `docs/plans/execution-plan.md`, `prompts/implementation.md`, and `scripts/validate-m4a.js` accordingly. Validation outcomes in this window: `validate:m1` FAIL (intermittent nav click timeout due snackbar pointer interception), `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS.
+- 2026-02-15: Fixed intermittent `validate:m1` nav interception by making viewer toast non-interactive (`pointer-events: none`) in `src/pages/ViewerPage.vue` (`viewer-page__toast`). Post-fix local validation evidence: `npm run validate:m1` -> PASS (two sequential direct runs).
+- 2026-02-15: Removed both-unchecked yellow recovery panel/buttons from `src/components/ControlsPanel.vue` per UX decision. Validation evidence after removal: `npm run validate:m4a` -> PASS and `npm run validate:m1` -> PASS.
 
 ## Open Risks
-- Major feature milestones (M4A/M4B/M5/M6) remain unimplemented while M1-M3 are complete.
+- Major feature milestones (M4B/M5/M6) remain unimplemented while M1-M4A are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
+- M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.
 - AC evidence path (M7) and release readiness (M8) are currently absent.
 - Execution-plan automation contract is partially missing and will need alignment before M7/M8 sign-off.
