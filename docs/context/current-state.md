@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-15 (M4A both-unchecked contract adjusted)
+Last updated: 2026-02-15 (M4B Prompt-A preview packet refreshed)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -77,6 +77,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - Evidence:
   - Scope is restricted to featured-ligand switching only.
   - Searchable full-ligand selection is intentionally excluded from this phase.
+  - Prompt-A preview artifacts were revised so featured chips are fully visible (no right-panel occlusion) across all desktop M4B state mockups.
 - Validation signal:
   - No M4B validator command exists yet.
 - Gaps to exit criteria:
@@ -194,6 +195,9 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Fixed intermittent `validate:m1` nav interception by making viewer toast non-interactive (`pointer-events: none`) in `src/pages/ViewerPage.vue` (`viewer-page__toast`). Post-fix local validation evidence: `npm run validate:m1` -> PASS (two sequential direct runs).
 - 2026-02-15: Removed both-unchecked yellow recovery panel/buttons from `src/components/ControlsPanel.vue` per UX decision. Validation evidence after removal: `npm run validate:m4a` -> PASS and `npm run validate:m1` -> PASS.
 - 2026-02-15: Updated `prompts/implementation.md` so M4B now follows the same two-step design gate as M4A (`Prompt A` preview-only + `Prompt B` post-approval) with explicit `BLOCKED-DESIGN` verify behavior. No validator commands were run (prompt-doc update only).
+- 2026-02-15: Executed M4B Prompt A (design-preview only): added desktop M4B preview artifacts for default, switch-loading, switch-success, per-ligand failure, and fallback/disabled states under `docs/screenshots/Design_previews/m4-ligand-workflow/`; updated packet index/state guidance and approval log. No validator commands were run (design-doc/artifact update only).
+- 2026-02-15: Revised M4B Prompt-A previews to proposed 4-ligand subset (`Crystal Ligand` + 3 featured options) across desktop state artifacts and guidance docs. No validator commands were run (design-doc/artifact update only).
+- 2026-02-15: Addressed reviewer feedback on M4B preview layout by repositioning right-side context panels in all M4B desktop state artifacts so no featured chip is occluded. Updated `m4b-preview-index.md` and `approval-log.md`. No validator commands were run (design-doc/artifact update only).
 
 ## Open Risks
 - Major feature milestones (M4B/M5/M6) remain unimplemented while M1-M4A are complete.

@@ -5,6 +5,46 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-15 - Enforce non-occluding M4B chip layout in preview artifacts before implementation
+- Decision: reposition right-side viewer-context/info panels in all M4B desktop mockups so featured-ligand chips are fully visible and unobstructed.
+- Why: reviewer identified that the fourth featured chip was partially hidden in the default preview, which would be an unacceptable persistent layout outcome if carried into implementation.
+- Alternatives considered: keep existing geometry and treat overlap as preview-only artifact debt.
+- Evidence:
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-default-state.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-switch-loading.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-switch-success.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-per-ligand-failure.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-fallback-disabled-state.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/m4b-preview-index.md`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/approval-log.md`
+- Validation/risk impact: removes known layout defect from the design baseline and reduces risk of reproducing overlap in Prompt-B implementation.
+
+### 2026-02-15 - Use Prompt-A-only artifacts for M4B and gate implementation on explicit approval
+- Decision: produce M4B design-preview artifacts only (desktop state set) and stop before any M4B implementation until `APPROVED UI PREVIEW` is provided.
+- Why: user invoked M4B Prompt A directly and requested design-gate execution with no code edits.
+- Alternatives considered: begin M4B implementation in the same session without refreshed M4B previews.
+- Evidence:
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/m4b-preview-index.md`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-default-state.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-switch-loading.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-switch-success.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-per-ligand-failure.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-fallback-disabled-state.svg`
+- Validation/risk impact: keeps UI-first compliance for M4B and prevents premature implementation; residual risk is reviewer feedback requiring preview revisions before coding.
+
+### 2026-02-15 - Propose M4B featured subset as 4 total ligands in design preview
+- Decision: adjust M4B preview artifacts to show `Crystal Ligand` plus three featured options (4 total) as the proposed implementation subset for this phase.
+- Why: reviewer requested expanding preview from 3 total to 4 total while keeping M4B scope constrained.
+- Alternatives considered: keep prior smaller subset in preview and defer count change to implementation phase.
+- Evidence:
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/m4b-preview-index.md`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-default-state.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-switch-loading.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-switch-success.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-per-ligand-failure.svg`
+  - `docs/screenshots/Design_previews/m4-ligand-workflow/desktop/m4b-fallback-disabled-state.svg`
+- Validation/risk impact: preserves small-scope strategy while improving switching coverage; if approved, specs/plans should be updated so implementation contract matches the new featured-count decision.
+
 ### 2026-02-15 - Apply two-step design gate workflow to M4B prompts
 - Decision: mirror M4A prompt structure for M4B in `prompts/implementation.md` with `Prompt A` (design preview only) and `Prompt B` (post-approval implementation), including `BLOCKED-DESIGN` verification behavior.
 - Why: user requested the same preview-approval gating strategy for M4B to reduce implementation rework risk.

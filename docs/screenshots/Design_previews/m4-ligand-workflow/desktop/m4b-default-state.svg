@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1366" height="768" viewBox="0 0 1366 768">
+  <rect width="1366" height="768" fill="#f6f7fb"/>
+  <rect x="0" y="0" width="1366" height="72" fill="#1f6fbf"/>
+  <text x="20" y="45" font-family="Arial, sans-serif" font-size="34" fill="#ffffff">SILCS FragMaps Demo</text>
+  <text x="36" y="122" font-family="Arial, sans-serif" font-size="44" fill="#1f2937">M4B Default State</text>
+  <rect x="36" y="156" width="1294" height="576" rx="12" fill="#ffffff" stroke="#d6dbe7"/>
+  <text x="64" y="208" font-family="Arial, sans-serif" font-size="26" fill="#1f2937">Featured Ligands</text>
+  <rect x="64" y="228" width="250" height="44" rx="22" fill="#1f6fbf"/>
+  <text x="95" y="256" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">Crystal Ligand</text>
+  <rect x="328" y="228" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="362" y="256" font-family="Arial, sans-serif" font-size="20" fill="#26456f">05_2e</text>
+  <rect x="558" y="228" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="592" y="256" font-family="Arial, sans-serif" font-size="20" fill="#26456f">06_2f</text>
+  <rect x="788" y="228" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="822" y="256" font-family="Arial, sans-serif" font-size="20" fill="#26456f">07_2g</text>
+  <text x="64" y="318" font-family="Arial, sans-serif" font-size="24" fill="#1f2937">Pose visibility: Baseline ON, Refined OFF</text>
+  <text x="64" y="356" font-family="Arial, sans-serif" font-size="24" fill="#1f2937">Camera preserved on switch (no auto-zoom)</text>
+  <rect x="64" y="390" width="170" height="46" rx="8" fill="#1f6fbf"/>
+  <text x="122" y="420" font-family="Arial, sans-serif" font-size="22" fill="#ffffff">Zoom</text>
+  <rect x="820" y="300" width="480" height="400" rx="10" fill="#f9fbff" stroke="#d6dbe7"/>
+  <text x="844" y="346" font-family="Arial, sans-serif" font-size="24" fill="#1f2937">Viewer context</text>
+  <text x="844" y="384" font-family="Arial, sans-serif" font-size="20" fill="#334155">Active ligand: Crystal Ligand</text>
+  <text x="844" y="416" font-family="Arial, sans-serif" font-size="20" fill="#334155">State: baseline-only</text>
+</svg>

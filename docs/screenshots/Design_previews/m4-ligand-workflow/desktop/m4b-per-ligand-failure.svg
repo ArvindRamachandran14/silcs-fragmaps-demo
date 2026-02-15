@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1366" height="768" viewBox="0 0 1366 768">
+  <rect width="1366" height="768" fill="#f6f7fb"/>
+  <text x="36" y="70" font-family="Arial, sans-serif" font-size="44" fill="#1f2937">M4B Per-Ligand Failure State</text>
+  <rect x="36" y="108" width="1294" height="620" rx="12" fill="#ffffff" stroke="#d6dbe7"/>
+  <rect x="64" y="122" width="220" height="44" rx="22" fill="#1f6fbf"/>
+  <text x="128" y="150" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">07_2g</text>
+  <rect x="304" y="122" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="340" y="150" font-family="Arial, sans-serif" font-size="20" fill="#26456f">Crystal Ligand</text>
+  <rect x="544" y="122" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="608" y="150" font-family="Arial, sans-serif" font-size="20" fill="#26456f">05_2e</text>
+  <rect x="784" y="122" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="848" y="150" font-family="Arial, sans-serif" font-size="20" fill="#26456f">06_2f</text>
+  <rect x="64" y="160" width="590" height="96" rx="10" fill="#fdecec" stroke="#e59a9a"/>
+  <text x="88" y="202" font-family="Arial, sans-serif" font-size="24" fill="#8c1d1d">Refined pose failed for ligand 07_2g.</text>
+  <text x="88" y="234" font-family="Arial, sans-serif" font-size="20" fill="#8c1d1d">Only refined control is disabled; baseline remains usable.</text>
+  <rect x="64" y="288" width="220" height="44" rx="8" fill="#1f6fbf"/>
+  <text x="126" y="316" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">Baseline ON</text>
+  <rect x="304" y="288" width="220" height="44" rx="8" fill="#e5e7eb"/>
+  <text x="356" y="316" font-family="Arial, sans-serif" font-size="20" fill="#6b7280">Refined OFF</text>
+  <rect x="760" y="280" width="540" height="420" rx="10" fill="#f9fbff" stroke="#d6dbe7"/>
+  <text x="790" y="340" font-family="Arial, sans-serif" font-size="22" fill="#334155">Non-blocking failure handling</text>
+  <text x="790" y="380" font-family="Arial, sans-serif" font-size="20" fill="#334155">- Toast shown</text>
+  <text x="790" y="414" font-family="Arial, sans-serif" font-size="20" fill="#334155">- Viewer remains interactive</text>
+  <text x="790" y="448" font-family="Arial, sans-serif" font-size="20" fill="#334155">- No route reload</text>
+</svg>

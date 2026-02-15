@@ -1,6 +1,6 @@
 # Next Agent Brief
 
-Last updated: 2026-02-15 (post-M4A contract adjustment)
+Last updated: 2026-02-15 (M4B preview occlusion fix applied)
 
 ## Current Milestone Target
 - Active target: `M4B Featured Ligands Expansion` (M1-M4A validated complete; M4B is the first incomplete dependency for downstream milestones).
@@ -66,4 +66,4 @@ Last updated: 2026-02-15 (post-M4A contract adjustment)
 3. Refresh this brief with the exact next unresolved `M4A`/`M4B` (or `M5`) task.
 
 ## Immediate Next Concrete Step
-- Implement M4B slice 1: introduce featured ligand quick-pick switching (no searchable full list) and preserve in-place camera/pose behavior, then run `npm run validate:m1 && npm run validate:m2 && npm run validate:m3 && npm run validate:m4a`.
+- Review revised M4B Prompt-A preview artifacts (proposed 4-ligand subset: `Crystal Ligand` + 3 featured options; no chip occlusion in desktop states) in `docs/screenshots/Design_previews/m4-ligand-workflow/` and obtain explicit `APPROVED UI PREVIEW` token before any M4B implementation edits.

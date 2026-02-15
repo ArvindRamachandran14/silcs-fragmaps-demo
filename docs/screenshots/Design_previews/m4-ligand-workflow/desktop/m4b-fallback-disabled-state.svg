@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1366" height="768" viewBox="0 0 1366 768">
+  <rect width="1366" height="768" fill="#f6f7fb"/>
+  <text x="36" y="70" font-family="Arial, sans-serif" font-size="44" fill="#1f2937">M4B Fallback / Disabled State</text>
+  <rect x="36" y="108" width="1294" height="620" rx="12" fill="#ffffff" stroke="#d6dbe7"/>
+  <text x="64" y="164" font-family="Arial, sans-serif" font-size="26" fill="#1f2937">Featured ligands with partial availability</text>
+  <rect x="64" y="190" width="220" height="44" rx="22" fill="#1f6fbf"/>
+  <text x="120" y="218" font-family="Arial, sans-serif" font-size="20" fill="#ffffff">Crystal Ligand</text>
+  <rect x="304" y="190" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="370" y="218" font-family="Arial, sans-serif" font-size="20" fill="#26456f">05_2e</text>
+  <rect x="544" y="190" width="220" height="44" rx="22" fill="#edf2fb" stroke="#9fb4d8"/>
+  <text x="610" y="218" font-family="Arial, sans-serif" font-size="20" fill="#26456f">06_2f</text>
+  <rect x="784" y="190" width="220" height="44" rx="22" fill="#f3f4f6" stroke="#cbd5e1"/>
+  <text x="850" y="218" font-family="Arial, sans-serif" font-size="20" fill="#94a3b8">07_2g</text>
+  <text x="792" y="248" font-family="Arial, sans-serif" font-size="16" fill="#94a3b8">disabled</text>
+  <rect x="64" y="288" width="600" height="130" rx="10" fill="#fff8e1" stroke="#e4c979"/>
+  <text x="88" y="330" font-family="Arial, sans-serif" font-size="24" fill="#7b5b00">Fallback behavior:</text>
+  <text x="88" y="362" font-family="Arial, sans-serif" font-size="20" fill="#7b5b00">One featured ligand is disabled, other featured switches still work.</text>
+  <text x="88" y="392" font-family="Arial, sans-serif" font-size="20" fill="#7b5b00">Current valid ligand stays selected.</text>
+  <rect x="760" y="300" width="540" height="390" rx="10" fill="#f9fbff" stroke="#d6dbe7"/>
+  <text x="792" y="360" font-family="Arial, sans-serif" font-size="22" fill="#334155">Resilience Contract</text>
+  <text x="792" y="400" font-family="Arial, sans-serif" font-size="20" fill="#334155">- Isolated disable state</text>
+  <text x="792" y="432" font-family="Arial, sans-serif" font-size="20" fill="#334155">- Non-blocking toast</text>
+  <text x="792" y="464" font-family="Arial, sans-serif" font-size="20" fill="#334155">- No app crash</text>
+</svg>
