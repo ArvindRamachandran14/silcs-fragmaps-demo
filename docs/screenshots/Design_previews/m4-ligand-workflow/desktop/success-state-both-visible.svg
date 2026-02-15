@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1366" height="768" viewBox="0 0 1366 768">
+  <rect width="1366" height="768" fill="#f4f6f8"/>
+  <rect x="0" y="0" width="1366" height="56" fill="#1f3a5f"/>
+  <text x="24" y="35" font-family="Arial" font-size="20" fill="#ffffff">M4A Preview - Success (Both Visible)</text>
+  <rect x="24" y="88" width="930" height="648" rx="8" fill="#ffffff" stroke="#c7ced6"/>
+  <rect x="978" y="88" width="364" height="648" rx="8" fill="#ffffff" stroke="#c7ced6"/>
+  <text x="998" y="124" font-family="Arial" font-size="18" fill="#2d3748">Ligand Controls (M4A)</text>
+  <rect x="998" y="228" width="16" height="16" fill="#2b6cb0"/><text x="1022" y="241" font-family="Arial" font-size="14" fill="#2d3748">Baseline</text>
+  <rect x="998" y="258" width="16" height="16" fill="#2f855a"/><text x="1022" y="271" font-family="Arial" font-size="14" fill="#2d3748">Refined</text>
+  <rect x="998" y="304" width="320" height="72" rx="6" fill="#f0fff4" stroke="#68d391"/>
+  <text x="1010" y="328" font-family="Arial" font-size="13" fill="#22543d">Legend</text>
+  <text x="1010" y="348" font-family="Arial" font-size="13" fill="#22543d">Baseline: thinner / lower opacity</text>
+  <text x="1010" y="366" font-family="Arial" font-size="13" fill="#22543d">Refined: thicker / higher opacity</text>
+</svg>

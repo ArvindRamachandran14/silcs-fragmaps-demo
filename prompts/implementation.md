@@ -402,9 +402,10 @@ Prompt A (Design Preview Gate only; no implementation):
 - Milestone target: M4A only.
 - Mode: DESIGN PREVIEW ONLY (no code edits).
 - Create/refresh preview packet under `docs/screenshots/Design_previews/m4-ligand-workflow/`.
-- Provide previews for default, loading, empty, error, success states for single-ligand core workflow.
+- Provide desktop previews only for default, loading, empty, error, success states for single-ligand core workflow.
 - Stop and wait for explicit approval token: `APPROVED UI PREVIEW`.
 - If approval is not provided, return `BLOCKED-DESIGN`.
+- Do not run milestone validation scripts in this phase.
 
 Prompt B (Post-approval implementation only):
 - Milestone target: M4A only.
@@ -415,12 +416,18 @@ Prompt B (Post-approval implementation only):
 - Keep M5+ work out of scope.
 
 Required deliverables:
-1) Files created/updated.
-2) Behavior deltas per file.
-3) Commands run.
-4) M4A gate evidence with pass/fail per acceptance check.
-5) Residual risks/blockers.
-6) Update docs/plans/milestone-inventory.md (M4A section).
+1) Prompt A deliverables (preview-only):
+- files created/updated
+- preview checklist coverage
+- open UI questions
+- approval state (`BLOCKED-DESIGN` until token is present)
+2) Prompt B deliverables (post-approval implementation):
+- files created/updated
+- behavior deltas per file
+- commands run
+- M4A gate evidence with pass/fail per acceptance check
+- residual risks/blockers
+- update `docs/plans/milestone-inventory.md` (M4A section)
 
 Return format:
 - M4A status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
@@ -432,7 +439,15 @@ Return format:
 
 ### Prompt to verify M4A
 ```text
-Run M4A gate verification and return a PASS/FAIL table with evidence.
+Use this only after Prompt B implementation starts.
+
+If work is still in Prompt A (DESIGN PREVIEW ONLY), do not run validation scripts.
+Return:
+- M4A status: BLOCKED-DESIGN
+- preview checklist coverage
+- missing approval token (`APPROVED UI PREVIEW`)
+
+If Prompt B implementation has started, run M4A gate verification and return a PASS/FAIL table with evidence.
 
 Sequential regression commands:
 - `npm run validate:m1`

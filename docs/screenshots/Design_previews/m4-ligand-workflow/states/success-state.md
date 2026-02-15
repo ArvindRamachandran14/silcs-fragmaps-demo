@@ -1,11 +1,10 @@
-# Success State Guidance
+# Success State Guidance (M4A)
 
 Expected content:
-- In-place ligand/pose state updates (no reload implied).
+- In-place pose state updates (no reload implied).
 - Both-visible state shown with baseline/refined visual differentiation.
 - Comparison legend visible.
-- Camera-preservation note included for ligand switching.
+- Camera-preservation expectation documented (no auto-zoom except explicit zoom action).
 
-Attach artifacts:
-- `../desktop/success-state-both-visible.png`
-- `../mobile/success-state-both-visible.png` (if mobile variant differs)
+Artifacts:
+- `../desktop/success-state-both-visible.svg`

@@ -1,27 +1,31 @@
-# Preview Index - M4 Ligand Workflow
+# Preview Index - M4A Ligand Workflow
 
 ## Coverage Checklist
-- [ ] Right-panel ligand section contains quick picks, searchable selector, pose checkboxes, and Zoom action.
-- [ ] Four pose states represented: baseline-only, refined-only, both-visible, both-unchecked.
-- [ ] Persistent empty-state guidance includes: Show Baseline, Show Refined, Show Both.
-- [ ] Both-visible legend clearly differentiates baseline and refined styles.
-- [ ] Error state shows per-pose failure with non-blocking message context.
-- [ ] Camera-preservation expectation is documented (no auto-zoom on switch).
+- [x] Controls include baseline/refined checkboxes and zoom action.
+- [x] Four pose states represented: baseline-only, refined-only, both-visible, both-unchecked.
+- [x] Persistent empty-state guidance includes: Show Baseline, Show Refined, Show Both.
+- [x] Both-visible legend differentiates baseline and refined styles.
+- [x] Error state shows per-pose failure with non-blocking context and affected-control isolation.
+- [x] Camera-preservation expectation documented (no auto-zoom except explicit zoom action).
+- [x] M4A scope boundaries documented (single ligand only).
 
 ## Artifact Matrix
-| State | Desktop artifact | Mobile artifact (if needed) | Notes |
-|---|---|---|---|
-| Default | `desktop/default-state.png` | `mobile/default-state.png` | Crystal Ligand selected, baseline on, refined off |
-| Loading | `desktop/loading-state.png` | `mobile/loading-state.png` | Local control loading only |
-| Empty | `desktop/empty-state-both-unchecked.png` | `mobile/empty-state-both-unchecked.png` | Recovery actions visible |
-| Error | `desktop/error-state-pose-failure.png` | `mobile/error-state-pose-failure.png` | Affected pose disabled only |
-| Success | `desktop/success-state-both-visible.png` | `mobile/success-state-both-visible.png` | Legend visible + visual differentiation |
+| State | Desktop artifact | Notes |
+|---|---|---|
+| Default | `desktop/default-state.svg` | Crystal Ligand selected, baseline on, refined off |
+| Loading | `desktop/loading-state.svg` | Local control loading, app remains responsive |
+| Empty | `desktop/empty-state-both-unchecked.svg` | Recovery actions visible |
+| Error | `desktop/error-state-pose-failure.svg` | Only failed pose control disabled |
+| Success | `desktop/success-state-both-visible.svg` | Legend visible + differentiation |
 
-## M4 Acceptance Mapping
-- Spec refs: `docs/specs/ligand-workflow-spec.md` Sections 4-10.
-- Plan refs: `docs/plans/execution-plan.md` M4 row + Design Preview Gate.
+## M4A Acceptance Mapping
+- Spec refs: `docs/specs/ligand-workflow-spec.md` Section `10.1 M4A Required Checks`.
+- Plan refs: `docs/plans/execution-plan.md` row `M4A` and Section `1.3 UI Design Preview Gate`.
 
 ## Completion Criteria
-- [ ] All required states have artifacts.
-- [ ] Review feedback addressed.
+- [x] All required states have desktop artifacts.
+- [ ] Reviewer feedback addressed.
 - [ ] Approval recorded in `approval-log.md` with token `APPROVED UI PREVIEW`.
+
+## Open UI Questions
+- Should the legend be always visible in both-visible state or be collapsible?
