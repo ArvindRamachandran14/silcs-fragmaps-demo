@@ -10,7 +10,9 @@
     "prebuild": "npm run stage:assets",
     "validate:m1": "node scripts/validate-m1.js",
     "validate:m2": "node scripts/validate-m2.js",
-    "prevalidate:m2": "npm run stage:assets"
+    "prevalidate:m2": "npm run stage:assets",
+    "validate:m3": "node scripts/validate-m3.js",
+    "prevalidate:m3": "npm run build"
   },
   "dependencies": {
     "core-js": "^3.41.0",

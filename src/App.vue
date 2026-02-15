@@ -12,7 +12,10 @@
     </v-app-bar>
 
     <v-main>
-      <v-container class="py-6">
+      <v-container
+        fluid
+        class="py-6 app-shell__container"
+      >
         <v-alert
           v-if="startupError"
           data-test-id="startup-validation-warning"
@@ -85,6 +88,10 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.app-shell__container {
+  max-width: 100%;
+}
+
 pre {
   border: 1px solid #d7ccc8;
   border-radius: 4px;

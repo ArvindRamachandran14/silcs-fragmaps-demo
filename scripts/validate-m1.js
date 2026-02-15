@@ -4,6 +4,7 @@ const path = require("path");
 const { chromium } = require("playwright");
 
 const DIST_DIR = path.resolve(__dirname, "..", "dist");
+const INDEX_HTML_PATH = path.join(DIST_DIR, "index.html");
 const PORT = 4173;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 
@@ -25,9 +26,48 @@ function getMimeType(filePath) {
   return MIME_TYPES[path.extname(filePath)] || "application/octet-stream";
 }
 
+function detectPublicBaseFromIndexHtml() {
+  if (!fs.existsSync(INDEX_HTML_PATH)) {
+    return "/";
+  }
+
+  const html = fs.readFileSync(INDEX_HTML_PATH, "utf-8");
+  const scriptSrcMatch = html.match(/<script[^>]+src="([^"]+)"/i);
+  if (!scriptSrcMatch) {
+    return "/";
+  }
+
+  const scriptUrl = scriptSrcMatch[1];
+  const jsSegmentIndex = scriptUrl.indexOf("/js/");
+  if (jsSegmentIndex === -1) {
+    return "/";
+  }
+
+  const candidateBase = scriptUrl.slice(0, jsSegmentIndex + 1);
+  if (!candidateBase.startsWith("/")) {
+    return "/";
+  }
+
+  return candidateBase.endsWith("/") ? candidateBase : `${candidateBase}/`;
+}
+
+const PUBLIC_BASE = detectPublicBaseFromIndexHtml();
+
+function appUrl(routePath = "/") {
+  const normalizedPath = routePath.startsWith("/") ? routePath.slice(1) : routePath;
+  return `${BASE_URL}${PUBLIC_BASE}${normalizedPath}`;
+}
+
 function resolveRequestPath(urlPath) {
   const cleanUrl = urlPath.split("?")[0].split("#")[0];
-  const normalizedPath = cleanUrl === "/" ? "/index.html" : cleanUrl;
+  let appRelativePath = cleanUrl;
+  if (cleanUrl === PUBLIC_BASE.slice(0, -1) || cleanUrl === PUBLIC_BASE) {
+    appRelativePath = "/";
+  } else if (cleanUrl.startsWith(PUBLIC_BASE)) {
+    appRelativePath = `/${cleanUrl.slice(PUBLIC_BASE.length)}`;
+  }
+
+  const normalizedPath = appRelativePath === "/" ? "/index.html" : appRelativePath;
   const requestedPath = path.join(DIST_DIR, decodeURIComponent(normalizedPath));
   const safeRequestedPath = path.normalize(requestedPath);
 
@@ -71,7 +111,7 @@ async function assertVisible(page, selector, message) {
 }
 
 async function run() {
-  if (!fs.existsSync(path.join(DIST_DIR, "index.html"))) {
+  if (!fs.existsSync(INDEX_HTML_PATH)) {
     throw new Error("dist/index.html not found. Run `npm run build` before validation.");
   }
 
@@ -80,7 +120,7 @@ async function run() {
   const page = await browser.newPage();
 
   try {
-    await page.goto(`${BASE_URL}/`, { waitUntil: "networkidle" });
+    await page.goto(appUrl("/"), { waitUntil: "networkidle" });
     await assertVisible(page, '[data-test-id="home-page"]', "Home route did not render.");
 
     const marker = await page.evaluate(() => {
@@ -89,7 +129,7 @@ async function run() {
     });
 
     await page.click('[data-test-id="nav-viewer"]');
-    await page.waitForURL(`${BASE_URL}/viewer`, { timeout: 5000 });
+    await page.waitForURL(appUrl("/viewer"), { timeout: 5000 });
     await assertVisible(page, '[data-test-id="viewer-page"]', "Viewer route did not render.");
 
     const markerAfterViewerNav = await page.evaluate(() => window.__m1SpaMarker);
@@ -98,7 +138,7 @@ async function run() {
     }
 
     await page.click('[data-test-id="nav-home"]');
-    await page.waitForURL(`${BASE_URL}/`, { timeout: 5000 });
+    await page.waitForURL(appUrl("/"), { timeout: 5000 });
     await assertVisible(page, '[data-test-id="home-page"]', "Home route did not render after navigating back.");
 
     const markerAfterHomeNav = await page.evaluate(() => window.__m1SpaMarker);
@@ -106,7 +146,7 @@ async function run() {
       throw new Error("Navigation /viewer -> / triggered a full page reload.");
     }
 
-    await page.goto(`${BASE_URL}/unknown-route`, { waitUntil: "networkidle" });
+    await page.goto(appUrl("/unknown-route"), { waitUntil: "networkidle" });
     await assertVisible(page, '[data-test-id="app-shell"]', "Unknown route caused app shell failure.");
     await assertVisible(page, '[data-test-id="home-page"]', "Unknown route did not recover to a valid page.");
 

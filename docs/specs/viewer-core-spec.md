@@ -42,6 +42,8 @@ Desktop contract:
 - Main content as two columns with primary `NglViewport` region at approximately 70-80% width.
 - Main content as two columns with secondary `ControlsPanel` region at approximately 20-30% width.
 - Viewport remains the visual priority.
+- At common desktop widths (>=1280 px), layout must keep the controls panel fully visible with no right-edge clipping.
+- Viewer shell must not introduce page-level horizontal scrolling in standard desktop fullscreen usage.
 
 Mobile/small-screen contract:
 - `NglViewport` remains primary visible region.
@@ -128,6 +130,7 @@ Viewer core is accepted when all checks pass:
 7. Route unmount/remount does not produce duplicate listeners or stale stage artifacts.
 8. Core errors are surfaced via non-blocking toast behavior; no persistent inline error panel.
 9. Viewer includes a compact caption/sidebar context block that updates in place with viewer state changes.
+10. Desktop fullscreen layout keeps controls panel fully visible and avoids page-level horizontal overflow.
 
 ## 11. Traceability
 - PRD mapping: `2.B Interactive Visualization Page (Required)` for viewer availability and control environment.
