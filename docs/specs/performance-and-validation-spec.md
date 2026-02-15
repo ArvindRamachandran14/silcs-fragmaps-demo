@@ -121,7 +121,8 @@ Requirement:
 - Ligand switching updates available poses without page reload.
 
 Scenario:
-- Switch across featured and non-featured ligands.
+- Switch across featured ligands in required scope (`M4B`).
+- Optional stretch coverage: non-featured ligands when `M4C` is implemented.
 - Verify pose controls update for selected ligand and remain functional.
 
 Pass:

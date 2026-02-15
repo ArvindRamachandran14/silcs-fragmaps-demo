@@ -5,6 +5,53 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-15 - Re-scope ligand milestone into M4A/M4B required and M4C deferred non-blocking
+- Decision: split prior M4 scope into `M4A` (single-ligand core) and `M4B` (featured-ligand subset) as required forward milestones, and move full-list search/ordering into `M4C` deferred stretch scope.
+- Why: previous big-bang M4 integration attempt introduced regression risk and unstable validator outcomes; smaller slices reduce integration blast radius and protect M1-M3 baseline stability.
+- Alternatives considered: keep full M4 scope (including full-list search) as a strict pre-M5 blocker.
+- Evidence:
+  - `docs/plans/execution-plan.md`
+  - `docs/specs/ligand-workflow-spec.md`
+  - `docs/context/next-agent-brief.md`
+- Validation/risk impact: enables forward progress to M5+ once M4A/M4B pass; tradeoff is that full-list search UX is deferred and must be tracked explicitly as non-blocking stretch work.
+
+### 2026-02-15 - Capture regression window in dedicated failure report before further M4 changes
+- Decision: document the regression-fix window in a standalone file (`docs/context/failure-report-m4-2026-02-15.md`) and pause additional feature work until baseline validators are healthy.
+- Why: failures span multiple validators (`m1`, `m3`, `m4`) and exceeded concise inline handoff notes; centralized evidence prevents repeated blind debugging.
+- Alternatives considered: keep failure notes only in chat and context ledger bullet points.
+- Evidence:
+  - `docs/context/failure-report-m4-2026-02-15.md`
+  - `docs/context/current-state.md` validation ledger entry (2026-02-15 regression-fix-only pass)
+- Validation/risk impact: improves handoff quality and reproducibility; unresolved blocker remains baseline validator instability.
+
+### 2026-02-15 - Adopt array-based M4 pose visibility model with per-pose failure isolation
+- Decision: migrate viewer ligand pose state from booleans to `visiblePoseKinds: PoseKind[]` plus `poseControlDisabled` and `poseErrors` to support all four M4 states and isolate failures to a single pose control.
+- Why: M4 requires `baseline-only`, `refined-only`, `both-visible`, and `both-unchecked` while keeping unaffected pose controls active on single-pose failures.
+- Alternatives considered: keep boolean flags and infer extra states ad hoc in components.
+- Evidence:
+  - `src/store/modules/viewer.ts`
+  - `src/pages/ViewerPage.vue`
+  - `src/components/LigandControls.vue`
+- Validation/risk impact: enables required M4 UI/state behavior; residual risk is unresolved startup/ready timeout in local Playwright validators.
+
+### 2026-02-15 - Add deterministic M4 pose-failure trigger via query parameter
+- Decision: support deterministic per-pose load failure injection using `m4FailPose=<baseline|refined>` query parsing in stage initialization.
+- Why: M4 validation requires a repeatable way to exercise pose-failure handling (disable affected checkbox + non-blocking toast).
+- Alternatives considered: random/mock failure injection or manual file renaming.
+- Evidence:
+  - `src/viewer/nglStage.ts` (`getForcedPoseFailuresFromQuery`)
+  - `scripts/validate-m4.js`
+- Validation/risk impact: improves reproducibility of failure-path testing; must not be enabled in normal routes unless explicitly requested by query param.
+
+### 2026-02-15 - Treat M4 implementation as blocked until explicit preview approval token is present
+- Decision: during takeover, keep M4 scope in `design-gate` state and do not start runtime implementation until the in-thread token `APPROVED UI PREVIEW` is recorded for `docs/screenshots/Design_previews/m4-ligand-workflow/`.
+- Why: this is required by `AGENTS.md` UI-First Feature Protocol and reinforced in `docs/context/next-agent-brief.md`.
+- Alternatives considered: starting M4 implementation immediately while approval is pending.
+- Evidence:
+  - `AGENTS.md` (`## UI-First Feature Protocol (Required)`)
+  - `docs/context/next-agent-brief.md` (`## Stop/Go Criteria For M4`)
+- Validation/risk impact: prevents process non-compliance and rework; primary risk is schedule delay until review approval is obtained.
+
 ### 2026-02-15 - Enforce startup context reads in repository policy
 - Decision: add required startup-context section to `AGENTS.md` so agents must read/update context files each task.
 - Why: prevent future reliance on ephemeral thread memory and ensure deterministic handoffs.

@@ -1,68 +1,48 @@
 # Next Agent Brief
 
-Last updated: 2026-02-15 (ui-protocol update)
+Last updated: 2026-02-15 (M4 scope replan)
 
 ## Current Milestone Target
-- Active target: `M4 Ligand Workflow` (M1-M3 validated complete; M4 is first incomplete dependency for downstream milestones).
+- Active target: `M4A Ligand Core Workflow` (M1-M3 validated complete; M4A is first incomplete dependency for downstream milestones).
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
 - If tooling/sandbox prevents a required command, record `ENV-BLOCKED` (not `FAIL`) and include exact rerun command.
 - After implementing milestone `Mn`, run sequential regression from `validate:m1` through `validate:mn`.
 
+## Scope Policy (Locked)
+- Required forward scope:
+  - `M4A`: single-ligand core (`3fly_cryst_lig`) with four pose states, zoom, empty-state recovery, and per-pose error isolation.
+  - `M4B`: featured-ligand switching only (fixed subset).
+- Deferred scope:
+  - `M4C`: full ligand list + searchable selector + deterministic ordering + `No ligands found`.
+- Progression rule:
+  - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
+
 ## Priority Tasks (ordered)
-1. Use `docs/context/handoff-template.md` order exactly for handoff operations:
-   - Pre-Handoff Update
-   - Required Handoff Payload
-   - Review Gate
-   - Copy-Paste Kickoff Prompt
-2. In pre-handoff runs, execute dry-run clustering first; use `COMMIT=YES` only after human review of cluster boundaries.
-   - Validation note: one `COMMIT=YES` cluster commit has been successfully exercised (`9f2e95c`).
-3. In the current dirty working tree, separate unrelated deletions under `docs/screenshots/Ideas/*` from M4/doc-process commits unless explicitly intended.
-4. Complete M4 Design Preview Gate before any M4 implementation code:
-   - create preview artifacts in `docs/screenshots/Design_previews/m4-ligand-workflow/` (current user-requested path)
-   - include default/loading/empty/error/success states
-   - obtain explicit in-thread approval token: `APPROVED UI PREVIEW`
-5. Use `prompts/implementation.md` M4 two-step assignment flow:
-   - Prompt A: `DESIGN PREVIEW ONLY`
-   - Prompt B: implementation only after `APPROVED UI PREVIEW`
-6. Commit governance/context baseline updates before starting M4 implementation.
-7. Implement ligand workflow UI section in controls panel:
-   - featured quick-pick chips
-   - searchable all-ligands dropdown
-   - baseline/refined checkbox controls
-   - zoom action
-8. Implement four-state pose visibility model (`baseline-only`, `refined-only`, `both-visible`, `both-unchecked`) in store + viewer orchestration.
-9. Implement both-unchecked persistent empty-state with recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
-10. Implement pose loading/fallback/error behavior per ligand (`.sdf` primary, `.pdb` fallback) with per-pose disable + non-blocking toast.
-11. Implement style differentiation + legend when both poses are visible.
-12. Add M4 validation script (`scripts/validate-m4.js`) and npm command.
-13. Align automation contract incrementally toward execution plan Section 1.1 (introduce missing Playwright test structure/commands when appropriate for milestone scope).
+1. Deliver `M4A` with minimal blast radius and no M1-M3 regressions.
+   - keep initial implementation to `3fly_cryst_lig` only
+   - prove all four pose states and recovery flows in place
+   - add deterministic per-pose failure trigger and validation evidence
+2. Deliver `M4B` featured-ligand switching (small fixed set) while preserving all `M4A` behavior.
+3. Proceed to `M5` once `M4A` + `M4B` gates are green.
+4. Keep `M4C` documented as deferred stretch scope.
 
 ## Exact Commands To Run Next
-- `npm run stage:assets`
-  - Expected output: `Staged runtime assets successfully.` with ligand/map counts.
+- `npm run build`
+  - Current signal: PASS.
 - `npm run validate:m1`
-  - Expected output includes `M1 validation passed`.
+  - Current signal: PASS.
 - `npm run validate:m2`
-  - Expected output includes `M2 validation passed`.
+  - Current signal: PASS.
 - `npm run validate:m3`
-  - Expected output includes `M3 validation passed`.
-- After M4 implementation, run:
-  - `npm run validate:m4` (must be added in `package.json` alongside script file).
+  - Current signal: PASS.
 
-Note: M1/M3 run local HTTP servers and browser automation; if sandbox blocks port binding, rerun with elevated permission and record outcome.
-
-## Stop/Go Criteria For M4
-- Stop if M4 Design Preview Gate is not approved (`BLOCKED-DESIGN`).
-- Stop if any M1-M3 validation regresses.
-- Go only when all M4 acceptance checks from `docs/specs/ligand-workflow-spec.md` Section 10 are evidenced.
-- Required M4 completion evidence:
-  - in-place ligand switching (no page reload)
-  - all four pose visibility states working
-  - both-visible differentiation + legend
-  - both-unchecked persistent recovery UI
-  - per-pose failure isolation behavior
+## Stop/Go Criteria For M4A/M4B
+- Stop if Design Preview Gate is not approved (`BLOCKED-DESIGN`).
+- Stop if any M1-M3 validator regresses.
+- Go from `M4A` to `M4B` only after `M4A` acceptance checks are evidenced.
+- Go from `M4B` to `M5` only after featured-ligand switching is stable and `M4A` behaviors remain green.
 
 ## Known Divergences To Resolve Before M5
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
@@ -71,16 +51,19 @@ Note: M1/M3 run local HTTP servers and browser automation; if sandbox blocks por
 - Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
 
 ## Risks and Escalation Rules
-- Risk: M4 state model may conflict with current boolean-only pose state.
-  - Mitigation: migrate state to `visiblePoseKinds` array contract and adapt existing defaults.
 - Risk: async pose loading races during rapid toggles.
   - Mitigation: per-ligand request-id/single-flight guards.
+- Risk: reintroducing startup instability from prior big-bang M4 attempt.
+  - Mitigation: incremental commits and validator checks after each behavior slice.
 - Escalate if:
-  - manifest contract cannot express required pose availability,
+  - manifest contract cannot express required featured-ligand scope,
   - NGL representation layering blocks both-visible differentiation,
-  - M4 behavior requires spec interpretation not explicit in `docs/specs/ligand-workflow-spec.md`.
+  - validator instability returns in otherwise unchanged baseline routes.
 
 ## Session Exit Requirements
 1. Append command outcomes and evidence paths to `docs/context/current-state.md` validation ledger.
 2. Log any architecture or behavior decision in `docs/context/decision-log.md`.
-3. Refresh this brief with the exact next unresolved M4 (or M5) task.
+3. Refresh this brief with the exact next unresolved `M4A`/`M4B` (or `M5`) task.
+
+## Immediate Next Concrete Step
+- Implement `M4A` slice 1: add ligand controls shell for `3fly_cryst_lig` only with baseline/refined checkboxes and in-place four-state behavior, then run `npm run validate:m1 && npm run validate:m2 && npm run validate:m3`.

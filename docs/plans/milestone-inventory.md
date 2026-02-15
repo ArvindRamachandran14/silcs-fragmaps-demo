@@ -193,7 +193,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 ---
 
-## M4 - Ligand Workflow
+## M4A - Ligand Core Workflow (`3fly_cryst_lig` only)
 
 ### Summary
 - Pending.
@@ -201,7 +201,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M4 and why.` |
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M4A and why.` |
 
 ### Commands Run
 - Pending.
@@ -212,6 +212,49 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 ### Residual Risks/Blockers
 - Pending.
+
+---
+
+## M4B - Featured Ligands Expansion (no full-list search)
+
+### Summary
+- Pending.
+
+### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M4B and why.` |
+
+### Commands Run
+- Pending.
+
+### Gate Checklist
+- Design Preview Gate approved (for UI scope): Pending.
+- Pending.
+
+### Residual Risks/Blockers
+- Pending.
+
+---
+
+## M4C (Deferred) - Full Ligand List + Search + Ordering
+
+### Summary
+- Deferred stretch scope; not a blocker for M5-M8 progression.
+
+### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M4C and why.` |
+
+### Commands Run
+- Pending/deferred.
+
+### Gate Checklist
+- Not required for M5-M8 gate progression unless explicitly re-promoted.
+
+### Residual Risks/Blockers
+- Deferral risk: full-list selector/search may reintroduce state-management regressions if implemented late; isolate with dedicated validator.
 
 ---
 

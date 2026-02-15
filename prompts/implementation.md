@@ -392,205 +392,125 @@ Return format:
 - Residual risks/blockers
 ```
 
-## M4 - Ligand Workflow
+## M4 - Ligand Workflow (Phased: M4A, M4B, M4C Deferred)
 
-### Prompt to assign M4
+### Prompt to assign M4A
 ```text
-Use a two-step assignment flow for M4.
+Use a two-step assignment flow for M4A.
 
 Prompt A (Design Preview Gate only; no implementation):
-
-Milestone target: M4 only.
-
-Mode: DESIGN PREVIEW ONLY (no code edits).
-Task:
-1. Create/refresh M4 preview packet under `docs/screenshots/Design_previews/m4-ligand-workflow/`.
-2. Provide preview artifacts for: default, loading, empty, error, success.
-3. Update preview packet index/checklist and approval log with status `PENDING`.
-4. Do not modify app source files.
-5. Return only:
-   - files added/updated
-   - preview checklist coverage
-   - open UI questions
-
-Stop after previews and wait for explicit approval token: `APPROVED UI PREVIEW`.
-If approval is not provided, report `BLOCKED-DESIGN` and do not start coding.
+- Milestone target: M4A only.
+- Mode: DESIGN PREVIEW ONLY (no code edits).
+- Create/refresh preview packet under `docs/screenshots/Design_previews/m4-ligand-workflow/`.
+- Provide previews for default, loading, empty, error, success states for single-ligand core workflow.
+- Stop and wait for explicit approval token: `APPROVED UI PREVIEW`.
+- If approval is not provided, return `BLOCKED-DESIGN`.
 
 Prompt B (Post-approval implementation only):
-
-Milestone target: M4 only.
-
-Gate is satisfied: `APPROVED UI PREVIEW`.
-
-Implement only M4 from docs/plans/execution-plan.md.
-
-Scope:
-- M4 only: ligand workflow (featured + searchable ligand selection, pose visibility states, zoom action, and ligand/pose error handling).
-- Follow docs/specs/ligand-workflow-spec.md and keep architecture aligned with docs/plans/technical-plan.md.
-- Build on existing M1-M3 outputs only.
-- Use approved design previews in `docs/screenshots/Design_previews/m4-ligand-workflow/` as the UI source for implementation.
-- Create/complete M4-focused modules (as needed), such as:
-  - src/components/LigandControls.vue
-  - ligand state/store actions/getters
-  - ligand pose representation management in viewer modules (for example src/viewer/reps.ts)
-
-M4 required behavior:
-1) Right-panel ligand section contains:
-- featured quick picks
-- searchable full-ligand selector
-- baseline/refined checkboxes
-- zoom action
-2) Supports all four pose states:
-- baseline-only
-- refined-only
-- both-visible
-- both-unchecked
-3) Both-unchecked shows persistent empty-state guidance with recovery actions:
-- Show Baseline
-- Show Refined
-- Show Both
-4) Search behavior:
-- case-insensitive substring matching on label and ligand ID
-- deterministic ordering
-- explicit `No ligands found` state
-5) Ligand switching and pose state changes are in-place (no route change, no full page reload).
-6) Camera is preserved on ligand switch; zoom occurs only when user invokes `Zoom`.
-7) Pose load failure path:
-- disable only the affected pose control
-- show non-blocking toast with actionable error context
-- keep app responsive (no app crash)
-
-Do NOT do:
-- M5+ behavior (no FragMap controls/iso logic, no overview-page narrative work, no AC evidence instrumentation/hardening work).
+- Milestone target: M4A only.
+- Scope: `3fly_cryst_lig` only.
+- Implement pose checkboxes, four pose states, both-visible legend, both-unchecked recovery UI, zoom action, and per-pose failure isolation.
+- Keep updates in-place (no route change/full reload).
+- Do not implement featured switching or searchable full-ligand selector in this phase.
+- Keep M5+ work out of scope.
 
 Required deliverables:
 1) Files created/updated.
-2) What each changed file does (new file purpose or delta for existing file).
+2) Behavior deltas per file.
 3) Commands run.
-4) M4 gate evidence with pass/fail for each M4 exit criterion in docs/plans/execution-plan.md and docs/specs/ligand-workflow-spec.md.
+4) M4A gate evidence with pass/fail per acceptance check.
 5) Residual risks/blockers.
-6) Update docs/plans/milestone-inventory.md for M4 using the existing table format.
-
-Validation requirements:
-- Run relevant checks (at minimum build + any new M4 validation script/checks introduced).
-- Include one deterministic way to trigger per-pose load failure for validation and document exactly how to use it.
-- If environment blocks execution, report ENV-BLOCKED (not FAIL) and provide exact local commands to run.
+6) Update docs/plans/milestone-inventory.md (M4A section).
 
 Return format:
-- M4 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
-- Gate checklist (item -> pass/fail/blocked + evidence)
+- M4A status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
 - Files changed
 - Command outputs summary
 - Residual risks/blockers
 ```
 
-### Prompt to verify M4
+### Prompt to verify M4A
 ```text
-Run the M4 gate verification now and return a PASS/FAIL table with evidence.
+Run M4A gate verification and return a PASS/FAIL table with evidence.
 
-Sequential command set for M4 regression:
+Sequential regression commands:
 - `npm run validate:m1`
 - `npm run validate:m2`
 - `npm run validate:m3`
-- `npm run validate:m4`
+- `<M4A validator command if added>`
 
-For each gate item include:
-- check name
-- exact command or manual step used
-- observed result
-- pass/fail (or blocked)
-
-M4 gate items to verify (from docs/plans/execution-plan.md + docs/specs/ligand-workflow-spec.md):
-1) Ligand section contains quick picks, searchable selector, pose checkboxes, and zoom action.
-2) Default ligand on first viewer-ready state is `3fly_cryst_lig` shown as `Crystal Ligand`.
-3) Users can select ligands from featured quick picks and full searchable list (full manifest scope).
-4) Pose checkboxes support all four states: baseline-only, refined-only, both-visible, both-unchecked.
-5) Both-unchecked shows persistent empty-state guidance with recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
-6) Both-visible applies baseline/refined differentiation and shows legend.
-7) Ligand switching and pose updates happen in-place with no full page reload.
-8) Camera is preserved on ligand switch; zoom changes view only when user invokes `Zoom`.
-9) Per-pose load failure disables only affected pose control and shows non-blocking toast.
-10) Runtime ligand manifest scope/order checks pass:
-- includes `3fly_cryst_lig` plus all baseline IDs from `from_silcsbio/ligands/*.sdf`
-- empty-query ordering is deterministic (`Crystal Ligand` first, then sorted by label with ID tie-break)
-
-Required evidence to include:
-- `git status --short`
-- `git diff --name-only`
-- file list changed for M4
-- command output summary for each verification command
-- local host-terminal output for `npm run validate:m1`, `npm run validate:m2`, `npm run validate:m3`, and `npm run validate:m4` (authoritative gate evidence)
-- exact failure-trigger method used for per-pose load failure test
-- residual risks/blockers + exact fix needed
-
-If environment/tooling prevents checks:
-- mark status as `ENV-BLOCKED` (not FAIL)
-- provide exact local commands to run to complete verification
+M4A checks:
+1) Default ligand is `3fly_cryst_lig` (`Crystal Ligand`).
+2) Pose controls support baseline-only/refined-only/both-visible/both-unchecked.
+3) Both-unchecked shows persistent recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
+4) Both-visible shows legend and differentiation.
+5) Zoom only on explicit action.
+6) Per-pose failure isolates to affected pose and shows non-blocking toast.
+7) No M1-M3 regressions.
 
 Return format:
-- M4 status: PASS/FAIL/ENV-BLOCKED
-- Gate checklist table (item | command/step | observed result | status)
+- M4A status: PASS/FAIL/ENV-BLOCKED
+- Gate checklist table
 - Files changed
 - Commands run
 - Risks/blockers and fixes
 ```
 
-### Manual verification for M4
-1) Run from repo root:
-```bash
-npm run validate:m4
+### Prompt to assign M4B
+```text
+Implement only M4B from docs/plans/execution-plan.md.
+
+Scope:
+- Expand from M4A to featured ligands only (fixed subset).
+- Add/enable featured quick-pick switching.
+- Preserve M4A behavior contracts after each ligand switch.
+- Do not implement searchable full-ligand selector or full-list ordering/search in this phase (deferred to M4C).
+
+Required deliverables:
+1) Files created/updated.
+2) Behavior deltas per file.
+3) Commands run.
+4) M4B gate evidence with pass/fail per acceptance checks.
+5) Residual risks/blockers.
+6) Update docs/plans/milestone-inventory.md (M4B section).
+
+Return format:
+- M4B status: PASS/FAIL/ENV-BLOCKED
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
 ```
 
-2) For manual UI inspection, run:
-```bash
-npm run serve
+### Prompt to verify M4B
+```text
+Run M4B gate verification and return a PASS/FAIL table with evidence.
+
+Sequential regression commands:
+- `npm run validate:m1`
+- `npm run validate:m2`
+- `npm run validate:m3`
+- `<M4A validator command if added>`
+- `<M4B validator command if added>`
+
+M4B checks:
+1) Featured quick picks include `Crystal Ligand` and canonical featured IDs.
+2) Switching among featured ligands is in-place (no reload).
+3) Camera is preserved on ligand switch.
+4) M4A checks remain passing after ligand changes.
+5) No M1-M3 regressions.
+
+Return format:
+- M4B status: PASS/FAIL/ENV-BLOCKED
+- Gate checklist table
+- Files changed
+- Commands run
+- Risks/blockers and fixes
 ```
-Then open `/viewer`.
 
-3) Confirm ligand controls structure:
-- featured quick-pick chips are visible and include `Crystal Ligand` + canonical featured ligands
-- searchable ligand selector is present
-- pose visibility checkboxes (`Baseline`, `Refined`) are present
-- `Zoom` action is present
-
-4) Confirm default ligand + default pose state:
-- selected ligand is `Crystal Ligand` (`3fly_cryst_lig`)
-- baseline is checked
-- refined is unchecked
-
-5) Confirm full ligand selection behavior:
-- select one ligand from featured chips
-- select one non-featured ligand from searchable dropdown
-- verify updates happen in place (no route change/full reload)
-- verify camera orientation is preserved across ligand switches
-
-6) Confirm search behavior:
-- case-insensitive query matches label and ligand ID
-- with empty query, order is deterministic (`Crystal Ligand` first, then sorted entries)
-- unmatched query shows explicit `No ligands found` state
-
-7) Confirm all four pose visibility states:
-- baseline-only
-- refined-only
-- both-visible (and legend shown)
-- both-unchecked
-
-8) Confirm both-unchecked empty-state contract:
-- persistent guidance is shown in ligand section
-- recovery actions are visible: `Show Baseline`, `Show Refined`, `Show Both`
-- clicking each recovery action re-enables the expected pose visibility state
-
-9) Confirm zoom behavior:
-- ligand switching alone does not auto-zoom
-- clicking `Zoom` focuses the selected ligand
-
-10) Confirm per-pose failure handling:
-- trigger deterministic per-pose load failure using the implementation-provided method
-- only affected pose control is disabled
-- non-blocking toast is shown
-- app remains responsive and does not crash
-
-If all steps pass, M4 manual verification is complete.
+### Deferred note for M4C
+- `M4C` (full ligand list + searchable selector + deterministic ordering + `No ligands found`) is deferred stretch scope and not required for M5-M8 progression unless re-promoted.
 
 ## M5 - FragMap Controls
 

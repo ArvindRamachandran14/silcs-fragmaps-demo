@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-15 (handoff refresh)
+Last updated: 2026-02-15 (M4 scope replan to M4A/M4B + M4C deferred)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -56,16 +56,37 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - Gaps to exit criteria:
   - Core M3 gate passed; known cross-spec divergences documented below are outside strict M3 script checks.
 
-### M4 Ligand Workflow
-- Status: `not started`
+### M4A Ligand Core Workflow
+- Status: `not started (replanned)`
 - Evidence:
-  - No ligand quick-picks/search dropdown/pose checkbox controls exist in `src/components/`.
-  - `viewer` store tracks only booleans for baseline/refined; no four-state workflow API in `src/store/modules/viewer.ts`.
-  - Selected ligand is startup default only in `src/pages/ViewerPage.vue` and not user-switchable.
+  - Scope is now single-ligand core (`3fly_cryst_lig`) with four pose states, zoom, and error/empty-state handling.
+  - No active M4A implementation files are present yet in current working tree.
 - Validation signal:
-  - `not run` (no M4 gate command exists in `package.json`).
+  - `npm run build` -> `PASS` (2026-02-15).
+  - `npm run validate:m1` -> `PASS` (2026-02-15 after rebuilding `dist`).
+  - `npm run validate:m2` -> `PASS` (2026-02-15).
+  - `npm run validate:m3` -> `PASS` (2026-02-15).
 - Gaps to exit criteria:
-  - Implement control UI and interaction flows from `docs/specs/ligand-workflow-spec.md` Sections 4-8.
+  - Implement M4A behaviors and add dedicated validation coverage.
+
+### M4B Featured Ligands Expansion
+- Status: `not started (replanned)`
+- Evidence:
+  - Scope is restricted to featured-ligand switching only.
+  - Searchable full-ligand selection is intentionally excluded from this phase.
+- Validation signal:
+  - No M4B validator command exists yet.
+- Gaps to exit criteria:
+  - Implement featured-ligand switching and preserve M4A behavior contracts.
+
+### M4C Full Ligand List + Search (Deferred)
+- Status: `deferred (non-blocking stretch)`
+- Evidence:
+  - Full-list searchable selector and deterministic ordering have been moved to deferred scope.
+- Validation signal:
+  - Not required for M5-M8 progression.
+- Gaps to exit criteria:
+  - Add implementation and validation only if stretch scope is reactivated.
 
 ### M5 FragMap Controls
 - Status: `not started`
@@ -113,7 +134,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - Viewer core:
   - NGL-based startup rendering, loading/ready states, fallback retry/home flow, camera reset/resize lifecycle are implemented.
 - Ligand workflow:
-  - Startup defaults only (`3fly_cryst_lig`, baseline ON, refined OFF); no user-facing ligand workflow controls yet.
+  - Startup defaults only (`3fly_cryst_lig`, baseline ON, refined OFF); M4A/M4B implementation is pending.
 - FragMap controls:
   - Manifest metadata and startup validation exist; interactive controls/render toggles are not implemented.
 - Overview page:
@@ -122,9 +143,12 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Milestone scripts exist for M1-M3 only; AC instrumentation/evidence pipeline is not implemented.
 
 ## Spec Divergence Register
-- `high` - `docs/specs/ligand-workflow-spec.md`:
-  - Observed: no quick picks, searchable dropdown, pose checkboxes, zoom action, both-visible/both-hidden UX.
+- `high` - `docs/specs/ligand-workflow-spec.md` (M4A/M4B required scope):
+  - Observed: no featured quick picks, pose checkboxes, zoom action, both-visible/both-hidden UX.
   - Impact: AC-3 and AC-4 cannot be met.
+- `medium` - `docs/specs/ligand-workflow-spec.md` (M4C deferred scope):
+  - Observed: searchable full-ligand selector and ordering behavior are not implemented.
+  - Impact: deferred by plan; non-blocking for M5-M8 progression.
 - `high` - `docs/specs/fragmap-controls-spec.md`:
   - Observed: no Primary/Advanced map rows, per-map toggles, per-map iso controls, exclusion-map behavior, or bulk actions.
   - Impact: AC-2 and AC-5 cannot be met.
@@ -156,8 +180,16 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Enhanced `docs/context/handoff-template.md` pre-handoff prompt to require changed-file clustering for commit sequencing and added optional `COMMIT=YES` auto-commit workflow (clustered `git add`/`git commit` output contract).
 - 2026-02-15: Executed pre-handoff dry run without `COMMIT=YES`; generated clustered commit plan from current working tree for review before commit execution.
 - 2026-02-15: Executed `COMMIT=YES` pre-handoff automation (cluster order): committed preview-assets cluster via `git add ... && git commit -m "docs(preview): add m4 packet and relocate design preview assets"` -> `PASS` (`9f2e95c`). Remaining non-empty clusters: `docs/context`, `handoff/process docs`.
+- 2026-02-15: Startup takeover sequence re-validated in required order: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`. Confirmed active milestone alignment remains `M4 Ligand Workflow` and execution is design-gated until explicit `APPROVED UI PREVIEW`. No milestone validator command was run in this takeover checkpoint (context-only update).
+- 2026-02-15: Implemented M4 ligand workflow code path (UI + store + stage orchestration) with new files `src/components/LigandControls.vue` and `scripts/validate-m4.js`; updated `package.json` with `validate:m4`.
+- 2026-02-15: Validation runs: `npm run validate:m2` -> PASS; `npm run build` -> PASS; `npm run validate:m1` -> FAIL (viewer navigation click timeout); `npm run validate:m3` -> FAIL (loading-state timeout); `npm run validate:m4` -> FAIL (viewer-ready timeout). Failures are reproducible in this environment and currently block M4 gate closure.
+- 2026-02-15: Regression-fix-only pass ran strict sequence attempt. Outcomes: `validate:m1` -> FAIL (`nav-viewer` click timeout), `validate:m2` -> PASS, `validate:m3` -> FAIL (missing loading-state selector), `validate:m4` -> ENV-BLOCKED (hung validator process terminated). See `docs/context/failure-report-m4-2026-02-15.md`.
+- 2026-02-15: Re-validated baseline with fresh build chain. Outcomes: `npm run build` -> PASS; `npm run validate:m1` -> PASS; `npm run validate:m2` -> PASS; `npm run validate:m3` -> PASS. Intermittent earlier M1/M3 failures treated as non-deterministic and not currently reproducible after rebuild.
+- 2026-02-15: Planning decision adopted: split prior M4 scope into `M4A` (single-ligand core) + `M4B` (featured ligands only), and defer `M4C` (full list/search/ordering) as non-blocking stretch scope for post-M8 unless explicitly re-promoted.
 
 ## Open Risks
-- Major feature milestones (M4-M6) remain unimplemented while M1-M3 are complete.
+- Major feature milestones (M4A/M4B/M5/M6) remain unimplemented while M1-M3 are complete.
+- M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
+- Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - AC evidence path (M7) and release readiness (M8) are currently absent.
 - Execution-plan automation contract is partially missing and will need alignment before M7/M8 sign-off.

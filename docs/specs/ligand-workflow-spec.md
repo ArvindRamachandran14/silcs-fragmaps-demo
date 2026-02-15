@@ -11,7 +11,7 @@ This spec focuses on ligand controls and pose visibility behavior only.
 ## 2. Scope / Out of Scope
 In scope:
 - Right-panel ligand workflow UI.
-- Ligand selection via featured quick-picks and searchable dropdown.
+- Ligand selection via featured quick-picks (required now) and searchable dropdown (deferred).
 - Pose visibility controls using checkboxes (`baseline`, `refined`).
 - Support for `baseline-only`, `refined-only`, `both-visible`, and `both-unchecked`.
 - Zoom-to-selected-ligand action.
@@ -24,6 +24,12 @@ Out of scope:
 - Local ligand upload controls.
 - FragMap controls and iso-value behavior.
 - Performance measurement harness and evidence reporting.
+
+### 2.1 Delivery Phases (Locked)
+- `M4A` (required): single-ligand core (`3fly_cryst_lig`) with 4 pose states, zoom, and failure/empty-state handling.
+- `M4B` (required): featured-ligand switching only (fixed subset of curated ligands), preserving all M4A behaviors.
+- `M4C` (deferred stretch): full ligand list searchable selector, deterministic ordering rules, and `No ligands found` state.
+- Progression rule: `M4C` is not a blocker for `M5` and later milestones unless explicitly re-promoted.
 
 ## 3. Data and State Contracts
 Core types:
@@ -45,7 +51,7 @@ State rules:
 - Order should be normalized as `["baseline","refined"]` when both are selected.
 
 ### 3.1 Canonical Ligand Manifest Contract
-Source of truth for full ligand scope:
+Source of truth for full ligand scope (implemented in phases):
 - Crystal ligand baseline: `from_silcsbio/3fly_cryst_lig.sdf` (`id = 3fly_cryst_lig`, display label `Crystal Ligand`).
 - Crystal ligand refined: `from_silcsbio/3fly_cryst_lig_posref.sdf` (fallback `from_silcsbio/3fly_cryst_lig_posref.pdb`).
 - Baseline ligand pool: all `.sdf` files in `from_silcsbio/ligands`.
@@ -59,7 +65,12 @@ ID derivation and inclusion rules:
   1. `from_silcsbio/ligands_posref/<LigandId>.sdf`
   2. `from_silcsbio/ligands_posref/<LigandId>.pdb` (fallback)
 
-Deterministic ordering rules:
+Phase-specific required manifest scope:
+- `M4A`: must support `3fly_cryst_lig` only.
+- `M4B`: must support `3fly_cryst_lig` plus canonical featured ligand IDs from Section 4.
+- `M4C` (deferred): must support full selectable set and deterministic ordering.
+
+Deterministic ordering rules (deferred to `M4C`):
 - Empty-query dropdown order: `Crystal Ligand` first, then remaining ligands sorted by display label ascending, ties by ligand ID ascending.
 - Search-result order follows Section 6.1 ordering rules.
 - Ordering must be stable across renders in the same session.
@@ -71,7 +82,7 @@ Right-panel ligand section order:
 1. `Featured quick picks` chips (Crystal Ligand + 5 featured ligands).
    - Canonical featured ligand IDs: `3fly_cryst_lig`, `p38_goldstein_05_2e`, `p38_goldstein_06_2f`, `p38_goldstein_07_2g`, `p38_goldstein_08_2h`, `p38_goldstein_09_2i`.
    - Display label mapping: ligand ID `3fly_cryst_lig` must be shown to users as `Crystal Ligand`.
-2. `Search all ligands` searchable dropdown (includes Crystal Ligand + all provided ligands).
+2. `Search all ligands` searchable dropdown (deferred to `M4C`).
 3. `Pose visibility` checkboxes for `Baseline` and `Refined`.
 4. Compact comparison legend (shown when both checked).
 5. `Zoom` action button.
@@ -91,7 +102,7 @@ On initial viewer-ready state:
 ### 6.1 Ligand Selection
 User can select ligand by:
 - Clicking a featured quick-pick chip.
-- Searching/selecting from dropdown.
+- Searching/selecting from dropdown (`M4C` only).
 
 On ligand selection:
 - Preserve current camera orientation/zoom.
@@ -100,7 +111,7 @@ On ligand selection:
 - Apply current `visiblePoseKinds` intent where possible.
 - Do not trigger route change or full page reload.
 
-Search/dropdown behavior contract:
+Search/dropdown behavior contract (`M4C` deferred):
 - Matching: case-insensitive substring match against ligand display label and ligand ID.
 - Ordering:
   - If query matches `Crystal Ligand` (`3fly_cryst_lig`), pin it first.
@@ -168,22 +179,34 @@ Empty state (both unchecked):
 - Pose state changes must be understandable without color alone (legend + labels).
 
 ## 10. Spec-Level Acceptance Checks
-Ligand workflow is accepted when all checks pass:
-1. Right-panel ligand section contains quick-picks, searchable dropdown, pose checkboxes, and zoom action.
+
+### 10.1 M4A Required Checks
+1. Right-panel ligand section contains pose checkboxes and zoom action for `3fly_cryst_lig`.
 2. `3fly_cryst_lig` (display label `Crystal Ligand`) is default selected on first load.
-3. Users can select ligands via quick-picks and dropdown from the full provided set.
-4. Pose checkboxes support all four states (`baseline-only`, `refined-only`, `both-visible`, `both-unchecked`).
-5. Both-unchecked state shows persistent empty-state guidance with one-click recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
-6. Both-visible state applies baseline/refined differentiation rules and shows legend.
-7. Ligand switch and pose visibility changes happen in place with no page reload.
-8. Camera is preserved on ligand switch; zoom occurs only when user invokes `Zoom`.
-9. Pose load failures trigger non-blocking toast and disable only affected pose control.
-10. No GFE panel, frame control, or local upload control appears in v1 ligand workflow.
-11. Runtime ligand manifest includes `3fly_cryst_lig` plus all baseline `.sdf` ligand IDs from `from_silcsbio/ligands`.
-12. Empty-query dropdown ordering is deterministic: `Crystal Ligand` first, then label/ID sorted entries.
+3. Pose checkboxes support all four states (`baseline-only`, `refined-only`, `both-visible`, `both-unchecked`).
+4. Both-unchecked state shows persistent empty-state guidance with one-click recovery actions (`Show Baseline`, `Show Refined`, `Show Both`).
+5. Both-visible state applies baseline/refined differentiation rules and shows legend.
+6. Pose visibility changes happen in place with no page reload.
+7. Zoom occurs only when user invokes `Zoom`.
+8. Pose load failures trigger non-blocking toast and disable only affected pose control.
+9. No GFE panel, frame control, or local upload control appears in v1 ligand workflow.
+
+### 10.2 M4B Required Checks
+1. Right-panel ligand section contains featured quick-pick chips (`Crystal Ligand` + canonical featured set).
+2. Users can switch ligands via featured quick picks only.
+3. Ligand switches are in-place with no page reload.
+4. Camera is preserved on ligand switch.
+5. M4A checks remain passing after switching ligands.
+
+### 10.3 M4C Deferred Stretch Checks
+1. Searchable dropdown is present for full ligand set.
+2. Users can select ligands from searchable list covering all baseline `.sdf` IDs.
+3. Search behavior is case-insensitive on label and ligand ID.
+4. Empty-query dropdown ordering is deterministic: `Crystal Ligand` first, then label/ID sorted entries.
+5. Explicit `No ligands found` state appears for unmatched queries.
 
 ## 11. Traceability
-- PRD mapping: `2.B Interactive Visualization Page (Required)` for multi-ligand and baseline/refined interaction.
+- PRD mapping: `2.B Interactive Visualization Page (Required)` for multi-ligand and baseline/refined interaction (implemented incrementally via M4A/M4B, with M4C deferred).
 - PRD mapping: `5. Acceptance Criteria` AC-3 and AC-4 behavior intent.
 - Technical plan mapping: runtime flow for ligand selection and pose component updates.
 - Technical plan mapping: data/file handling policy for `.sdf` primary and `.pdb` fallback.

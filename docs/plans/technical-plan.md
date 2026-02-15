@@ -8,7 +8,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 ## 1. Executive Summary
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
 - Use `NGL Viewer` for protein/ligand rendering and volumetric `.dx` FragMap overlays.
-- Implement ligand workflow with a two-tier model: curated `featured` set (`3fly_cryst_lig` shown as `Crystal Ligand` + 5) for guided narrative and full access to all provided ligands for exploratory analysis.
+- Implement ligand workflow incrementally: `M4A` single-ligand core, then `M4B` curated featured set (`3fly_cryst_lig` shown as `Crystal Ligand` + 5); defer full-list searchable access to `M4C` stretch scope.
 - Follow a Vue architecture with `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
 - Deploy to GitHub Pages with reproducible local validation checklist mapped to AC-1..AC-6.
@@ -20,7 +20,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Rendering engine: `NGL` embedded in a Vue component container.
 - Data loading: static assets served from app `public/assets`, fetched on demand.
 - State management: Vuex module with typed state/actions/mutations.
-- Scope decision: use `featured` ligands for defaults while exposing all provided ligands through searchable selection.
+- Scope decision: require featured-ligand path for baseline delivery and defer full searchable selection to `M4C` (non-blocking for M5-M8).
 - Featured ligands (`3fly_cryst_lig` shown as `Crystal Ligand` + 5) for guided flow:
 - `3fly_cryst_lig` (display label: `Crystal Ligand`)
 - `p38_goldstein_05_2e`
@@ -28,8 +28,8 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - `p38_goldstein_07_2g`
 - `p38_goldstein_08_2h`
 - `p38_goldstein_09_2i`
-- Full exploratory set: all 30 provided ligand IDs plus `3fly_cryst_lig` (displayed as `Crystal Ligand`) available from a searchable autocomplete/dropdown.
-- UI decision: include ligand autocomplete for full set access; no local file-upload control in v1.
+- Full exploratory set remains defined for deferred `M4C`: all 30 provided ligand IDs plus `3fly_cryst_lig` (displayed as `Crystal Ligand`) via searchable autocomplete/dropdown.
+- UI decision: M4A/M4B ship without full-list autocomplete; keep no local file-upload control in v1.
 - Runtime format policy: protein `.pdb` primary, ligands `.sdf` primary with `.pdb` fallback only when needed, FragMaps `.dx` primary.
 - FragMaps used at runtime: `.dx` only (all 8 maps). `.map` retained but not parsed in v1.
 - UX patterns use sidebar controls + viewport-first layout; requirements come only from PRD and repository specs.
@@ -54,7 +54,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Runtime flow:
 - App initializes stage and loads protein (`3fly.pdb`).
 - Loads default crystal ligand state (`3fly_cryst_lig`, displayed as `Crystal Ligand`, with baseline visible by default and refined available) and exposes featured quick-select controls.
-- Provides searchable ligand selector for all provided ligands (featured + non-featured).
+- `M4A/M4B` path does not require searchable full-ligand selector; full selector is deferred to `M4C`.
 - Optional parity path: manage narrative slide progression as viewer-local state (not route changes).
 - FragMaps remain unloaded until toggled on.
 - On map toggle: load `.dx`, create surface rep, cache component+rep handle.
@@ -121,7 +121,9 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Phase 0 (0.5h): scaffold app, routing, base layout, static hosting config.
 - Phase 1 (1.0h): define typed manifests, wire asset paths, data existence checks.
 - Phase 2 (2.0h): stage lifecycle + protein load + camera controls + catastrophic startup failure fallback UX (clear message + retry/navigation option).
-- Phase 3 (2.0h): ligand workflow (featured quick-picks + searchable full-ligand selector + baseline/refined pose-visibility controls with both-visible and both-hidden support + no reload switch).
+- Phase 3A (1.0h): M4A ligand core (`3fly_cryst_lig` only) with baseline/refined controls, both-visible/both-hidden, zoom, and failure/empty-state handling.
+- Phase 3B (1.0h): M4B featured-ligand switching with no reload and camera preservation.
+- Phase 3C (deferred stretch): M4C searchable full-ligand selector + deterministic ordering + `No ligands found`.
 - Phase 4 (2.0h): FragMap overlays (toggle, color, visibility state, caching, and per-row failure isolation with retry action).
 - Phase 5 (1.0h): per-map iso controls for GFE maps, exclusion-map fixed-style behavior, fast targeted-update path, and row-level retry/reset precondition handling.
 - Phase 6 (1.0h): Home page narrative, captions/sidebar explanations, and external-link failure handling that does not block viewer navigation CTA.
@@ -134,7 +136,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - PRD Requirement: Interactive viewer with 3FLY protein.
 - Implementation: `NglViewport` initialization + `3fly.pdb` load at route entry.
 - PRD Requirement: show different ligands and baseline/refined without reload.
-- Implementation: typed ligand manifest + featured quick-picks + searchable full-ligand selector + in-place component swap + pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden) using `.sdf` as primary and `.pdb` fallback only when required.
+- Implementation: typed ligand manifest + featured quick-picks + in-place component swap + pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden) using `.sdf` as primary and `.pdb` fallback only when required. Full searchable selector is deferred to `M4C`.
 - PRD Requirement: show/hide individual FragMap surfaces.
 - Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`, `Reset view`).
 - PRD Requirement: iso-value adjustment with fast response.
@@ -160,7 +162,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Method: verify no navigation, no full app remount, and in-place component add/remove only.
 - Pass: pose visibility changes occur in-place with continuous interaction.
 - AC-4 (ligand switching no reload):
-- Scenario: switch among featured and non-featured ligands from the full provided set.
+- Scenario: switch among featured ligands only for baseline AC execution; treat non-featured full-list switching as deferred `M4C` coverage.
 - Method: in-app selector switches and pose options update in same session.
 - Pass: no page reload; pose-visibility controls remain functional post-switch.
 - AC-5 (iso update <200 ms):
@@ -182,7 +184,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Risk: mixed ligand source format (`.sdf` primary, occasional `.pdb` fallback) can cause representation inconsistencies.
 - Mitigation: normalize post-load representations (color/radius/selection policies) independent of source file type.
 - Risk: full ligand list can increase UI complexity and selection friction.
-- Mitigation: keep featured quick-picks visible and use autocomplete for full-list discovery.
+- Mitigation: defer full-list selector to `M4C`; ship featured quick-picks first and isolate full-list work later.
 - Risk: browser variance between Chrome/Safari.
 - Mitigation: lock validation script and run both browsers before final delivery.
 - Risk: Vue 2 ecosystem is legacy compared with modern Vue 3 tooling.
@@ -216,7 +218,8 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Framework fixed: Vue 2 + TypeScript + Vue Router + Vuex + Vuetify 2.
 - Viewer fixed: NGL.
 - Hosting fixed: GitHub Pages.
-- Ligand scope fixed: all provided ligands are selectable; featured defaults are `3fly_cryst_lig` (displayed as `Crystal Ligand`) + 5 (`05_2e` to `09_2i`).
+- Ligand scope fixed for required path: `M4A` single ligand + `M4B` featured set (`3fly_cryst_lig` displayed as `Crystal Ligand` + 5).
+- Deferred stretch scope: `M4C` enables full provided ligand selection via searchable selector.
 - Pose visibility fixed: users can view baseline only, refined only, both simultaneously, or temporarily hide both for decluttered context.
 - Protein runtime format fixed: `.pdb` primary.
 - Ligand runtime format fixed: `.sdf` primary with optional `.pdb` fallback.
