@@ -5,6 +5,47 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Add explicit FragMap lazy-load/cache tradeoff notes to README
+- Decision: expand `README.md` Design Decisions section with explicit FragMap runtime tradeoffs: lazy first-load, cache reuse, in-place state updates, and row-level failure isolation/retry.
+- Why: reviewer requested clearer communication of performance-oriented implementation choices and their rationale.
+- Alternatives considered:
+  - keep high-level design bullets without runtime tradeoff details;
+  - move these details into only internal planning docs (rejected for submission clarity).
+- Evidence:
+  - `README.md`
+- Validation/risk impact: documentation-only update; no runtime behavior changes.
+
+### 2026-02-16 - Add README transparency note about AI-assisted development
+- Decision: include a brief `Development Process` note in `README.md` stating that OpenAI Codex was used for AI-assisted development and that final decisions/validation were author-reviewed.
+- Why: reviewer requested explicit disclosure of development tooling in submission documentation.
+- Alternatives considered:
+  - omit tooling mention from README;
+  - include a longer process narrative (rejected to keep README concise).
+- Evidence:
+  - `README.md`
+- Validation/risk impact: documentation-only update; no runtime behavior changes.
+
+### 2026-02-16 - Expand README targeted validation commands to full M1-M6 coverage
+- Decision: list the complete targeted validator set in `README.md` (rather than a short subset) while keeping `bash scripts/run_checks.sh` as the primary sequential command.
+- Why: reviewer requested consistency so targeted checks explicitly include all milestone validators through M6.
+- Alternatives considered:
+  - keep abbreviated targeted checks list with only representative commands;
+  - remove targeted checks entirely and rely only on `run_checks.sh`.
+- Evidence:
+  - `README.md`
+- Validation/risk impact: documentation-only update; no runtime behavior changes.
+
+### 2026-02-16 - Enter submission mode: prioritize PRD deliverables over M7/M8 completion
+- Decision: focus remaining effort on PRD submission deliverables (repo readiness + README packaging) and defer M7/M8 instrumentation/hardening work beyond this time-boxed window.
+- Why: reviewer indicated less than two hours remain before submission; highest-value output is a clean, demonstrable working app with clear deliverables documentation.
+- Alternatives considered:
+  - continue M7 instrumentation despite incomplete evidence path and higher schedule risk;
+  - begin M8 hardening before required M7 evidence milestone.
+- Evidence:
+  - `docs/SilcsBio_Candidate_Exercise_Instructions.md` (Deliverables Section 4)
+  - `README.md`
+- Validation/risk impact: docs-only decision/package update; no runtime behavior changes. Risk accepted: AC evidence hardening remains incomplete until M7/M8 are resumed.
+
 ### 2026-02-16 - Remove literal backtick glyphs from M6 ligand identifier text
 - Decision: keep the approved M6 narrative content and replace markdown-style backtick wrappers around ligand IDs with plain inline text in the rendered overview page.
 - Why: Vue template text does not parse markdown; backticks were displayed literally and reduced readability.

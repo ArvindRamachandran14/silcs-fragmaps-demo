@@ -1,9 +1,9 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (`M6` final copy refresh complete; M6 gate PASS)
+Last updated: 2026-02-16 (submission-mode packaging pass; README drafted)
 
 ## Current Milestone Target
-- Active target: `M7 Performance Instrumentation + AC Validation Evidence`.
+- Active target: submission-ready PRD deliverables packaging (README + repo/live links) using completed `M1`-`M6` functionality.
 - Baseline branch state at takeover: `M1` through `M6` are complete and validated.
 - Deferred/non-blocking scopes remain `M4C` and exploratory `M5.2c` parity investigation.
 
@@ -31,27 +31,42 @@ Last updated: 2026-02-16 (`M6` final copy refresh complete; M6 gate PASS)
   - `npm run validate:m6` -> PASS after minor readability polish in paragraph 1 wording.
   - `npm run validate:m6` -> PASS after removing literal backticks around ligand IDs in the overview narrative.
 
+## Submission Packaging Summary
+- Root `README.md` was added and aligned to PRD Deliverables Section 4:
+  - Project overview + concise scientific explanation.
+  - Development-process transparency note (AI-assisted coding via Codex with author review responsibility).
+  - Local setup/run instructions.
+  - Validation command references.
+  - Full targeted validator command list through `validate:m6` (not abbreviated).
+  - Explicit FragMap runtime tradeoff notes (lazy-load/cache reuse/in-place updates/retry isolation).
+  - PRD requirement coverage mapping.
+  - Design tradeoffs and known limitations.
+- Live URL field remains a placeholder pending final hosting target.
+
 ## Scope Policy (Locked)
 - Deferred scope:
   - `M4C`: full ligand list + searchable selector + deterministic ordering + `No ligands found`.
   - `M5.2c`: exploratory wireframe parity investigation only.
 - Progression rule:
   - Deferred items are non-blocking for `M7` and `M8` unless explicitly re-promoted.
+- Time-boxed submission rule:
+  - M7/M8 execution is explicitly deferred in this window to prioritize PRD deliverable completeness.
 
 ## Priority Tasks (ordered)
-1. Populate M7 prompt templates in `prompts/implementation.md` (Prompt A/B/verify) to remove TODO placeholders before execution.
-2. Execute M7 implementation per spec (`docs/specs/performance-and-validation-spec.md`) and produce `docs/validation.md` evidence.
-3. Preserve M1-M6 behavior contracts while adding instrumentation and AC evidence paths.
+1. Set final live deployment URL in `README.md` (`Submission Links` section).
+2. Run one final sanity pass: `npm run validate:m6` and optionally `bash scripts/run_checks.sh`.
+3. Submit PRD deliverables: GitHub URL + live URL + README.
+4. Resume M7/M8 only if additional time remains after submission packaging.
 
 ## Exact Commands To Run Next
-- `bash scripts/run_checks.sh`
 - `npm run validate:m6`
+- `bash scripts/run_checks.sh`
 - `npm run build`
 
 ## Stop/Go Criteria
-- Stop if any existing validator from `m1`..`m6` regresses.
-- Stop if M7 work crosses scope boundaries into M8 hardening.
-- Go from `M7` to `M8` only after AC evidence is complete and reproducible.
+- Stop if `validate:m6` regresses or Home/Viewer routes fail.
+- Stop if last-minute changes expand scope beyond submission packaging.
+- Go to M7/M8 only after submission package is finalized.
 
 ## Risks and Escalation Rules
 - Risk: intermittent first-pass `validate:m1` flake.
@@ -63,4 +78,4 @@ Last updated: 2026-02-16 (`M6` final copy refresh complete; M6 gate PASS)
   - Required browser evidence (especially Safari sign-off requirements) cannot be collected under current tooling.
 
 ## Immediate Next Concrete Step
-- Add concrete M7 Prompt A/B/verify templates in `prompts/implementation.md`, then begin M7 implementation with instrumentation + evidence output in `docs/validation.md`.
+- Fill the live URL placeholder in `README.md`, then run `npm run validate:m6` as final pre-submission confirmation.

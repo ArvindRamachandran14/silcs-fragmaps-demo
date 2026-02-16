@@ -249,12 +249,12 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Add instrumentation boundaries and produce AC-1..AC-6 evidence format per `docs/specs/performance-and-validation-spec.md`.
 
 ### M8 Hardening + Final Regression + README/Deploy Readiness
-- Status: `not started`
+- Status: `partially started (submission-docs focus)`
 - Evidence:
-  - No `README.md` present.
+  - `README.md` is now present with project overview, scientific explanation, local run instructions, validation commands, PRD requirement mapping, and design tradeoffs/known limitations.
   - No deploy readiness and final regression artifacts documented.
 - Validation signal:
-  - `not run`.
+  - `not run` (README/docs-only update in this pass).
 - Gaps to exit criteria:
   - Final regression pass + docs/deploy package completion per execution plan M8 gate.
 
@@ -383,6 +383,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Applied reviewer-authored final M6 narrative text in `src/pages/HomePage.vue` (scientific-first framing + explicit featured-ligand IDs + original/refined/FragMap/iso exploration guidance). Validation evidence: `npm run validate:m6` -> PASS.
 - 2026-02-16: Applied a minor M6 readability polish in `src/pages/HomePage.vue` ("baseline pose of crystallographic ligand" -> "baseline pose of the crystal ligand"). Validation evidence: `npm run validate:m6` -> PASS.
 - 2026-02-16: Removed literal backtick rendering around ligand IDs in M6 overview narrative (`src/pages/HomePage.vue`) so ligand identifiers display as plain inline names. Validation evidence: `npm run validate:m6` -> PASS.
+- 2026-02-16: Added submission-focused root `README.md` aligned to PRD Deliverables Section 4 (overview, scientific explanation, local run instructions, validation command set, PRD requirement mapping, and design tradeoffs/limitations). No validator commands were run in this step (`not run`; docs-only packaging update).
+- 2026-02-16: Updated `README.md` validation section so targeted milestone checks enumerate the full validator set through M6 (`validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1`, `validate:m5.2`, `validate:m5.2a`, `validate:m5.2b`, `validate:m5.3`, `validate:m5.4`, `validate:m5.5`, `validate:m5.6`, `validate:m5`, `validate:m6`). No validator commands were run in this step (`not run`; docs-only README refinement).
+- 2026-02-16: Added a `Development Process` transparency note to `README.md` documenting AI-assisted development via OpenAI Codex and author review/approval responsibility. No validator commands were run in this step (`not run`; docs-only README refinement).
+- 2026-02-16: Added a dedicated FragMap performance/tradeoff subsection in `README.md` documenting lazy first-load, cache reuse, in-place updates, and row-level failure isolation/retry rationale. No validator commands were run in this step (`not run`; docs-only README refinement).
 
 ## Open Risks
 - `M7` instrumentation/evidence pipeline is not started and remains the next major delivery risk.
@@ -392,3 +396,4 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - AC evidence path (M7) and release readiness (M8) are currently absent.
 - Execution-plan automation contract is partially missing and will need alignment before M7/M8 sign-off.
 - Wireframe parity gap versus official screenshot references is still unresolved; see `docs/investigations/m5.2c-wireframe-parity-investigation.md` for symptoms, ruled-out causes, and resume commands.
+- Submission-mode constraint: M7/M8 completion is intentionally deferred for this handoff window to prioritize PRD deliverable packaging under time limit.
