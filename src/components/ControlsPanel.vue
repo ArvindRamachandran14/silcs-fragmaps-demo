@@ -1,144 +1,201 @@
 <template>
   <aside class="controls-panel" data-test-id="controls-panel">
-    <h2 class="text-subtitle-1 mb-3">Ligand Controls</h2>
+    <div class="controls-panel__tabs" role="tablist" aria-label="Right controls tabs">
+      <button
+        type="button"
+        role="tab"
+        class="controls-panel__tab"
+        :class="{ 'controls-panel__tab--active': activeTab === 'fragmap' }"
+        :aria-selected="activeTab === 'fragmap' ? 'true' : 'false'"
+        aria-controls="controls-tab-panel-fragmap"
+        data-test-id="controls-tab-fragmap"
+        @click="activeTab = 'fragmap'"
+      >
+        FragMap
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="controls-panel__tab"
+        :class="{ 'controls-panel__tab--active': activeTab === 'ligand' }"
+        :aria-selected="activeTab === 'ligand' ? 'true' : 'false'"
+        aria-controls="controls-tab-panel-ligand"
+        data-test-id="controls-tab-ligand"
+        @click="activeTab = 'ligand'"
+      >
+        Ligand
+      </button>
+    </div>
 
-    <div class="controls-panel__featured mb-3">
-      <p class="text-caption font-weight-bold mb-2">Featured Ligands</p>
-      <div class="controls-panel__chips" data-test-id="ligand-featured-chip-list">
-        <button
-          v-for="ligand in featuredLigands"
-          :key="ligand.id"
-          type="button"
-          class="controls-panel__chip"
-          :class="{
-            'controls-panel__chip--active': selectedLigandId === ligand.id,
-            'controls-panel__chip--disabled': ligand.disabled,
-          }"
-          :data-test-id="`ligand-featured-chip-${ligand.id}`"
-          :disabled="ligandSwitchLoading || ligand.disabled || selectedLigandId === ligand.id"
-          @click="onFeaturedLigandSelect(ligand.id)"
-        >
-          {{ ligand.label }}
+    <section
+      v-show="activeTab === 'fragmap'"
+      id="controls-tab-panel-fragmap"
+      role="tabpanel"
+      aria-labelledby="controls-tab-fragmap"
+      data-test-id="controls-tab-panel-fragmap"
+    >
+      <h2 class="text-subtitle-1 mb-3">FragMap Controls</h2>
+
+      <div class="controls-panel__fragmap-actions mb-3" data-test-id="fragmap-action-row">
+        <button type="button" class="controls-panel__action" data-test-id="fragmap-hide-all" disabled>
+          Hide all
+        </button>
+        <button type="button" class="controls-panel__action" data-test-id="fragmap-reset-defaults" disabled>
+          Reset defaults
+        </button>
+        <button type="button" class="controls-panel__action" data-test-id="fragmap-reset-view" disabled>
+          Reset view
         </button>
       </div>
-      <p
-        v-if="ligandSwitchLoading"
-        class="controls-panel__loading mt-2 mb-0"
-        data-test-id="ligand-switch-loading"
-      >
-        Loading selected ligand poses...
-      </p>
-      <p
-        v-else-if="disabledFeaturedLigandLabels"
-        class="controls-panel__muted mt-2 mb-0"
-        data-test-id="ligand-featured-disabled-summary"
-      >
-        Unavailable: {{ disabledFeaturedLigandLabels }}
-      </p>
-    </div>
 
-    <p class="mb-2" data-test-id="ligand-selection-summary">
-      Active ligand: <strong>{{ selectedLigandLabel }}</strong>
-      <span class="controls-panel__muted">(M4B featured-ligand scope)</span>
-    </p>
-
-    <div class="controls-panel__pose-group mb-3">
-      <label class="controls-panel__checkbox-row" data-test-id="ligand-baseline-row">
-        <input
-          data-test-id="ligand-pose-baseline"
-          type="checkbox"
-          :checked="baselinePoseVisible"
-          :disabled="baselinePoseDisabled || baselinePoseLoading || ligandSwitchLoading"
-          @change="onPoseCheckboxChange('baseline', $event)"
+      <div class="controls-panel__fragmap-section mb-3" data-test-id="fragmap-primary-section">
+        <h3 class="text-subtitle-2 mb-2">Primary</h3>
+        <p class="controls-panel__muted mb-2" data-test-id="fragmap-default-hidden-note">
+          All maps are hidden by default.
+        </p>
+        <label
+          v-for="row in primaryFragMapRows"
+          :key="row.id"
+          class="controls-panel__map-row"
+          :data-test-id="`fragmap-row-${row.id}`"
         >
-        <span>Baseline</span>
-      </label>
-      <p v-if="baselinePoseError" class="controls-panel__error" data-test-id="ligand-baseline-error">
-        {{ baselinePoseError }}
-      </p>
+          <input type="checkbox" disabled>
+          <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
+          <span>{{ row.label }}</span>
+        </label>
+      </div>
 
-      <label class="controls-panel__checkbox-row mt-2" data-test-id="ligand-refined-row">
-        <input
-          data-test-id="ligand-pose-refined"
-          type="checkbox"
-          :checked="refinedPoseVisible"
-          :disabled="refinedPoseDisabled || refinedPoseLoading || ligandSwitchLoading"
-          @change="onPoseCheckboxChange('refined', $event)"
+      <div class="controls-panel__fragmap-section mb-3" data-test-id="fragmap-advanced-section">
+        <h3 class="text-subtitle-2 mb-2">Advanced</h3>
+        <label
+          v-for="row in advancedFragMapRows"
+          :key="row.id"
+          class="controls-panel__map-row"
+          :data-test-id="`fragmap-row-${row.id}`"
         >
-        <span>Refined</span>
-      </label>
-      <p v-if="refinedPoseError" class="controls-panel__error" data-test-id="ligand-refined-error">
-        {{ refinedPoseError }}
+          <input type="checkbox" disabled>
+          <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
+          <span>{{ row.label }}</span>
+        </label>
+      </div>
+
+      <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
+        M5.1 shell only: map toggle/iso runtime behavior is intentionally deferred to later M5 slices.
       </p>
-    </div>
+    </section>
 
-    <div
-      v-if="bothVisible"
-      class="controls-panel__legend mb-3"
-      data-test-id="ligand-both-visible-legend"
+    <section
+      v-show="activeTab === 'ligand'"
+      id="controls-tab-panel-ligand"
+      role="tabpanel"
+      aria-labelledby="controls-tab-ligand"
+      data-test-id="controls-tab-panel-ligand"
     >
-      <div class="text-caption font-weight-bold mb-1">Legend</div>
-      <div class="text-caption">Baseline: thinner and lower opacity</div>
-      <div class="text-caption">Refined: thicker and higher opacity</div>
-    </div>
+      <h2 class="text-subtitle-1 mb-3">Ligand Controls</h2>
 
-    <v-btn
-      small
-      color="primary"
-      class="mb-3"
-      data-test-id="ligand-zoom-action"
-      :disabled="baselinePoseLoading || refinedPoseLoading || ligandSwitchLoading"
-      @click="$emit('zoom-ligand')"
-    >
-      Zoom
-    </v-btn>
-
-    <h2 class="text-subtitle-1 mb-3">Viewer Context</h2>
-
-    <p class="mb-3" data-test-id="viewer-context-caption">
-      Showing 3FLY protein with <strong>{{ selectedLigandLabel }}</strong>, baseline pose
-      {{ baselinePoseVisible ? "visible" : "hidden" }}, refined pose
-      {{ refinedPoseVisible ? "visible" : "hidden" }}, and {{ visibleFragMapIds.length }} visible FragMaps.
-    </p>
-
-    <dl class="controls-panel__list mb-4">
-      <div>
-        <dt>Ligand</dt>
-        <dd data-test-id="default-ligand-id">{{ selectedLigandId }}</dd>
+      <div class="controls-panel__featured mb-3">
+        <p class="text-caption font-weight-bold mb-2">Featured Ligands</p>
+        <div class="controls-panel__chips" data-test-id="ligand-featured-chip-list">
+          <button
+            v-for="ligand in featuredLigands"
+            :key="ligand.id"
+            type="button"
+            class="controls-panel__chip"
+            :class="{
+              'controls-panel__chip--active': selectedLigandId === ligand.id,
+              'controls-panel__chip--disabled': ligand.disabled,
+            }"
+            :data-test-id="`ligand-featured-chip-${ligand.id}`"
+            :disabled="ligandSwitchLoading || ligand.disabled || selectedLigandId === ligand.id"
+            @click="onFeaturedLigandSelect(ligand.id)"
+          >
+            {{ ligand.label }}
+          </button>
+        </div>
+        <p
+          v-if="ligandSwitchLoading"
+          class="controls-panel__loading mt-2 mb-0"
+          data-test-id="ligand-switch-loading"
+        >
+          Loading selected ligand poses...
+        </p>
+        <p
+          v-else-if="disabledFeaturedLigandLabels"
+          class="controls-panel__muted mt-2 mb-0"
+          data-test-id="ligand-featured-disabled-summary"
+        >
+          Unavailable: {{ disabledFeaturedLigandLabels }}
+        </p>
       </div>
-      <div>
-        <dt>Baseline Pose</dt>
-        <dd data-test-id="baseline-pose-state">{{ baselinePoseVisible ? "ON" : "OFF" }}</dd>
-      </div>
-      <div>
-        <dt>Refined Pose</dt>
-        <dd data-test-id="refined-pose-state">{{ refinedPoseVisible ? "ON" : "OFF" }}</dd>
-      </div>
-      <div>
-        <dt>Visible FragMaps</dt>
-        <dd data-test-id="visible-fragmaps-state">{{ visibleFragMapIds.length }}</dd>
-      </div>
-    </dl>
 
-    <v-btn
-      small
-      text
-      color="primary"
-      class="mb-3"
-      data-test-id="controls-reset-view"
-      :disabled="!canReset"
-      @click="$emit('reset-view')"
-    >
-      Reset view
-    </v-btn>
+      <p class="mb-2" data-test-id="ligand-selection-summary">
+        Active ligand: <strong>{{ selectedLigandLabel }}</strong>
+        <span class="controls-panel__muted">(M4B featured-ligand scope)</span>
+      </p>
 
-    <div class="controls-panel__code-block">
-      <h3 class="text-caption mb-1">Camera Baseline Contract</h3>
+      <div class="controls-panel__pose-group mb-3">
+        <label class="controls-panel__checkbox-row" data-test-id="ligand-baseline-row">
+          <input
+            data-test-id="ligand-pose-baseline"
+            type="checkbox"
+            :checked="baselinePoseVisible"
+            :disabled="baselinePoseDisabled || baselinePoseLoading || ligandSwitchLoading"
+            @change="onPoseCheckboxChange('baseline', $event)"
+          >
+          <span>Baseline</span>
+        </label>
+        <p v-if="baselinePoseError" class="controls-panel__error" data-test-id="ligand-baseline-error">
+          {{ baselinePoseError }}
+        </p>
+
+        <label class="controls-panel__checkbox-row mt-2" data-test-id="ligand-refined-row">
+          <input
+            data-test-id="ligand-pose-refined"
+            type="checkbox"
+            :checked="refinedPoseVisible"
+            :disabled="refinedPoseDisabled || refinedPoseLoading || ligandSwitchLoading"
+            @change="onPoseCheckboxChange('refined', $event)"
+          >
+          <span>Refined</span>
+        </label>
+        <p v-if="refinedPoseError" class="controls-panel__error" data-test-id="ligand-refined-error">
+          {{ refinedPoseError }}
+        </p>
+      </div>
+
+      <div
+        v-if="bothVisible"
+        class="controls-panel__legend mb-3"
+        data-test-id="ligand-both-visible-legend"
+      >
+        <div class="text-caption font-weight-bold mb-1">Legend</div>
+        <div class="text-caption">Baseline: thinner and lower opacity</div>
+        <div class="text-caption">Refined: thicker and higher opacity</div>
+      </div>
+
+      <v-btn
+        small
+        color="primary"
+        class="mb-3"
+        data-test-id="ligand-zoom-action"
+        :disabled="baselinePoseLoading || refinedPoseLoading || ligandSwitchLoading"
+        @click="$emit('zoom-ligand')"
+      >
+        Zoom
+      </v-btn>
+    </section>
+
+    <div class="controls-panel__diagnostics" aria-hidden="true">
+      <p data-test-id="viewer-context-caption">
+        Showing 3FLY protein with <strong>{{ selectedLigandLabel }}</strong>, baseline pose
+        {{ baselinePoseVisible ? "visible" : "hidden" }}, refined pose
+        {{ refinedPoseVisible ? "visible" : "hidden" }}, and {{ visibleFragMapIds.length }} visible FragMaps.
+      </p>
+      <span data-test-id="default-ligand-id">{{ selectedLigandId }}</span>
+      <span data-test-id="baseline-pose-state">{{ baselinePoseVisible ? "ON" : "OFF" }}</span>
+      <span data-test-id="refined-pose-state">{{ refinedPoseVisible ? "ON" : "OFF" }}</span>
+      <span data-test-id="visible-fragmaps-state">{{ visibleFragMapIds.length }}</span>
       <pre data-test-id="camera-baseline-contract">{{ baselineText }}</pre>
-    </div>
-
-    <div class="controls-panel__code-block mt-3">
-      <h3 class="text-caption mb-1">Current Camera Snapshot</h3>
       <pre data-test-id="camera-snapshot">{{ currentCameraText }}</pre>
     </div>
   </aside>
@@ -148,6 +205,14 @@
 import Vue from "vue";
 import { CameraSnapshot } from "@/viewer/nglStage";
 import type { PoseKind } from "@/store/modules/viewer";
+import { FragMapSection } from "@/data/manifest";
+
+interface FragMapShellRow {
+  id: string;
+  label: string;
+  color: string;
+  section: FragMapSection;
+}
 
 function formatCamera(snapshot: CameraSnapshot): string {
   return JSON.stringify(snapshot, null, 2);
@@ -157,6 +222,10 @@ export default Vue.extend({
   name: "ControlsPanel",
   props: {
     featuredLigands: {
+      type: Array,
+      required: true,
+    },
+    fragMapShellRows: {
       type: Array,
       required: true,
     },
@@ -218,10 +287,11 @@ export default Vue.extend({
       type: Object,
       required: true,
     },
-    canReset: {
-      type: Boolean,
-      required: true,
-    },
+  },
+  data() {
+    return {
+      activeTab: "fragmap" as "fragmap" | "ligand",
+    };
   },
   computed: {
     bothVisible(): boolean {
@@ -238,6 +308,12 @@ export default Vue.extend({
         (entry) => entry.disabled,
       );
       return entries.map((entry) => entry.label).join(", ");
+    },
+    primaryFragMapRows(): FragMapShellRow[] {
+      return (this.fragMapShellRows as FragMapShellRow[]).filter((entry) => entry.section === "primary");
+    },
+    advancedFragMapRows(): FragMapShellRow[] {
+      return (this.fragMapShellRows as FragMapShellRow[]).filter((entry) => entry.section === "advanced");
     },
   },
   methods: {
@@ -262,24 +338,76 @@ export default Vue.extend({
   padding: 16px;
 }
 
-.controls-panel__list {
+.controls-panel__tabs {
+  border-bottom: 1px solid #d8dfeb;
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+}
+
+.controls-panel__tab {
+  background: #f5f7fb;
+  border: 1px solid #ccd6e6;
+  border-radius: 6px;
+  color: #2a3d57;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+}
+
+.controls-panel__tab--active {
+  background: #1f6fbf;
+  border-color: #1f6fbf;
+  color: #ffffff;
+}
+
+.controls-panel__fragmap-actions {
   display: grid;
   gap: 8px;
-  margin: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.controls-panel__list dt {
-  color: #445165;
+.controls-panel__action {
+  background: #eef2f9;
+  border: 1px solid #ccd6e6;
+  border-radius: 6px;
+  color: #59708f;
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 2px;
+  min-height: 30px;
+  padding: 4px 6px;
 }
 
-.controls-panel__list dd {
-  color: #1f2c3d;
-  font-size: 14px;
-  margin: 0;
-  overflow-wrap: anywhere;
+.controls-panel__action:disabled {
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.controls-panel__fragmap-section {
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.controls-panel__map-row {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto auto 1fr;
+  line-height: 1.2;
+}
+
+.controls-panel__map-row + .controls-panel__map-row {
+  margin-top: 8px;
+}
+
+.controls-panel__map-swatch {
+  border-radius: 999px;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
 }
 
 .controls-panel__muted {
@@ -370,5 +498,9 @@ export default Vue.extend({
   overflow-x: auto;
   word-break: break-word;
   white-space: pre-wrap;
+}
+
+.controls-panel__diagnostics {
+  display: none;
 }
 </style>

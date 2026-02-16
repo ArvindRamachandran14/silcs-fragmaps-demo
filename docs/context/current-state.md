@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (docs consistency audit alignment)
+Last updated: 2026-02-16 (M5.1 shell cleanup + validation refresh)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -101,22 +101,31 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Add implementation and validation only if stretch scope is reactivated.
 
 ### M5 FragMap Controls (Sliced: M5.1..M5.6)
-- Status: `in progress (M5.1 Prompt A approved; Prompt B pending)`
+- Status: `in progress (M5.1 Prompt B complete; M5.2 Prompt A pending)`
 - Evidence:
   - M5 execution is now locked to six slices (`M5.1` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
-  - Active next scope is `M5.1` Prompt B (implementation) after explicit in-thread `APPROVED UI PREVIEW`.
+  - Active next scope is `M5.2` Prompt A (design preview only) after closing `M5.1` implementation gate.
   - Prompt-A packet artifacts now exist for `M5.1`:
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg` (multi-state shell page with simplified two-tab right-panel framework: `FragMap` + `Ligand`).
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg` (full-viewer placement context page aligned to the same simplified `FragMap` + `Ligand` tabs).
     - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md` and `README.md` updated for traceability.
-  - No fragmap control panel rows, no per-map toggle, no per-map iso controls in `src/components/`.
-  - `visibleFragMapIds` exists in store but has no mutation/action workflow wired to UI.
-  - No map component load/render/update logic exists yet for runtime toggles.
+  - `src/components/ControlsPanel.vue` now implements M5.1 shell UI: right-panel tabs (`FragMap` default active, `Ligand` secondary), FragMap action row shell, and canonical Primary/Advanced rows with all-hidden defaults.
+  - Visible right-panel debug/context blocks were removed from the user UI (`Viewer Context`, lower `Reset view`, and camera contract/snapshot pre blocks); required validator selectors remain in a hidden diagnostics container for compatibility.
+  - `src/pages/ViewerPage.vue` now passes canonical FragMap shell rows (manifest-mapped with fallback constants) into the controls panel.
+  - Existing ligand behavior is preserved under the `Ligand` tab; M4 validators were updated to select that tab explicitly.
+  - No map component load/render/update logic is wired yet for runtime toggles/iso/bulk actions.
 - Validation signal:
-  - `not run` (no M5 gate command exists in `package.json`).
+  - `npm run build` -> PASS (2026-02-16).
+  - `npm run validate:m1` -> FAIL then PASS on rerun (known intermittent snackbar click interception).
+  - `npm run validate:m2` -> PASS (2026-02-16).
+  - `npm run validate:m3` -> PASS (2026-02-16).
+  - `npm run validate:m4a` -> PASS (2026-02-16).
+  - `npm run validate:m4b` -> PASS (2026-02-16).
+  - `npm run validate:m5.1` -> PASS (2026-02-16; first sandboxed attempt `ENV-BLOCKED` due localhost bind restriction, unsandboxed rerun passed).
+  - Post-cleanup rerun: `npm run build` -> PASS, `npm run validate:m3` -> PASS, `npm run validate:m4a` -> PASS, `npm run validate:m4b` -> PASS, `npm run validate:m5.1` -> PASS (2026-02-16).
 - Gaps to exit criteria:
-  - Implement map UI/state/runtime behavior from `docs/specs/fragmap-controls-spec.md` Sections 5-11.
+  - Implement map UI/state/runtime behavior from `docs/specs/fragmap-controls-spec.md` Sections 8-11 across `M5.2`..`M5.6`.
 
 ### M6 Overview Page
 - Status: `not started`
@@ -167,7 +176,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Observed: searchable full-ligand selector and ordering behavior are not implemented.
   - Impact: deferred by plan; non-blocking for M5-M8 progression.
 - `high` - `docs/specs/fragmap-controls-spec.md`:
-  - Observed: no Primary/Advanced map rows, per-map toggles, per-map iso controls, exclusion-map behavior, or bulk actions.
+  - Observed: M5.1 shell is now implemented, but runtime map toggle engine, per-map iso behavior, exclusion-map runtime behavior, and bulk actions are still pending in later slices.
   - Impact: AC-2 and AC-5 cannot be met.
 - `high` - `docs/specs/overview-page-spec.md`:
   - Observed: overview narrative and required external reference link are missing.
@@ -229,9 +238,12 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Completed M5.1 artifact consistency pass so both state and context images use the same simplified two-tab framework (`FragMap` + `Ligand`). Updated `desktop/m5.1-fragmap-panel-shell-states.svg`, `desktop/m5.1-viewer-context-placement.svg`, packet docs (`README.md`, `m5.1-preview-index.md`, `approval-log.md`), and context records. Validation command evidence for this pass: `git status --short` -> PASS; `rg -n ">Protein</text>|>Components</text>" docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md docs/screenshots/Design_previews/m5-fragmap-controls/README.md` -> PASS (`no matches`).
 - 2026-02-16: Updated plan docs to encode the approved M5.1 two-tab contract directly in milestone scope wording (`FragMap` + `Ligand`, with `Ligand` preserving existing M4B controls) and marked M5.1 Prompt-A design gate approved in the milestone inventory section. Command evidence: `rg -n "M5\\.1|FragMap \\+ Ligand|two-tab framework"` across `docs/plans/execution-plan.md` and `docs/plans/milestone-inventory.md` -> PASS. No milestone validators were run (`not run`; docs-only planning alignment update).
 - 2026-02-16: Completed docs-only consistency audit and reconciled cross-doc mismatches: M5.1 approval state synchronized across preview packet files, M5.1 scope wording synchronized to Prompt B in context docs, M5.1 tab-framework contract propagated into specs/prompts, and featured-ligand subset wording (`Crystal Ligand` + `05_2e`/`06_2f`/`07_2g`) synchronized across specs/plans/context. Command evidence: targeted `rg -n` consistency scans across `docs/` and `prompts/` -> PASS. No milestone validators were run (`not run`; docs-only alignment update).
+- 2026-02-16: Implemented `M5.1` Prompt B in runtime UI scope. Updated `src/components/ControlsPanel.vue` to add the approved two-tab right-panel framework (`FragMap` default active, `Ligand` secondary), rendered FragMap shell rows for Primary/Advanced with canonical labels/colors and all-hidden defaults, and kept existing ligand controls in the `Ligand` tab. Updated `src/pages/ViewerPage.vue` to provide canonical FragMap shell row data (manifest-mapped with fallback constants). Updated `scripts/validate-m4a.js` and `scripts/validate-m4b.js` for deterministic desktop-panel selector scope plus explicit `Ligand` tab activation. Validation evidence: `npm run build` PASS; `npm run validate:m1` FAIL then PASS on rerun (known intermittent toast interception); `npm run validate:m2` PASS; `npm run validate:m3` PASS; `npm run validate:m4a` PASS; `npm run validate:m4b` PASS; targeted M5.1 shell Playwright check PASS.
+- 2026-02-16: Added dedicated M5.1 slice validator `scripts/validate-m5-1.js` and command wiring in `package.json` (`validate:m5.1`, `prevalidate:m5.1`) so shell-contract checks remain repeatable during later M5 slices. Command evidence: first `npm run validate:m5.1` attempt -> `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4176` in sandbox), unsandboxed rerun -> PASS.
+- 2026-02-16: Applied right-panel UI cleanup per reviewer feedback by removing visible `Viewer Context`, lower `Reset view`, and camera contract/snapshot blocks from `src/components/ControlsPanel.vue` while preserving hidden diagnostics selectors needed by existing validators. Updated `src/pages/ViewerPage.vue` props/events accordingly. Validation evidence in this window: `npm run build` PASS; `npm run validate:m3` PASS; `npm run validate:m4a` PASS; `npm run validate:m4b` PASS; `npm run validate:m5.1` PASS.
 
 ## Open Risks
-- Major feature milestones remain incomplete: M5 implementation slices (`M5.1` Prompt B onward through `M5.6`) and M6 are not started while M1-M4B are complete.
+- Major feature milestones remain incomplete: M5 implementation slices (`M5.2` through `M5.6`) and M6 are not started while M1-M4B and M5.1 are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.

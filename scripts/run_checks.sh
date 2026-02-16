@@ -9,6 +9,7 @@ COMMANDS=(
   "npm run validate:m3"
   "npm run validate:m4a"
   "npm run validate:m4b"
+  "npm run validate:m5.1"
 )
 
 # Pretty printing helpers

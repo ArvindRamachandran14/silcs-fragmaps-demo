@@ -305,7 +305,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### Slice Tracker
 | Slice | Scope | Design Gate | Implementation Gate | Status |
 |---|---|---|---|---|
-| `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | Pending | In progress |
+| `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | PASS | Completed |
 | `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | Pending | Pending | Not started |
 | `M5.3` | Advanced rows + Exclusion map fixed behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
@@ -315,25 +315,37 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### M5.1 - FragMap Panel Shell
 
 #### Summary
-- Prompt A is approved; Prompt B implementation is pending.
+- Prompt A is approved; Prompt B implementation is complete.
 - Approved design contract for this slice includes right-panel tabs (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.1 and why.` |
+| `src/components/ControlsPanel.vue` | Updated | Right controls panel UI shell and ligand workflow controls. | Added `FragMap`/`Ligand` tab strip (FragMap default active), rendered M5.1 FragMap shell (action row + Primary/Advanced canonical rows, all-hidden defaults), and kept existing M4B ligand controls under `Ligand` tab. |
+| `src/pages/ViewerPage.vue` | Updated | Viewer route orchestration and controls-panel wiring. | Added canonical FragMap shell row model + fallback mapping and passed it into `ControlsPanel` without introducing FragMap runtime toggle/load/iso behavior. |
+| `scripts/validate-m4a.js` | Updated | M4A regression validator. | Scoped selectors to desktop controls panel and added explicit `Ligand` tab activation before ligand checks so M4A assertions remain deterministic with M5.1 tabs. |
+| `scripts/validate-m4b.js` | Updated | M4B regression validator. | Scoped selectors to desktop controls panel and added explicit `Ligand` tab activation/waited text assertions before M4B ligand-switch checks. |
+| `scripts/validate-m5-1.js` | Created | Dedicated M5.1 slice validator. | Adds explicit checks for M5.1 shell contract: default `FragMap` tab, disabled action row, canonical Primary/Advanced rows disabled+unchecked, `Ligand` tab accessibility, and no route reload on tab switch. |
+| `package.json` | Updated | Project script command contract. | Added `validate:m5.1` and `prevalidate:m5.1` so M5.1 shell checks can be rerun during M5.2+ slice work to guard regressions. |
 
 #### Commands Run
-- Pending.
+- `npm run build` -> PASS.
+- `npm run validate:m1` -> FAIL (known intermittent snackbar click interception on first run), then PASS on rerun.
+- `npm run validate:m2` -> PASS.
+- `npm run validate:m3` -> PASS.
+- `npm run validate:m4a` -> PASS.
+- `npm run validate:m4b` -> PASS.
+- `npm run validate:m5.1` -> PASS (first sandboxed attempt was `ENV-BLOCKED` on local port bind; unsandboxed rerun passed).
 
 #### Gate Checklist
 - Prompt A preview for `M5.1` approved (`APPROVED UI PREVIEW`): PASS (approved in-thread, 2026-02-16).
-- Prompt B implementation stayed within `M5.1` scope boundary: Pending.
-- Right-panel tab framework (`FragMap` + `Ligand`) is present and `Ligand` tab preserves existing M4B controls: Pending.
-- No M1-M4B regressions after `M5.1` checks: Pending.
+- Prompt B implementation stayed within `M5.1` scope boundary: PASS.
+- Right-panel tab framework (`FragMap` + `Ligand`) is present and `Ligand` tab preserves existing M4B controls: PASS.
+- No M1-M4B regressions after `M5.1` checks: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- `validate:m1` still shows intermittent snackbar click-interception on some runs; rerun currently clears and all required milestones are passing.
+- M5.1 intentionally does not include FragMap runtime toggle/load/iso behavior; this begins in `M5.2`+ by plan.
 
 ### M5.2 - Primary-3 Visibility Engine
 

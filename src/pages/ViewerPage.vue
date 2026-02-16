@@ -49,6 +49,7 @@
         >
           <controls-panel
             :featured-ligands="featuredLigands"
+            :frag-map-shell-rows="fragMapShellRows"
             :selected-ligand-id="viewerState.selectedLigandId"
             :selected-ligand-label="viewerState.selectedLigandLabel"
             :ligand-switch-loading="viewerState.ligandSwitchLoading"
@@ -63,13 +64,8 @@
             :visible-frag-map-ids="viewerState.visibleFragMapIds"
             :camera-baseline="viewerState.cameraBaseline"
             :camera-snapshot="viewerState.cameraSnapshot"
-            :can-reset="canResetView"
-            @reset-view="handleResetView"
             @toggle-pose="handlePoseToggle"
             @select-featured-ligand="handleFeaturedLigandSwitch"
-            @show-baseline="handleShowBaseline"
-            @show-refined="handleShowRefined"
-            @show-both="handleShowBoth"
             @zoom-ligand="handleZoomLigand"
           />
         </v-col>
@@ -85,6 +81,7 @@
       >
         <controls-panel
           :featured-ligands="featuredLigands"
+          :frag-map-shell-rows="fragMapShellRows"
           :selected-ligand-id="viewerState.selectedLigandId"
           :selected-ligand-label="viewerState.selectedLigandLabel"
           :ligand-switch-loading="viewerState.ligandSwitchLoading"
@@ -99,13 +96,8 @@
           :visible-frag-map-ids="viewerState.visibleFragMapIds"
           :camera-baseline="viewerState.cameraBaseline"
           :camera-snapshot="viewerState.cameraSnapshot"
-          :can-reset="canResetView"
-          @reset-view="handleResetView"
           @toggle-pose="handlePoseToggle"
           @select-featured-ligand="handleFeaturedLigandSwitch"
-          @show-baseline="handleShowBaseline"
-          @show-refined="handleShowRefined"
-          @show-both="handleShowBoth"
           @zoom-ligand="handleZoomLigand"
         />
       </v-navigation-drawer>
@@ -129,7 +121,7 @@ import Vue from "vue";
 import ControlsPanel from "@/components/ControlsPanel.vue";
 import NglViewport from "@/components/NglViewport.vue";
 import ViewerTopBar from "@/components/ViewerTopBar.vue";
-import { AssetManifest, LigandAsset, loadAssetManifest } from "@/data/manifest";
+import { AssetManifest, FragMapAsset, LigandAsset, loadAssetManifest } from "@/data/manifest";
 import { RootState } from "@/store";
 import { ViewerState, DEFAULT_LIGAND_ID } from "@/store/modules/viewer";
 import type { PoseKind } from "@/store/modules/viewer";
@@ -157,6 +149,24 @@ interface FeaturedLigandChip {
   disabled: boolean;
   disabledReason: string | null;
 }
+
+interface FragMapShellRow {
+  id: string;
+  label: string;
+  color: string;
+  section: "primary" | "advanced";
+}
+
+const M5_FRAGMAP_SHELL_ROWS: FragMapShellRow[] = [
+  { id: "3fly.hbdon.gfe.dx", label: "Generic Donor", color: "#1976d2", section: "primary" },
+  { id: "3fly.hbacc.gfe.dx", label: "Generic Acceptor", color: "#d32f2f", section: "primary" },
+  { id: "3fly.apolar.gfe.dx", label: "Generic Apolar", color: "#2e7d32", section: "primary" },
+  { id: "3fly.mamn.gfe.dx", label: "Positively Charged", color: "#f57c00", section: "advanced" },
+  { id: "3fly.acec.gfe.dx", label: "Negatively Charged", color: "#c2185b", section: "advanced" },
+  { id: "3fly.meoo.gfe.dx", label: "Hydroxyl Oxygen", color: "#0097a7", section: "advanced" },
+  { id: "3fly.tipo.gfe.dx", label: "Water Oxygen", color: "#f9a825", section: "advanced" },
+  { id: "3fly.excl.dx", label: "Exclusion Map", color: "#9e9e9e", section: "advanced" },
+];
 
 export default Vue.extend({
   name: "ViewerPage",
@@ -190,6 +200,24 @@ export default Vue.extend({
     },
     canResetView(): boolean {
       return this.viewerStatus === "ready" && Boolean(this.stageController);
+    },
+    fragMapShellRows(): FragMapShellRow[] {
+      if (!this.manifest) {
+        return M5_FRAGMAP_SHELL_ROWS;
+      }
+
+      const rowsById = new Map(
+        this.manifest.fragMaps.map((entry: FragMapAsset) => [
+          entry.id,
+          {
+            id: entry.id,
+            label: entry.label,
+            color: entry.color,
+            section: entry.section,
+          } as FragMapShellRow,
+        ]),
+      );
+      return M5_FRAGMAP_SHELL_ROWS.map((entry) => rowsById.get(entry.id) || entry);
     },
   },
   mounted() {
@@ -470,18 +498,6 @@ export default Vue.extend({
         this.$store.commit("viewer/setLigandSwitchLoading", false);
       }
     },
-    async handleShowBaseline() {
-      await this.setPoseVisibility("baseline", true);
-      await this.setPoseVisibility("refined", false);
-    },
-    async handleShowRefined() {
-      await this.setPoseVisibility("baseline", false);
-      await this.setPoseVisibility("refined", true);
-    },
-    async handleShowBoth() {
-      await this.setPoseVisibility("baseline", true);
-      await this.setPoseVisibility("refined", true);
-    },
     handleZoomLigand() {
       if (!this.stageController) {
         return;
@@ -519,6 +535,12 @@ export default Vue.extend({
 .viewer-page__controls-col {
   min-width: 0;
   padding: 8px;
+}
+
+@media (min-width: 960px) {
+  .viewer-page__controls-col {
+    padding-left: 16px !important;
+  }
 }
 
 .viewer-page__controls-col {

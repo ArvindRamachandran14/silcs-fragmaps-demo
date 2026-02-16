@@ -7,6 +7,7 @@ const DIST_DIR = path.resolve(__dirname, "..", "dist");
 const INDEX_HTML_PATH = path.join(DIST_DIR, "index.html");
 const PORT = 4175;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
+const DESKTOP_PANEL = ".viewer-page__controls-col";
 
 const MIME_TYPES = {
   ".css": "text/css; charset=UTF-8",
@@ -33,6 +34,10 @@ function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+function panelSelector(testId) {
+  return `${DESKTOP_PANEL} [data-test-id="${testId}"]`;
 }
 
 function getMimeType(filePath) {
@@ -134,22 +139,29 @@ async function assertText(page, selector, expected, message) {
   assert(text === expected, `${message} (expected "${expected}", got "${text}")`);
 }
 
+async function selectLigandTab(page) {
+  await assertVisible(page, panelSelector("controls-tab-ligand"), "Ligand tab button is missing.");
+  await page.click(panelSelector("controls-tab-ligand"));
+  await assertVisible(page, panelSelector("controls-tab-panel-ligand"), "Ligand tab panel did not render.");
+}
+
 async function runSwitchingFlow(page) {
   const viewerUrl = appUrl("/viewer?m3LoadMs=1200");
   await page.goto(viewerUrl, { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer did not reach ready state.");
+  await selectLigandTab(page);
 
   for (const ligandId of FEATURED_IDS) {
     await assertVisible(
       page,
-      `[data-test-id="ligand-featured-chip-${ligandId}"]`,
+      panelSelector(`ligand-featured-chip-${ligandId}`),
       `Featured chip for ${ligandId} is missing.`,
     );
   }
 
-  const hasSearchSelector = await page.evaluate(() => {
-    return Boolean(document.querySelector('[data-test-id="ligand-search-selector"]'));
-  });
+  const hasSearchSelector = await page.evaluate((scope) => {
+    return Boolean(document.querySelector(`${scope} [data-test-id=\"ligand-search-selector\"]`));
+  }, DESKTOP_PANEL);
   assert(!hasSearchSelector, "Searchable full-ligand selector should not appear in M4B.");
 
   const marker = await page.evaluate(() => {
@@ -157,45 +169,45 @@ async function runSwitchingFlow(page) {
     return window.__m4bMarker;
   });
 
-  const initialCameraSnapshot = ((await page.textContent('[data-test-id="camera-snapshot"]')) || "").trim();
-  await assertText(page, '[data-test-id="default-ligand-id"]', "3fly_cryst_lig", "Default ligand mismatch.");
+  const initialCameraSnapshot = ((await page.textContent(panelSelector("camera-snapshot"))) || "").trim();
+  await assertText(page, panelSelector("default-ligand-id"), "3fly_cryst_lig", "Default ligand mismatch.");
 
-  await page.click('[data-test-id="ligand-featured-chip-p38_goldstein_05_2e"]');
-  await assertText(page, '[data-test-id="default-ligand-id"]', "p38_goldstein_05_2e", "Ligand switch to 05_2e failed.");
+  await page.click(panelSelector("ligand-featured-chip-p38_goldstein_05_2e"));
+  await assertText(page, panelSelector("default-ligand-id"), "p38_goldstein_05_2e", "Ligand switch to 05_2e failed.");
   assert(page.url() === viewerUrl, "Ligand switch changed route URL unexpectedly.");
 
-  const cameraAfterFirstSwitch = ((await page.textContent('[data-test-id="camera-snapshot"]')) || "").trim();
+  const cameraAfterFirstSwitch = ((await page.textContent(panelSelector("camera-snapshot"))) || "").trim();
   assert(
     cameraAfterFirstSwitch === initialCameraSnapshot,
     "Camera snapshot changed after featured ligand switch.",
   );
 
-  await page.click('[data-test-id="ligand-pose-refined"]');
-  await assertText(page, '[data-test-id="refined-pose-state"]', "ON", "Refined pose did not toggle on after switch.");
+  await page.click(panelSelector("ligand-pose-refined"));
+  await assertText(page, panelSelector("refined-pose-state"), "ON", "Refined pose did not toggle on after switch.");
   await assertVisible(
     page,
-    '[data-test-id="ligand-both-visible-legend"]',
+    panelSelector("ligand-both-visible-legend"),
     "Both-visible legend missing after enabling refined pose.",
   );
 
-  await page.click('[data-test-id="ligand-featured-chip-p38_goldstein_06_2f"]');
-  await assertText(page, '[data-test-id="default-ligand-id"]', "p38_goldstein_06_2f", "Ligand switch to 06_2f failed.");
-  await assertText(page, '[data-test-id="refined-pose-state"]', "ON", "Refined pose state did not persist across switch.");
+  await page.click(panelSelector("ligand-featured-chip-p38_goldstein_06_2f"));
+  await assertText(page, panelSelector("default-ligand-id"), "p38_goldstein_06_2f", "Ligand switch to 06_2f failed.");
+  await assertText(page, panelSelector("refined-pose-state"), "ON", "Refined pose state did not persist across switch.");
 
-  await page.click('[data-test-id="ligand-featured-chip-p38_goldstein_07_2g"]');
-  await assertText(page, '[data-test-id="default-ligand-id"]', "p38_goldstein_07_2g", "Ligand switch to 07_2g failed.");
+  await page.click(panelSelector("ligand-featured-chip-p38_goldstein_07_2g"));
+  await assertText(page, panelSelector("default-ligand-id"), "p38_goldstein_07_2g", "Ligand switch to 07_2g failed.");
 
-  const baselineCameraContract = ((await page.textContent('[data-test-id="camera-baseline-contract"]')) || "").trim();
+  const baselineCameraContract = ((await page.textContent(panelSelector("camera-baseline-contract"))) || "").trim();
   await page.click('[data-test-id="viewer-reset-view"]');
   await page.waitForFunction(
-    ({ expected }) => {
-      const currentCamera = document.querySelector('[data-test-id="camera-snapshot"]');
+    ({ selector, expected }) => {
+      const currentCamera = document.querySelector(selector);
       return Boolean(currentCamera) && currentCamera.textContent && currentCamera.textContent.trim() === expected;
     },
-    { expected: baselineCameraContract },
+    { selector: panelSelector("camera-snapshot"), expected: baselineCameraContract },
   );
 
-  const cameraAfterReset = ((await page.textContent('[data-test-id="camera-snapshot"]')) || "").trim();
+  const cameraAfterReset = ((await page.textContent(panelSelector("camera-snapshot"))) || "").trim();
   assert(
     cameraAfterReset === baselineCameraContract,
     "Reset view did not return to the baseline camera contract after featured ligand switching.",
@@ -208,17 +220,18 @@ async function runSwitchingFlow(page) {
 async function runFailureIsolationFlow(page) {
   await page.goto(appUrl("/viewer?m4FailPose=refined"), { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer not ready for M4B failure flow.");
+  await selectLigandTab(page);
 
-  await page.click('[data-test-id="ligand-featured-chip-p38_goldstein_05_2e"]');
-  await assertText(page, '[data-test-id="default-ligand-id"]', "p38_goldstein_05_2e", "Failure-flow ligand switch failed.");
+  await page.click(panelSelector("ligand-featured-chip-p38_goldstein_05_2e"));
+  await assertText(page, panelSelector("default-ligand-id"), "p38_goldstein_05_2e", "Failure-flow ligand switch failed.");
 
-  await page.click('[data-test-id="ligand-pose-refined"]');
+  await page.click(panelSelector("ligand-pose-refined"));
   await assertVisible(page, '[data-test-id="viewer-toast"]', "Failure toast missing for refined pose.");
   const toastText = ((await page.textContent('[data-test-id="viewer-toast"]')) || "").trim();
   assert(toastText.includes("Refined pose failed"), "Failure toast did not include refined-pose context.");
 
-  const refinedDisabled = await page.isDisabled('[data-test-id="ligand-pose-refined"]');
-  const baselineDisabled = await page.isDisabled('[data-test-id="ligand-pose-baseline"]');
+  const refinedDisabled = await page.isDisabled(panelSelector("ligand-pose-refined"));
+  const baselineDisabled = await page.isDisabled(panelSelector("ligand-pose-baseline"));
   assert(refinedDisabled, "Refined control should be disabled after refined failure.");
   assert(!baselineDisabled, "Baseline control should remain enabled after refined failure.");
 }
@@ -226,14 +239,15 @@ async function runFailureIsolationFlow(page) {
 async function runFallbackDisableFlow(page) {
   await page.goto(appUrl("/viewer?m4FailPose=baseline"), { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer not ready for fallback-disable flow.");
+  await selectLigandTab(page);
 
-  await page.click('[data-test-id="ligand-featured-chip-p38_goldstein_05_2e"]');
+  await page.click(panelSelector("ligand-featured-chip-p38_goldstein_05_2e"));
   await assertVisible(page, '[data-test-id="viewer-toast"]', "Switch failure toast missing.");
   const toastText = ((await page.textContent('[data-test-id="viewer-toast"]')) || "").trim();
   assert(toastText.includes("Failed to switch"), "Switch failure toast text mismatch.");
 
-  await assertText(page, '[data-test-id="default-ligand-id"]', "3fly_cryst_lig", "Failed switch changed selected ligand.");
-  const disabledChip = await page.isDisabled('[data-test-id="ligand-featured-chip-p38_goldstein_05_2e"]');
+  await assertText(page, panelSelector("default-ligand-id"), "3fly_cryst_lig", "Failed switch changed selected ligand.");
+  const disabledChip = await page.isDisabled(panelSelector("ligand-featured-chip-p38_goldstein_05_2e"));
   assert(disabledChip, "Failed featured ligand did not transition to disabled state.");
 }
 

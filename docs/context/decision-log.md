@@ -5,6 +5,47 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Hide non-essential right-panel context/debug blocks while retaining validator hooks
+- Decision: remove visible right-panel `Viewer Context`, lower `Reset view`, and camera contract/snapshot debug blocks from the user-facing `Ligand` tab in `src/components/ControlsPanel.vue`, while preserving required `data-test-id` probes in a hidden diagnostics container.
+- Why: reviewer feedback requested a cleaner controls UI and identified these items as non-essential for normal user interaction in the M5.1 shell.
+- Alternatives considered:
+  - keep all context/debug blocks visible until later milestones;
+  - remove selectors entirely and rewrite older validators immediately.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `scripts/validate-m3.js`
+  - `scripts/validate-m4a.js`
+  - `scripts/validate-m4b.js`
+  - `scripts/validate-m5-1.js`
+- Validation/risk impact: improves UI clarity with no regression in existing milestone validators (`build`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1` all PASS); residual risk is hidden diagnostics markup debt that should be retired once validators no longer depend on these selectors.
+
+### 2026-02-16 - Add dedicated `validate:m5.1` shell-gate command for repeatable slice regression checks
+- Decision: add a new validator script (`scripts/validate-m5-1.js`) and npm scripts (`validate:m5.1`, `prevalidate:m5.1`) to enforce the M5.1 shell contract explicitly and reuse it during subsequent M5 slices.
+- Why: upcoming `M5.2`/`M5.3` runtime work can unintentionally regress the approved M5.1 tabbed shell; a dedicated gate makes those regressions easy to catch.
+- Alternatives considered:
+  - continue using ad-hoc one-off shell checks (`node - <<'NODE' ...`) only;
+  - wait until `M5.6` and rely exclusively on final `validate:m5`.
+- Evidence:
+  - `scripts/validate-m5-1.js`
+  - `package.json`
+  - `docs/plans/milestone-inventory.md` (`M5.1` commands/files section)
+- Validation/risk impact: first sandboxed run was `ENV-BLOCKED` on local port bind (`EPERM`), unsandboxed run passed; adds low-overhead guardrail for future M5 slices.
+
+### 2026-02-16 - Implement M5.1 shell with default FragMap tab and preserve ligand workflow under Ligand tab
+- Decision: implement `M5.1` Prompt B as a UI-shell-only change by adding a right-panel two-tab framework (`FragMap`, `Ligand`) with `FragMap` active by default, render Primary/Advanced FragMap rows as non-runtime shell controls with all-hidden defaults, and keep existing M4B ligand controls functional under `Ligand`.
+- Why: this is the approved M5.1 scope contract and establishes the shell boundary before runtime map behavior slices (`M5.2+`).
+- Alternatives considered:
+  - keep ligand panel as the only visible controls surface and defer tabs to a later slice;
+  - wire partial FragMap runtime behavior (toggle/load/reset) during M5.1.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `scripts/validate-m4a.js`
+  - `scripts/validate-m4b.js`
+  - `docs/plans/milestone-inventory.md` (`M5.1` section)
+- Validation/risk impact: M1-M4B regressions remain green after selector-scoped validator updates; known intermittent `validate:m1` snackbar interception still appears on first run in some executions but clears on rerun.
+
 ### 2026-02-16 - Run docs-only consistency alignment across M5.1 packet/specs/plans/context/prompts
 - Decision: reconcile cross-document drift by synchronizing M5.1 approval state, Prompt-B readiness, tab-framework wording, and featured-ligand subset wording in all authoritative docs.
 - Why: docs audit identified conflicting status/scope statements that could cause incorrect implementation scope and handoff ambiguity.

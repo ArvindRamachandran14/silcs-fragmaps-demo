@@ -7,6 +7,7 @@ const DIST_DIR = path.resolve(__dirname, "..", "dist");
 const INDEX_HTML_PATH = path.join(DIST_DIR, "index.html");
 const PORT = 4175;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
+const DESKTOP_PANEL = ".viewer-page__controls-col";
 
 const MIME_TYPES = {
   ".css": "text/css; charset=UTF-8",
@@ -26,6 +27,10 @@ function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+function panelSelector(testId) {
+  return `${DESKTOP_PANEL} [data-test-id="${testId}"]`;
 }
 
 function getMimeType(filePath) {
@@ -115,6 +120,14 @@ async function assertVisible(page, selector, message, timeout = 15000) {
 }
 
 async function assertText(page, selector, expected, message) {
+  await page.waitForFunction(
+    ({ cssSelector, target }) => {
+      const element = document.querySelector(cssSelector);
+      return Boolean(element) && element.textContent && element.textContent.trim() === target;
+    },
+    { cssSelector: selector, target: expected },
+  );
+
   const text = ((await page.textContent(selector)) || "").trim();
   assert(text === expected, `${message} (expected "${expected}", got "${text}")`);
 }
@@ -124,39 +137,46 @@ async function assertChecked(page, selector, expected, message) {
   assert(checked === expected, `${message} (expected ${expected}, got ${checked})`);
 }
 
+async function selectLigandTab(page) {
+  await assertVisible(page, panelSelector("controls-tab-ligand"), "Ligand tab button is missing.");
+  await page.click(panelSelector("controls-tab-ligand"));
+  await assertVisible(page, panelSelector("controls-tab-panel-ligand"), "Ligand tab panel did not render.");
+}
+
 async function runDefaultFlow(page) {
   await page.goto(appUrl("/viewer?m3LoadMs=1200"), { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer did not reach ready state.");
+  await selectLigandTab(page);
 
   const marker = await page.evaluate(() => {
     window.__m4aMarker = `m4a-${Date.now()}`;
     return window.__m4aMarker;
   });
 
-  await assertText(page, '[data-test-id="default-ligand-id"]', "3fly_cryst_lig", "Default ligand mismatch.");
-  await assertChecked(page, '[data-test-id="ligand-pose-baseline"]', true, "Baseline should start checked.");
-  await assertChecked(page, '[data-test-id="ligand-pose-refined"]', false, "Refined should start unchecked.");
+  await assertText(page, panelSelector("default-ligand-id"), "3fly_cryst_lig", "Default ligand mismatch.");
+  await assertChecked(page, panelSelector("ligand-pose-baseline"), true, "Baseline should start checked.");
+  await assertChecked(page, panelSelector("ligand-pose-refined"), false, "Refined should start unchecked.");
 
-  await page.click('[data-test-id="ligand-pose-refined"]');
-  await assertText(page, '[data-test-id="refined-pose-state"]', "ON", "Refined did not toggle on.");
-  await assertVisible(page, '[data-test-id="ligand-both-visible-legend"]', "Legend did not render for both-visible.");
+  await page.click(panelSelector("ligand-pose-refined"));
+  await assertText(page, panelSelector("refined-pose-state"), "ON", "Refined did not toggle on.");
+  await assertVisible(page, panelSelector("ligand-both-visible-legend"), "Legend did not render for both-visible.");
 
-  await page.click('[data-test-id="ligand-pose-baseline"]');
-  await assertText(page, '[data-test-id="baseline-pose-state"]', "OFF", "Baseline did not toggle off.");
-  await assertText(page, '[data-test-id="refined-pose-state"]', "ON", "Refined should remain on.");
+  await page.click(panelSelector("ligand-pose-baseline"));
+  await assertText(page, panelSelector("baseline-pose-state"), "OFF", "Baseline did not toggle off.");
+  await assertText(page, panelSelector("refined-pose-state"), "ON", "Refined should remain on.");
 
-  await page.click('[data-test-id="ligand-pose-refined"]');
-  await assertText(page, '[data-test-id="refined-pose-state"]', "OFF", "Refined did not toggle off.");
-  await assertChecked(page, '[data-test-id="ligand-pose-baseline"]', false, "Baseline checkbox should be unchecked.");
-  await assertChecked(page, '[data-test-id="ligand-pose-refined"]', false, "Refined checkbox should be unchecked.");
+  await page.click(panelSelector("ligand-pose-refined"));
+  await assertText(page, panelSelector("refined-pose-state"), "OFF", "Refined did not toggle off.");
+  await assertChecked(page, panelSelector("ligand-pose-baseline"), false, "Baseline checkbox should be unchecked.");
+  await assertChecked(page, panelSelector("ligand-pose-refined"), false, "Refined checkbox should be unchecked.");
 
-  await page.click('[data-test-id="ligand-pose-baseline"]');
-  await page.click('[data-test-id="ligand-pose-refined"]');
-  await assertText(page, '[data-test-id="baseline-pose-state"]', "ON", "Baseline did not restore after re-check.");
-  await assertText(page, '[data-test-id="refined-pose-state"]', "ON", "Refined did not restore after re-check.");
-  await assertVisible(page, '[data-test-id="ligand-both-visible-legend"]', "Legend missing after restoring both.");
+  await page.click(panelSelector("ligand-pose-baseline"));
+  await page.click(panelSelector("ligand-pose-refined"));
+  await assertText(page, panelSelector("baseline-pose-state"), "ON", "Baseline did not restore after re-check.");
+  await assertText(page, panelSelector("refined-pose-state"), "ON", "Refined did not restore after re-check.");
+  await assertVisible(page, panelSelector("ligand-both-visible-legend"), "Legend missing after restoring both.");
 
-  await page.click('[data-test-id="ligand-zoom-action"]');
+  await page.click(panelSelector("ligand-zoom-action"));
   await assertVisible(page, '[data-test-id="viewer-toast"]', "Zoom toast missing.");
   const zoomToast = ((await page.textContent('[data-test-id="viewer-toast"]')) || "").trim();
   assert(zoomToast.includes("Zoomed to selected ligand"), "Zoom toast text mismatch.");
@@ -168,17 +188,18 @@ async function runDefaultFlow(page) {
 async function runFailureIsolationFlow(page) {
   await page.goto(appUrl("/viewer?m4FailPose=refined"), { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer not ready for failure flow.");
+  await selectLigandTab(page);
 
-  await page.click('[data-test-id="ligand-pose-refined"]');
+  await page.click(panelSelector("ligand-pose-refined"));
   await assertVisible(page, '[data-test-id="viewer-toast"]', "Failure toast missing.");
   const toastText = ((await page.textContent('[data-test-id="viewer-toast"]')) || "").trim();
   assert(toastText.includes("Refined pose failed"), "Failure toast did not include refined context.");
 
-  const refinedDisabled = await page.isDisabled('[data-test-id="ligand-pose-refined"]');
-  const baselineDisabled = await page.isDisabled('[data-test-id="ligand-pose-baseline"]');
+  const refinedDisabled = await page.isDisabled(panelSelector("ligand-pose-refined"));
+  const baselineDisabled = await page.isDisabled(panelSelector("ligand-pose-baseline"));
   assert(refinedDisabled, "Refined control should be disabled after failure.");
   assert(!baselineDisabled, "Baseline control should remain enabled after refined failure.");
-  await assertChecked(page, '[data-test-id="ligand-pose-baseline"]', true, "Baseline should remain visible after refined failure.");
+  await assertChecked(page, panelSelector("ligand-pose-baseline"), true, "Baseline should remain visible after refined failure.");
 }
 
 async function run() {
