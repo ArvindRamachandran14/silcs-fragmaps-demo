@@ -4,16 +4,16 @@ set -u
 # Commands to run (in order)
 COMMANDS=(
   "npm run build"
-  "npm run validate:m1"
-  "npm run validate:m2"
-  "npm run validate:m3"
-  "npm run validate:m4a"
-  "npm run validate:m4b"
-  "npm run validate:m5.1"
-  "npm run validate:m5.2"
-  "npm run validate:m5.2a"
-  "npm run validate:m5.2b"
-  "npm run validate:m5.3"
+  "node scripts/validate-m1.js"
+  "node scripts/validate-m2.js"
+  "node scripts/validate-m3.js"
+  "node scripts/validate-m4a.js"
+  "node scripts/validate-m4b.js"
+  "node scripts/validate-m5-1.js"
+  "node scripts/validate-m5-2.js"
+  "node scripts/validate-m5-2a.js"
+  "node scripts/validate-m5-2b.js"
+  "node scripts/validate-m5-3.js"
 )
 
 # Pretty printing helpers
@@ -30,7 +30,7 @@ for cmd in "${COMMANDS[@]}"; do
     ok "$cmd"
   else
     rc=$?
-    if [[ "$cmd" == "npm run validate:m1" ]]; then
+    if [[ "$cmd" == "node scripts/validate-m1.js" ]]; then
       printf "⚠️ RETRY  %s (known intermittent flake)\n" "$cmd"
       if bash -lc "$cmd"; then
         ok "$cmd (retry)"

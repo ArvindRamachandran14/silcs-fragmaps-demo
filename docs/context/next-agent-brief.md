@@ -1,6 +1,6 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (`M5.3` complete with Exclusion visibility hotfix; `M5.4` Prompt A is next; `M5.2c` deferred exploratory)
+Last updated: 2026-02-16 (`M5.3` complete with Exclusion visibility hotfix; `run_checks` optimized to single-build execution; `M5.4` Prompt A is next; `M5.2c` deferred exploratory)
 
 ## Current Milestone Target
 - Active target: `M5.4 Per-Map Iso Controls` Prompt A design-preview gate.
@@ -15,6 +15,7 @@ Last updated: 2026-02-16 (`M5.3` complete with Exclusion visibility hotfix; `M5.
 - Use local host-terminal outputs as authoritative gate evidence.
 - If tooling/sandbox prevents a required command, record `ENV-BLOCKED` (not `FAIL`) and include exact rerun command.
 - After implementing milestone `Mn`, run sequential regression from `validate:m1` through `validate:mn`.
+- For full sequential runs, prefer `bash scripts/run_checks.sh` (single upfront build + direct `node scripts/validate-*.js` execution) to avoid repeated `prevalidate:*` rebuilds.
 
 ## Scope Policy (Locked)
 - Required forward scope:
@@ -114,6 +115,8 @@ Last updated: 2026-02-16 (`M5.3` complete with Exclusion visibility hotfix; `M5.
   - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2c-wireframe-parity-states.svg`
 
 ## Exact Commands To Run Next
+- `bash scripts/run_checks.sh`
+  - Current signal: PASS (2026-02-16; single-build optimized path through `validate:m5.3`).
 - `npm run build`
   - Current signal: PASS.
 - `npm run validate:m1`

@@ -5,6 +5,16 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Optimize `run_checks.sh` to build once and execute validators directly
+- Decision: keep one upfront `npm run build` in `scripts/run_checks.sh`, then execute milestone validators via direct `node scripts/validate-*.js` commands (instead of `npm run validate:*` wrappers), while preserving command order and the existing one-time M1 retry.
+- Why: each `npm run validate:*` wrapper triggers `prevalidate:*` hooks that rebuild the app repeatedly, significantly lengthening full regression time.
+- Alternatives considered:
+  - keep current wrapper-based calls and accept repeated builds;
+  - remove `prevalidate:*` hooks from `package.json` (rejected to preserve standalone validator safety outside `run_checks.sh`).
+- Evidence:
+  - `scripts/run_checks.sh`
+- Validation/risk impact: `bash scripts/run_checks.sh` now performs a single build and still passes through `validate:m5.3`; direct-node calls rely on the upfront build step, so ad-hoc standalone runs should continue using `npm run validate:*` when prevalidate hooks are desired.
+
 ### 2026-02-16 - Fix Exclusion-map visibility by using a dedicated positive fixed isolevel
 - Decision: keep Exclusion map iso controls disabled in UI, but set an internal fixed Exclusion render isolevel to `0.5` in `src/viewer/nglStage.ts` instead of inheriting the generic fallback `-0.8`.
 - Why: `3fly.excl.dx` is non-negative (`min=0`), so contouring at `-0.8` produces no visible mesh despite checked/loaded state.
