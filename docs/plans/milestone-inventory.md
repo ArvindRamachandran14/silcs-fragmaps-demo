@@ -24,7 +24,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Design preview gate rule:
   - For milestones that introduce/change user-facing UI, include artifact paths under `docs/design-previews/<milestone-or-feature>/` and an explicit in-thread approval reference (`APPROVED UI PREVIEW`) before implementation evidence.
   - If approval is missing, mark milestone as `BLOCKED-DESIGN` for that scope.
-  - Locked M5 exception: track previews under `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one preview page per slice (`M5.1`, `M5.2`, `M5.2a`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+  - Locked M5 exception: track previews under `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one preview page per slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
 
 ## M1 - Project Scaffold + Routing Foundation
 
@@ -298,7 +298,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ## M5 - FragMap Controls (Sliced Delivery)
 
 ### Summary
-- M5 is executed as seven gated slices (`M5.1`, `M5.2`, `M5.2a`, `M5.3`, `M5.4`, `M5.5`, `M5.6`) with Prompt A + Prompt B per slice.
+- M5 is executed as eight gated slices (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`) with Prompt A + Prompt B per slice.
 - Preview packet path is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 - Packet structure is locked to one front page plus one preview page per slice.
 
@@ -308,6 +308,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | PASS | Completed |
 | `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | PASS | PASS | Completed |
 | `M5.2a` | Wireframe rendering pass (triangulated wireframe style for all FragMaps including fixed gray Exclusion) | PASS | PASS | Completed |
+| `M5.2b` | Protein visibility toggle only (`Protein cartoon` show/hide in FragMap tab; default on) | Pending | Pending | Not started |
 | `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
@@ -388,7 +389,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 #### Residual Risks/Blockers
 - `validate:m1` intermittently fails on first run due snackbar click interception, but rerun passes; continue to treat as harness flake until stabilized.
-- M5.2 intentionally excludes wireframe rendering pass, Advanced/Exclusion runtime behavior, iso controls, bulk actions, and reliability retry UX; these remain scoped to `M5.2a`..`M5.6`.
+- M5.2 intentionally excludes wireframe rendering pass, protein visibility toggle, Advanced/Exclusion runtime behavior, iso controls, bulk actions, and reliability retry UX; these remain scoped to `M5.2a`..`M5.6`.
 
 ### M5.2a - Wireframe Rendering Pass
 
@@ -425,8 +426,30 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - No regressions against completed slices (`M5.1`-`M5.2`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Advanced/Exclusion interactive behavior remains deferred to `M5.3`; this slice validates style conversion only.
+- Protein visibility toggle remains deferred to `M5.2b`; Advanced/Exclusion interactive behavior remains deferred to `M5.3`.
 - M5.2a style validation currently uses debug instrumentation and a direct test-path exclusion-map load call for deterministic enforcement checks.
+
+### M5.2b - Protein Visibility Toggle
+
+#### Summary
+- Pending.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.2b and why.` |
+
+#### Commands Run
+- Pending.
+
+#### Gate Checklist
+- Prompt A preview for `M5.2b` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt B implementation stayed within `M5.2b` scope boundary: Pending.
+- Protein visibility toggle is in-place (`on` by default) and does not regress M5.1-M5.2a map/ligand behavior: Pending.
+- No regressions against completed slices (`M5.1`-`M5.2a`) and M1-M4B baseline: Pending.
+
+#### Residual Risks/Blockers
+- Pending.
 
 ### M5.3 - Advanced Rows + Exclusion Map
 
@@ -445,7 +468,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Prompt A preview for `M5.3` approved (`APPROVED UI PREVIEW`): Pending.
 - Prompt B implementation stayed within `M5.3` scope boundary: Pending.
 - Advanced rows and Exclusion behavior match spec (toggleable visibility, fixed gray triangulated wireframe style, iso disabled): Pending.
-- No regressions against completed slices (`M5.1`-`M5.2a`) and M1-M4B baseline: Pending.
+- No regressions against completed slices (`M5.1`-`M5.2b`) and M1-M4B baseline: Pending.
 
 #### Residual Risks/Blockers
 - Pending.

@@ -5,6 +5,24 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Insert `M5.2b` mini-slice for protein visibility toggle before `M5.3`
+- Decision: add a dedicated `M5.2b` slice between `M5.2a` and `M5.3` for one behavior only: in-place `Protein cartoon` show/hide in the FragMap tab (default `ON`), with no map/ligand behavior expansion in the same slice.
+- Why: reviewer feedback prioritized overlap inspection between ligand and FragMaps; isolating this behavior keeps risk and gate evidence separate from upcoming Advanced/Exclusion behavior work.
+- Alternatives considered:
+  - fold protein visibility into `M5.3` and keep prior slice sequence;
+  - defer protein visibility to `M5.6` reliability scope.
+- Evidence:
+  - `docs/plans/execution-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `prompts/implementation.md`
+  - `docs/specs/viewer-core-spec.md`
+  - `docs/specs/fragmap-controls-spec.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.3-preview-index.md`
+- Validation/risk impact: docs-only change with no runtime impact in this window; next execution target is `M5.2b` Prompt A and remains `BLOCKED-DESIGN` pending preview approval.
+
 ### 2026-02-16 - Implement M5.2a as a rendering-only change in `nglStage` with fixed exclusion-style enforcement
 - Decision: complete `M5.2a` by changing FragMap representation parameters in `src/viewer/nglStage.ts` from filled/translucent surface style to wireframe surface style (`wireframe: true`, `opacity: 1`) and enforce fixed Exclusion-map color (`#9e9e9e`) by ID (`3fly.excl.dx`), while preserving existing M5.2 interaction behavior.
 - Why: this satisfies the approved M5.2a runtime contract without crossing into M5.3 control-behavior scope.

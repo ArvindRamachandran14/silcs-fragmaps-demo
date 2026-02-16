@@ -18,6 +18,12 @@
 - Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
 - Decision: `APPROVED UI PREVIEW`
 
+## Review Record (M5.2b)
+- Date: Pending
+- Reviewer: Pending
+- Thread/message reference: Pending
+- Decision: `BLOCKED-DESIGN`
+
 ## Review Record (M5.3)
 - Date: Pending
 - Reviewer: Pending
@@ -44,8 +50,12 @@
   - whether occluded/back edges should remain depth-clipped or be made more visible for debugging.
 - Reviewer approved Prompt-A packet (`APPROVED UI PREVIEW`), unblocking `M5.2a` Prompt B implementation.
 
+## Comments (M5.2b)
+- `M5.2b` is inserted as an isolated behavior slice between `M5.2a` and `M5.3` for protein-cartoon visibility toggle only.
+- Slice intent: improve FragMap/ligand overlap inspection by allowing temporary protein hide/show without changing map or ligand state contracts.
+
 ## Comments (M5.3)
-- `M5.3` remains pending and starts only after `M5.2a` design/implementation gates close.
+- `M5.3` remains pending and starts only after `M5.2b` design/implementation gates close.
 
 ## Revision Notes
 - 2026-02-16: Created initial M5 packet front page and M5.1 Prompt-A preview page with one multi-panel desktop SVG covering default/loading/empty/error/success.
@@ -68,3 +78,4 @@
 - 2026-02-16: Added `M5.2a` Prompt-A artifact `desktop/m5.2a-wireframe-rendering-states.svg` and updated `m5.2a-preview-index.md` with checklist coverage, artifact matrix, traceability, and open UI questions.
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2a` Prompt A.
 - 2026-02-16: `M5.2a` Prompt B runtime implementation completed and validated; active design gate advanced to `M5.3`.
+- 2026-02-16: Inserted `M5.2b` mini-slice between `M5.2a` and `M5.3` for protein visibility toggle; active gate set to `M5.2b` (`BLOCKED-DESIGN` pending Prompt-A preview artifacts/approval).

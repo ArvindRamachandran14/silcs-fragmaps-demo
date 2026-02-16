@@ -1,15 +1,15 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2a Prompt-B complete; next is M5.3 Prompt A)
+Last updated: 2026-02-16 (M5.2b inserted in docs; next is M5.2b Prompt A)
 
 ## Current Milestone Target
-- Active target: `M5.3 Advanced + Exclusion Behavior` Prompt A (M1-M4B and M5.1-M5.2a validated complete; M5 continues as slices `M5.1`, `M5.2`, `M5.2a`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+- Active target: `M5.2b Protein Visibility Toggle` Prompt A (M1-M4B and M5.1-M5.2a validated complete; M5 continues as slices `M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
 - Baseline branch state at takeover: `M5.2a` Prompt-B implementation and validator wiring are complete in the working tree with green sequential regression evidence through `validate:m5.2a`.
 - M5.2 Prompt-A packet is approved, and M5.2 Prompt-B runtime implementation is complete with reviewer-locked behavior set (B/A/B).
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, and `M5.2a` Prompt B are complete, and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, and `M5.2a` Prompt B are complete, and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -25,16 +25,17 @@ Last updated: 2026-02-16 (M5.2a Prompt-B complete; next is M5.3 Prompt A)
 - Progression rule:
   - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
 - M5 slicing rule:
-  - Execute M5 as `M5.1` -> `M5.2` -> `M5.2a` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+  - Execute M5 as `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
   - Run Prompt A and Prompt B per slice.
   - Prompt B for a slice cannot start without that slice's `APPROVED UI PREVIEW`.
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.3` Prompt A (design preview only) and update the M5 packet for Advanced rows + Exclusion behavior.
-2. Obtain explicit `APPROVED UI PREVIEW` for `M5.3`, then implement `M5.3` Prompt B only within slice scope.
-3. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
-4. Keep `M4C` documented as deferred stretch scope.
+1. Execute `M5.2b` Prompt A (design preview only) and update the M5 packet for protein visibility toggle behavior.
+2. Obtain explicit `APPROVED UI PREVIEW` for `M5.2b`, then implement `M5.2b` Prompt B only within slice scope.
+3. Execute `M5.3` Prompt A (design preview only) after M5.2b gates close.
+4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
+5. Keep `M4C` documented as deferred stretch scope.
 
 ## M5.1 Implementation Status
 - `M5.1` Prompt B is implemented in code:
@@ -100,7 +101,7 @@ Last updated: 2026-02-16 (M5.2a Prompt-B complete; next is M5.3 Prompt A)
 
 ## Known Divergences To Resolve Before M5
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
-- FragMap runtime behavior beyond M5.2a remains unimplemented (`M5.3` Advanced/Exclusion behavior, `M5.4` per-map iso controls, `M5.5` bulk actions, `M5.6` reliability hardening).
+- FragMap runtime behavior beyond M5.2a remains unimplemented (`M5.2b` protein visibility toggle, `M5.3` Advanced/Exclusion behavior, `M5.4` per-map iso controls, `M5.5` bulk actions, `M5.6` reliability hardening).
 - Performance evidence framework (`docs/specs/performance-and-validation-spec.md`) is unimplemented.
 - Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
 
@@ -124,4 +125,4 @@ Last updated: 2026-02-16 (M5.2a Prompt-B complete; next is M5.3 Prompt A)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.3` Prompt A (design preview only) and produce/update the M5.3 preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/`, then request explicit `APPROVED UI PREVIEW`.
+- Execute `M5.2b` Prompt A (design preview only) and produce/update the M5.2b preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/`, then request explicit `APPROVED UI PREVIEW`.

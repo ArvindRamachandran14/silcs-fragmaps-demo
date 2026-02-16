@@ -15,6 +15,7 @@ In scope:
 - NGL stage lifecycle: initialize, ready, resize, cleanup.
 - Initial default state contract: crystal ligand selected (`3fly_cryst_lig`, display label `Crystal Ligand`), baseline visible and refined hidden by default (with both-allowed support defined in ligand workflow spec), no FragMaps visible.
 - Initial display baseline: fixed default camera orientation and protein cartoon representation.
+- Protein baseline visibility contract: protein cartoon is visible by default and may be toggled in-place via FragMap controls (`M5.2b+`) without route reload.
 - Initial loading UX and core error UX.
 - Viewer caption/sidebar context describing what is currently shown in the viewport.
 - Accessibility/usability requirements for viewer shell.
@@ -83,7 +84,7 @@ On first successful viewer load:
 - Selected ligand ID: `3fly_cryst_lig` (display label `Crystal Ligand`).
 - Visible ligand poses: baseline only by default (`baseline` on, `refined` off).
 - Visible FragMaps: none.
-- Protein representation baseline: cartoon style.
+- Protein representation baseline: cartoon style, visible by default.
 - Camera baseline: fixed default orientation.
 
 Canonical camera baseline contract:
@@ -94,6 +95,7 @@ Canonical camera baseline contract:
 
 Constraint:
 - This spec defines only startup/default state. Detailed user interaction behavior for ligands/maps/iso is defined in later specs.
+- Protein toggle interaction details (control placement/state behavior) are defined in `docs/specs/fragmap-controls-spec.md`.
 
 ## 7. Loading and Error UX Contract
 Loading UX:
@@ -134,6 +136,7 @@ Viewer core is accepted when all checks pass:
 9. Viewer includes a compact caption/sidebar context block that updates in place with viewer state changes.
 10. Desktop fullscreen layout keeps controls panel fully visible and avoids page-level horizontal overflow.
 11. Right controls framework exposes `FragMap` and `Ligand` tabs (`M5.1+`) and tab switching is in-place (no route change/reload).
+12. Protein cartoon is visible by default and can be toggled in-place (`M5.2b+`) without navigation/reload.
 
 ## 11. Traceability
 - PRD mapping: `2.B Interactive Visualization Page (Required)` for viewer availability and control environment.
