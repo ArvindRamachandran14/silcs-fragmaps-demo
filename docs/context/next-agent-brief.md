@@ -1,15 +1,15 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2a insertion and wireframe contract docs-aligned)
+Last updated: 2026-02-16 (M5.2a Prompt-B complete; next is M5.3 Prompt A)
 
 ## Current Milestone Target
-- Active target: `M5.2a Wireframe Rendering Pass` (M1-M4B and M5.1-M5.2 validated complete; M5 continues as slices `M5.1`, `M5.2`, `M5.2a`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
-- Baseline branch state at takeover: `M5.2` implementation is committed; current working tree contains docs-only `M5.2a` planning/render-contract alignment updates not yet committed in this window.
+- Active target: `M5.3 Advanced + Exclusion Behavior` Prompt A (M1-M4B and M5.1-M5.2a validated complete; M5 continues as slices `M5.1`, `M5.2`, `M5.2a`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+- Baseline branch state at takeover: `M5.2a` Prompt-B implementation and validator wiring are complete in the working tree with green sequential regression evidence through `validate:m5.2a`.
 - M5.2 Prompt-A packet is approved, and M5.2 Prompt-B runtime implementation is complete with reviewer-locked behavior set (B/A/B).
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1` and `M5.2` Prompt B are complete, active scope is now `M5.2a` Prompt A (design preview), and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, and `M5.2a` Prompt B are complete, and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -31,12 +31,10 @@ Last updated: 2026-02-16 (M5.2a insertion and wireframe contract docs-aligned)
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.2a` Prompt A (design preview only) for wireframe rendering pass and update the M5 preview packet.
-2. Obtain explicit `APPROVED UI PREVIEW` for `M5.2a` before any `M5.2a` runtime implementation.
-3. Implement `M5.2a` Prompt B only after approval, then run sequential regression through the highest available validator (`validate:m1` -> `validate:m5.2`, then add/use `validate:m5.2a`).
-4. Execute `M5.3` Prompt A/B only after `M5.2a` gate closure.
-5. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
-6. Keep `M4C` documented as deferred stretch scope.
+1. Execute `M5.3` Prompt A (design preview only) and update the M5 packet for Advanced rows + Exclusion behavior.
+2. Obtain explicit `APPROVED UI PREVIEW` for `M5.3`, then implement `M5.3` Prompt B only within slice scope.
+3. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
+4. Keep `M4C` documented as deferred stretch scope.
 
 ## M5.1 Implementation Status
 - `M5.1` Prompt B is implemented in code:
@@ -63,6 +61,11 @@ Last updated: 2026-02-16 (M5.2a insertion and wireframe contract docs-aligned)
   - FragMaps use triangulated wireframe isosurface rendering (polygon edges visible).
   - `Exclusion Map` follows the same wireframe rendering direction with fixed gray styling.
   - `Exclusion Map` remains iso-disabled/non-editable.
+- Prompt-A preview artifact is now produced:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2a-wireframe-rendering-states.svg` (single multi-panel default/loading/empty/error/success page).
+- Prompt-B implementation status:
+  - `src/viewer/nglStage.ts`: wireframe surface style applied for FragMaps with fixed-gray Exclusion-map enforcement.
+  - `scripts/validate-m5-2a.js`, `package.json`, and `scripts/run_checks.sh`: new M5.2a command contract and gate coverage.
 - Related docs were synchronized in this window: spec, technical plan, execution plan, milestone inventory, implementation prompts, and M5 preview packet docs.
 
 ## Exact Commands To Run Next
@@ -82,6 +85,8 @@ Last updated: 2026-02-16 (M5.2a insertion and wireframe contract docs-aligned)
   - Current signal: PASS (post-cleanup rerun 2026-02-16; first sandboxed attempt earlier in session was `ENV-BLOCKED` on localhost bind, unsandboxed run passed).
 - `npm run validate:m5.2`
   - Current signal: PASS (first sandboxed attempt `ENV-BLOCKED` on localhost bind; unsandboxed rerun passed after validator timing wait fix).
+- `npm run validate:m5.2a`
+  - Current signal: PASS.
 
 ## Stop/Go Criteria For M5
 - Stop if the active slice Design Preview Gate is not approved (`BLOCKED-DESIGN`).
@@ -95,7 +100,7 @@ Last updated: 2026-02-16 (M5.2a insertion and wireframe contract docs-aligned)
 
 ## Known Divergences To Resolve Before M5
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
-- FragMap runtime behavior beyond M5.2 remains unimplemented (`M5.2a` wireframe pass, `M5.3` Advanced/Exclusion behavior, `M5.4` per-map iso controls, `M5.5` bulk actions, `M5.6` reliability hardening).
+- FragMap runtime behavior beyond M5.2a remains unimplemented (`M5.3` Advanced/Exclusion behavior, `M5.4` per-map iso controls, `M5.5` bulk actions, `M5.6` reliability hardening).
 - Performance evidence framework (`docs/specs/performance-and-validation-spec.md`) is unimplemented.
 - Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
 
@@ -119,4 +124,4 @@ Last updated: 2026-02-16 (M5.2a insertion and wireframe contract docs-aligned)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.2a` Prompt A (design preview only) and produce/update the M5.2a preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/` for wireframe rendering pass (including `Exclusion Map`), then request explicit `APPROVED UI PREVIEW`.
+- Execute `M5.3` Prompt A (design preview only) and produce/update the M5.3 preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/`, then request explicit `APPROVED UI PREVIEW`.

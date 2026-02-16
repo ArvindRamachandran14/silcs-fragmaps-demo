@@ -5,6 +5,43 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Implement M5.2a as a rendering-only change in `nglStage` with fixed exclusion-style enforcement
+- Decision: complete `M5.2a` by changing FragMap representation parameters in `src/viewer/nglStage.ts` from filled/translucent surface style to wireframe surface style (`wireframe: true`, `opacity: 1`) and enforce fixed Exclusion-map color (`#9e9e9e`) by ID (`3fly.excl.dx`), while preserving existing M5.2 interaction behavior.
+- Why: this satisfies the approved M5.2a runtime contract without crossing into M5.3 control-behavior scope.
+- Alternatives considered:
+  - defer style change until M5.3 and combine with Advanced/Exclusion behavior updates;
+  - implement wireframe via separate representation types or overlay-only lines instead of parameterized surface reps.
+- Evidence:
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m5-2a.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+- Validation/risk impact: sequential regression through `validate:m1`..`validate:m5.2a` is green; Advanced/Exclusion interaction logic remains intentionally deferred to M5.3+.
+
+### 2026-02-16 - Accept M5.2a Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.2a` Prompt-A wireframe preview via explicit `APPROVED UI PREVIEW` token and advance to `M5.2a` Prompt B implementation scope.
+- Why: reviewer confirmed the approved design direction for wireframe rendering, satisfying the UI-first gate requirement.
+- Alternatives considered:
+  - keep the slice in `BLOCKED-DESIGN` and request additional preview revisions before runtime work.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2a-preview-index.md`
+- Validation/risk impact: runtime implementation is now permitted for `M5.2a` only; behavior scope boundaries remain unchanged.
+
+### 2026-02-16 - Execute M5.2a Prompt-A as one multi-panel state sheet with explicit open UI questions
+- Decision: represent `M5.2a` Prompt-A coverage in a single multi-panel SVG (`default/loading/empty/error/success`) and capture two targeted UI review questions (wireframe line weight and occluded-edge visibility) in the preview index.
+- Why: execution plan Section 1.3 allows one per-slice multi-panel page, and explicit UI questions reduce ambiguity before `M5.2a` Prompt-B runtime work.
+- Alternatives considered:
+  - split `M5.2a` into multiple standalone images by state;
+  - mark no open UI questions and defer style calibration decisions to implementation.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2a-wireframe-rendering-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2a-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: at decision time the design gate remained `BLOCKED-DESIGN`; this was superseded later the same day by explicit `APPROVED UI PREVIEW` and subsequent M5.2a Prompt-B implementation.
+
 ### 2026-02-16 - Insert `M5.2a` mini-slice to isolate wireframe rendering change before `M5.3`
 - Decision: add a dedicated `M5.2a` slice between `M5.2` and `M5.3` for rendering-style conversion only (triangulated wireframe), without bundling this visual change into `M5.3` behavior work.
 - Why: this reduces integration risk by separating representation-style change from upcoming Advanced/Exclusion control behavior, keeping gate evidence and rollback boundaries cleaner.

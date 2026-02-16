@@ -13,10 +13,10 @@
 - Decision: `APPROVED UI PREVIEW`
 
 ## Review Record (M5.2a)
-- Date: Pending
-- Reviewer: Pending
-- Thread/message reference: Pending
-- Decision: `BLOCKED-DESIGN`
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
+- Decision: `APPROVED UI PREVIEW`
 
 ## Review Record (M5.3)
 - Date: Pending
@@ -38,6 +38,11 @@
 - Rendering contract update requested in-thread: use triangulated wireframe FragMap rendering for all rows, including `Exclusion Map`.
 - `M5.2a` is inserted as an isolated rendering-style slice between `M5.2` and `M5.3` to avoid coupling style changes with new behavior changes.
 - Exclusion-specific behavior remains unchanged for controls: visibility-toggleable and iso-disabled.
+- Prompt-A artifact now includes one multi-panel state sheet covering `default/loading/empty/error/success` for wireframe conversion while preserving M5.2 behavior semantics.
+- Open UI questions captured for review:
+  - default wireframe line weight calibration across rows,
+  - whether occluded/back edges should remain depth-clipped or be made more visible for debugging.
+- Reviewer approved Prompt-A packet (`APPROVED UI PREVIEW`), unblocking `M5.2a` Prompt B implementation.
 
 ## Comments (M5.3)
 - `M5.3` remains pending and starts only after `M5.2a` design/implementation gates close.
@@ -60,3 +65,6 @@
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for M5.2 Prompt A.
 - 2026-02-16: Started rendering-contract docs refresh and locked direction to triangulated wireframe style for all maps, including `Exclusion Map`.
 - 2026-02-16: Inserted `M5.2a` mini-slice between `M5.2` and `M5.3` to isolate wireframe rendering pass; active gate moved to `M5.2a` (`BLOCKED-DESIGN` pending Prompt-A preview approval).
+- 2026-02-16: Added `M5.2a` Prompt-A artifact `desktop/m5.2a-wireframe-rendering-states.svg` and updated `m5.2a-preview-index.md` with checklist coverage, artifact matrix, traceability, and open UI questions.
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2a` Prompt A.
+- 2026-02-16: `M5.2a` Prompt B runtime implementation completed and validated; active design gate advanced to `M5.3`.

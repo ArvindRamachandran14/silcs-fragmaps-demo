@@ -307,7 +307,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 |---|---|---|---|---|
 | `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | PASS | Completed |
 | `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | PASS | PASS | Completed |
-| `M5.2a` | Wireframe rendering pass (triangulated wireframe style for all FragMaps including fixed gray Exclusion) | Pending | Pending | Not started |
+| `M5.2a` | Wireframe rendering pass (triangulated wireframe style for all FragMaps including fixed gray Exclusion) | PASS | PASS | Completed |
 | `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
@@ -393,24 +393,40 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### M5.2a - Wireframe Rendering Pass
 
 #### Summary
-- Pending.
+- Prompt A is approved; Prompt B implementation is complete.
+- Rendering style changed from filled/translucent map surfaces to triangulated wireframe map rendering without changing M5.2 interaction behavior.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.2a and why.` |
+| `src/viewer/nglStage.ts` | Updated | NGL stage lifecycle and FragMap rendering orchestration. | Updated FragMap representation creation to wireframe `surface` rendering (`wireframe: true`, `opacity: 1`) for all FragMaps, and enforced fixed gray color for `Exclusion Map` (`3fly.excl.dx`) regardless of requested color input. Added M5 debug state for representation-style validation evidence. |
+| `scripts/validate-m5-2a.js` | Created | Automated M5.2a milestone validator. | Added wireframe rendering gate checks for Primary rows plus fixed-gray exclusion-wireframe enforcement; includes camera-preservation and in-place interaction checks. |
+| `package.json` | Updated | Project script command contract. | Added `validate:m5.2a` and `prevalidate:m5.2a` script wiring. |
+| `scripts/run_checks.sh` | Updated | Local sequential gate runner. | Extended sequential command list through `validate:m5.2a`. |
 
 #### Commands Run
-- Pending.
+- `npm run build` -> PASS.
+- `bash scripts/run_checks.sh` -> PASS.
+  - Includes sequential checks:
+    - `npm run build` -> PASS
+    - `npm run validate:m1` -> PASS
+    - `npm run validate:m2` -> PASS
+    - `npm run validate:m3` -> PASS
+    - `npm run validate:m4a` -> PASS
+    - `npm run validate:m4b` -> PASS
+    - `npm run validate:m5.1` -> PASS
+    - `npm run validate:m5.2` -> PASS
+    - `npm run validate:m5.2a` -> PASS
 
 #### Gate Checklist
-- Prompt A preview for `M5.2a` approved (`APPROVED UI PREVIEW`): Pending.
-- Prompt B implementation stayed within `M5.2a` scope boundary: Pending.
-- Triangulated wireframe rendering style is applied to all FragMaps, including fixed gray Exclusion style, without changing M5.2 interaction contracts: Pending.
-- No regressions against completed slices (`M5.1`-`M5.2`) and M1-M4B baseline: Pending.
+- Prompt A preview for `M5.2a` approved (`APPROVED UI PREVIEW`): PASS (explicit in-thread approval on 2026-02-16).
+- Prompt B implementation stayed within `M5.2a` scope boundary: PASS.
+- Triangulated wireframe rendering style is applied to all FragMaps, including fixed gray Exclusion style, without changing M5.2 interaction contracts: PASS.
+- No regressions against completed slices (`M5.1`-`M5.2`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- Advanced/Exclusion interactive behavior remains deferred to `M5.3`; this slice validates style conversion only.
+- M5.2a style validation currently uses debug instrumentation and a direct test-path exclusion-map load call for deterministic enforcement checks.
 
 ### M5.3 - Advanced Rows + Exclusion Map
 

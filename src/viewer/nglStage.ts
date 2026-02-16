@@ -18,6 +18,19 @@ interface FragMapCacheEntry {
   representation: any;
 }
 
+interface FragMapRenderDebugEntry {
+  representationType: string;
+  wireframe: boolean;
+  color: string;
+  isolevel: number | null;
+  opacity: number | null;
+  visible: boolean;
+}
+
+interface ViewerM5DebugState {
+  fragMapRenderById: Record<string, FragMapRenderDebugEntry>;
+}
+
 export interface StageInitOptions {
   container: HTMLElement;
   proteinUrl: string;
@@ -93,11 +106,14 @@ export interface ViewerM3DebugState {
 declare global {
   interface Window {
     __viewerM3Debug?: ViewerM3DebugState;
+    __viewerM5Debug?: ViewerM5DebugState;
   }
 }
 
 const DEFAULT_MIN_LOADING_MS = 180;
 const DEFAULT_MIN_MAP_LOADING_MS = 0;
+const EXCLUSION_MAP_ID = "3fly.excl.dx";
+const EXCLUSION_MAP_COLOR = "#9e9e9e";
 
 export const CAMERA_BASELINE_SNAPSHOT: CameraSnapshot = {
   position: [25.4, -2.8, 18.6],
@@ -149,6 +165,16 @@ function getDebugState(): ViewerM3DebugState {
   }
 
   return window.__viewerM3Debug;
+}
+
+function getM5DebugState(): ViewerM5DebugState {
+  if (!window.__viewerM5Debug) {
+    window.__viewerM5Debug = {
+      fragMapRenderById: {},
+    };
+  }
+
+  return window.__viewerM5Debug;
 }
 
 export function getViewerM3DebugState(): ViewerM3DebugState {
@@ -278,6 +304,8 @@ function applySceneTransformSnapshot(stage: any, snapshot: SceneTransformSnapsho
 
 export async function initializeNglStage(options: StageInitOptions): Promise<NglStageController> {
   const debugState = getDebugState();
+  const m5DebugState = getM5DebugState();
+  m5DebugState.fragMapRenderById = {};
   debugState.stageInitAttempts += 1;
   debugState.cameraBaselineDefined = true;
   debugState.startupRenderEngine = "none";
@@ -419,14 +447,25 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
       throw new Error(`Forced FragMap failure (${options.id}).`);
     }
 
+    const renderColor = options.id === EXCLUSION_MAP_ID ? EXCLUSION_MAP_COLOR : options.color;
+    const renderIso = typeof options.defaultIso === "number" ? options.defaultIso : -0.8;
     const component = await stage.loadFile(resolveRuntimeUrl(options.dxUrl), { defaultRepresentation: false });
     const representation = component.addRepresentation("surface", {
-      color: options.color,
-      isolevel: typeof options.defaultIso === "number" ? options.defaultIso : -0.8,
-      opacity: 0.65,
+      color: renderColor,
+      isolevel: renderIso,
+      opacity: 1,
       opaqueBack: false,
+      wireframe: true,
     });
     component.setVisibility(false);
+    m5DebugState.fragMapRenderById[options.id] = {
+      representationType: "surface",
+      wireframe: true,
+      color: renderColor,
+      isolevel: renderIso,
+      opacity: 1,
+      visible: false,
+    };
 
     return { component, representation };
   }
@@ -539,8 +578,16 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
         }
 
         cacheEntry.component.setVisibility(true);
+        const renderDebug = m5DebugState.fragMapRenderById[options.id];
+        if (renderDebug) {
+          renderDebug.visible = true;
+        }
       } else if (cacheEntry) {
         cacheEntry.component.setVisibility(false);
+        const renderDebug = m5DebugState.fragMapRenderById[options.id];
+        if (renderDebug) {
+          renderDebug.visible = false;
+        }
       }
 
       if (preservedTransform) {
