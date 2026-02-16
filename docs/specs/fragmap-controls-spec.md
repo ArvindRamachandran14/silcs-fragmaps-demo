@@ -55,7 +55,7 @@ Labeling rules:
 - Screenshot labels are reference-only and do not override this mapping.
 
 ### 4.1 Canonical Color Mapping (v1)
-Each map has one canonical display color for row legend and surface rendering:
+Each map has one canonical display color for row legend and wireframe isosurface rendering:
 - `Generic Donor` (`3fly.hbdon.gfe.dx`): `blue` (`#1976d2`)
 - `Generic Acceptor` (`3fly.hbacc.gfe.dx`): `red` (`#d32f2f`)
 - `Generic Apolar` (`3fly.apolar.gfe.dx`): `green` (`#2e7d32`)
@@ -63,11 +63,11 @@ Each map has one canonical display color for row legend and surface rendering:
 - `Negatively Charged` (`3fly.acec.gfe.dx`): `magenta` (`#c2185b`)
 - `Hydroxyl Oxygen` (`3fly.meoo.gfe.dx`): `cyan` (`#0097a7`)
 - `Water Oxygen` (`3fly.tipo.gfe.dx`): `yellow` (`#f9a825`)
-- `Exclusion Map` (`3fly.excl.dx`): `gray` (`#9e9e9e`) with fixed translucent volume style
+- `Exclusion Map` (`3fly.excl.dx`): `gray` (`#9e9e9e`) with fixed wireframe isosurface style
 
 Color contract:
 - The first three mappings above are fixed user-provided inputs and must not be changed without explicit spec update.
-- Legend and rendered map surfaces must use this same canonical mapping.
+- Legend and rendered map wireframes must use this same canonical mapping.
 - Color choices do not replace text labels; labels remain required for accessibility.
 
 ## 5. Layout and Control Organization
@@ -126,7 +126,7 @@ Default iso values (v1 canonical):
 - `3fly.meoo.gfe.dx` (`Hydroxyl Oxygen`): `-0.8`
 - `3fly.tipo.gfe.dx` (`Water Oxygen`): `-0.3`
 - `3fly.excl.dx` (`Exclusion Map`): no editable iso value in UI.
-- Exclusion render contract: fixed translucent gray volume representation.
+- Exclusion render contract: fixed gray triangulated wireframe isosurface representation.
 
 ## 8. Interaction Flows
 ### 8.1 Single Map Toggle
@@ -134,7 +134,7 @@ Default iso values (v1 canonical):
 1. If not loaded, lazy-load map `.dx`.
 2. Create and cache map component/representation handle.
 3. If map is iso-adjustable, apply current `perMapIso` for that map.
-4. If map is `Exclusion Map`, render using fixed translucent gray style.
+4. If map is `Exclusion Map`, render using fixed gray triangulated wireframe style.
 5. Set map visible.
 - Toggling a map off:
 1. Set map invisible in place.
@@ -214,7 +214,7 @@ FragMap controls are accepted when all checks pass:
 5. Single map toggle-on lazy-loads only that map and caches it.
 6. Subsequent toggles reuse cache and do not re-fetch/re-parse unnecessarily.
 7. Per-map iso controls exist for iso-adjustable GFE map rows and update only intended map surfaces.
-8. `Exclusion Map` row does not expose editable iso controls and renders as fixed translucent gray volume.
+8. `Exclusion Map` row does not expose editable iso controls and renders as fixed gray triangulated wireframe isosurface.
 9. No global iso control appears.
 10. `Hide all`, `Reset defaults`, and `Reset view` behaviors match this spec.
 11. Map toggle and iso update actions happen with no page reload.

@@ -1,10 +1,10 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2 Prompt B implemented)
+Last updated: 2026-02-16 (M5.3 wireframe contract docs-aligned)
 
 ## Current Milestone Target
 - Active target: `M5.3 Advanced Rows + Exclusion Behavior` (M1-M4B and M5.1-M5.2 validated complete; M5 continues as slices `M5.1`..`M5.6`).
-- Baseline branch state at takeover: working tree contains local `M5.2` implementation updates not yet committed in this window.
+- Baseline branch state at takeover: `M5.2` implementation is committed; current working tree contains docs-only `M5.3` rendering-contract alignment updates not yet committed in this window.
 - M5.2 Prompt-A packet is approved, and M5.2 Prompt-B runtime implementation is complete with reviewer-locked behavior set (B/A/B).
 
 ## Takeover Checkpoint
@@ -31,7 +31,7 @@ Last updated: 2026-02-16 (M5.2 Prompt B implemented)
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.3` Prompt A (design preview only) for Advanced rows + Exclusion behavior and update the M5 preview packet.
+1. Execute `M5.3` Prompt A (design preview only) for Advanced rows + Exclusion behavior and update the M5 preview packet with the locked wireframe rendering contract.
 2. Obtain explicit `APPROVED UI PREVIEW` for `M5.3` before any `M5.3` runtime implementation.
 3. Implement `M5.3` Prompt B only after approval, then run sequential regression (`validate:m1` -> `validate:m5.2`).
 4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
@@ -56,6 +56,13 @@ Last updated: 2026-02-16 (M5.2 Prompt B implemented)
   - `scripts/validate-m5-2.js`: new M5.2 validator; `scripts/validate-m5-1.js` adjusted for post-M5.2 shell expectations.
 - Gate evidence: `npm run build` PASS, `npm run validate:m1` FAIL then PASS on rerun, `npm run validate:m2` PASS, `npm run validate:m3` PASS, `npm run validate:m4a` PASS, `npm run validate:m4b` PASS, `npm run validate:m5.1` PASS, `npm run validate:m5.2` PASS (first sandboxed attempt `ENV-BLOCKED`; unsandboxed rerun passed after validator timing fix).
 - Fresh rerun note (same day): full unsandboxed `bash scripts/run_checks.sh` rerun showed transient `viewer-ready-state` timeout noise in `validate:m4b`/`validate:m5.2`; both passed on immediate sequential rerun (`npm run validate:m4b`, `npm run validate:m5.2`). Do not parallelize validator reruns to avoid port collisions.
+
+## M5.3 Design Contract Note
+- Rendering direction is now docs-locked before `M5.3` implementation:
+  - FragMaps use triangulated wireframe isosurface rendering (polygon edges visible).
+  - `Exclusion Map` follows the same wireframe rendering direction with fixed gray styling.
+  - `Exclusion Map` remains iso-disabled/non-editable.
+- Related docs were synchronized in this window: spec, technical plan, execution plan, milestone inventory, implementation prompts, and M5 preview packet docs.
 
 ## Exact Commands To Run Next
 - `npm run build`
@@ -111,4 +118,4 @@ Last updated: 2026-02-16 (M5.2 Prompt B implemented)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.3` Prompt A (design preview only) and produce/update the M5.3 preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/`, then request explicit `APPROVED UI PREVIEW`.
+- Execute `M5.3` Prompt A (design preview only) and produce/update the M5.3 preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/` using the locked wireframe contract (including `Exclusion Map`), then request explicit `APPROVED UI PREVIEW`.

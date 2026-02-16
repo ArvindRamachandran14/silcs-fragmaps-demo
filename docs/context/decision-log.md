@@ -5,6 +5,23 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Lock FragMap rendering contract to triangulated wireframe style for all rows (including Exclusion)
+- Decision: update the M5 FragMap rendering contract from filled/translucent surface wording to triangulated wireframe isosurface wording, and explicitly apply it to `Exclusion Map` as fixed gray wireframe with iso controls still disabled.
+- Why: reviewer requested visual parity with reference SILCS screenshots that show edge-visible triangulated mesh-like map rendering rather than blob-like translucent fills.
+- Alternatives considered:
+  - keep current filled translucent style for all maps;
+  - use mixed style (wireframe for primary/advanced, translucent for `Exclusion Map`).
+- Evidence:
+  - `docs/specs/fragmap-controls-spec.md`
+  - `docs/plans/technical-plan.md`
+  - `docs/plans/execution-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `prompts/implementation.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.3-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: aligns design and implementation targets before M5.3 work begins; no runtime behavior changed in this docs-only step.
+
 ### 2026-02-16 - Treat milestone validators as strictly sequential (no parallel launch) to avoid false gate failures
 - Decision: run Playwright-backed milestone validators one at a time (`validate:m1` -> `validate:mN`) and avoid parallel validator launches in the same window.
 - Why: concurrent runs caused non-product failures (`EADDRINUSE` on shared localhost ports), and even sequential runs can show occasional startup timing noise that needs clean reruns for authoritative evidence.

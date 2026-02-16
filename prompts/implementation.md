@@ -679,8 +679,8 @@ Scope:
 - M5.3 design-preview only.
 - Produce/update only M5.3 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 - Include/update packet front page plus M5.3 page.
-- M5.3 scope: Advanced rows + Exclusion map fixed behavior.
-- Show Exclusion map visibility-toggleable with fixed style and disabled iso.
+- M5.3 scope: Advanced rows + Exclusion map fixed wireframe behavior.
+- Show Exclusion map visibility-toggleable with fixed gray triangulated wireframe style and disabled iso.
 
 Required deliverables:
 1) files created/updated
@@ -704,7 +704,7 @@ Precondition:
 
 Scope:
 - M5.3 only: Advanced rows + Exclusion map behavior.
-- Implement Advanced row visibility flow and Exclusion map constraints (visibility-toggleable, fixed style, no editable iso).
+- Implement Advanced row visibility flow and Exclusion map constraints (visibility-toggleable, fixed gray triangulated wireframe style, no editable iso).
 - Do not implement per-map iso controls for adjustable maps or reliability hardening in this slice.
 - Preserve M5.1-M5.2 contracts and M1-M4B behavior.
 

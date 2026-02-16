@@ -7,7 +7,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 
 ## 1. Executive Summary
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
-- Use `NGL Viewer` for protein/ligand rendering and volumetric `.dx` FragMap overlays.
+- Use `NGL Viewer` for protein/ligand rendering and `.dx` FragMap wireframe-isosurface overlays.
 - Implement ligand workflow incrementally: `M4A` single-ligand core, then `M4B` curated featured subset (`3fly_cryst_lig` shown as `Crystal Ligand` + 3); defer full-list searchable access to `M4C` stretch scope.
 - Follow a Vue architecture with `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
@@ -56,9 +56,9 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - `M4A/M4B` path does not require searchable full-ligand selector; full selector is deferred to `M4C`.
 - Optional parity path: manage narrative slide progression as viewer-local state (not route changes).
 - FragMaps remain unloaded until toggled on.
-- On map toggle: load `.dx`, create surface rep, cache component+rep handle.
+- On map toggle: load `.dx`, create wireframe isosurface representation, cache component+rep handle.
 - On per-map iso change (GFE maps only): update only the targeted map representation via parameter update path.
-- On `Exclusion Map` toggle: render fixed translucent gray volume; iso controls remain disabled/non-editable.
+- On `Exclusion Map` toggle: render fixed gray triangulated wireframe isosurface; iso controls remain disabled/non-editable.
 - On ligand change: remove current ligand pose components and load selected ligand pose component(s) based on pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden).
 
 ### Important APIs/Interfaces/Types
@@ -140,7 +140,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - PRD Requirement: show/hide individual FragMap surfaces.
 - Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`, `Reset view`).
 - PRD Requirement: iso-value adjustment with fast response.
-- Implementation: per-map iso controls (`-`, value, `+`) on GFE rows + targeted parameter updates on the selected map representation; `Exclusion Map` uses fixed translucent gray volume with disabled iso controls.
+- Implementation: per-map iso controls (`-`, value, `+`) on GFE rows + targeted parameter updates on the selected map representation; `Exclusion Map` uses fixed gray triangulated wireframe isosurface with disabled iso controls.
 - PRD Requirement: client-side only, open source, Chrome/Safari.
 - Implementation: static Vue bundle (Webpack via Vue CLI) + no backend code + cross-browser validation runbook.
 - Spec Requirement: catastrophic viewer startup failures must be recoverable.

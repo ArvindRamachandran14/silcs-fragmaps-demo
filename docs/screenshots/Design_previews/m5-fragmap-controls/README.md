@@ -3,22 +3,21 @@
 This packet tracks the M5 sliced design gates under `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 
 ## Gate Status
-- Active slice: `M5.2 Primary-3 Visibility Engine`
-- Gate state: `APPROVED UI PREVIEW`
-- Required token to unblock Prompt B: `APPROVED UI PREVIEW` (received for `M5.2`)
+- Active slice: `M5.3 Advanced Rows + Exclusion Map`
+- Gate state: `BLOCKED-DESIGN`
+- Required token to unblock Prompt B: `APPROVED UI PREVIEW` (pending for `M5.3`)
 
 ## Scope for This Packet Revision
 In scope:
-- Prompt A previews for `M5.2` only.
-- `Primary 3` visibility engine behavior preview:
-  - toggle-on flow,
-  - lazy first load,
-  - cache reuse,
-  - camera preserved behavior expectation.
+- Prompt A previews for `M5.3` only.
+- `Advanced + Exclusion` behavior preview:
+  - Advanced row visibility behavior,
+  - Exclusion row visibility-toggle behavior,
+  - Exclusion row iso-disabled behavior,
+  - fixed gray triangulated wireframe rendering contract for Exclusion.
 
 Out of scope in this revision:
-- `M5.3+` behavior:
-  - advanced/exclusion runtime behavior (`M5.3`),
+- `M5.4+` behavior:
   - per-map iso controls runtime behavior (`M5.4`),
   - bulk action runtime behavior (`M5.5`),
   - reliability/error-isolation runtime contracts (`M5.6`).
@@ -29,7 +28,8 @@ Out of scope in this revision:
 - `desktop/m5.1-viewer-context-placement.svg`: approved `M5.1` context placement page.
 - `m5.2-preview-index.md`: `M5.2` state checklist, artifact matrix, open questions, and traceability.
 - `desktop/m5.2-primary3-visibility-states.svg`: single multi-panel `M5.2` page covering default/loading/empty/error/success for Primary-3 visibility engine behavior.
+- `m5.3-preview-index.md`: `M5.3` state checklist, artifact matrix, open questions, and traceability (wireframe rendering contract).
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Design gate is approved; `M5.2` Prompt B implementation may proceed within scope boundaries.
+- Review and approve the `M5.3` Prompt-A artifacts with explicit `APPROVED UI PREVIEW` before `M5.3` Prompt B implementation begins.

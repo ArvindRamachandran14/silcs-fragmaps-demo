@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.2 Prompt B implementation complete)
+Last updated: 2026-02-16 (M5.3 wireframe rendering contract docs refresh)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -106,6 +106,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - M5 execution is now locked to six slices (`M5.1` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
   - Active next scope is `M5.3` Prompt A (design preview only) after closing `M5.2` implementation gate.
+  - Rendering contract update (docs-locked for upcoming M5.3 preview): FragMaps use triangulated wireframe isosurface styling, including `Exclusion Map` (fixed gray wireframe, still iso-disabled).
   - `M5.2` Prompt-A artifacts were added (`README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`) and now reflect the reviewer-locked behavior set: loading row lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
   - `M5.2` Prompt-B runtime implementation is now in place:
     - Primary-3 rows are interactive in `src/components/ControlsPanel.vue`, with loading-lock disable behavior, inline row status text, and row-level error display hooks.
@@ -173,7 +174,8 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - M4A and M4B are implemented: baseline/refined pose controls with in-place switching plus featured-ligand quick picks (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`) and camera-preserving ligand switches.
   - M4C full-list searchable ligand selector remains deferred.
 - FragMap controls:
-  - Manifest metadata and startup validation exist; interactive controls/render toggles are not implemented.
+  - M5.1 shell and M5.2 Primary-3 runtime toggles are implemented (lazy-load + cache reuse + camera preservation).
+  - Advanced/Exclusion runtime behavior, per-map iso controls, bulk actions, and reliability hardening remain pending in `M5.3`..`M5.6`.
 - Overview page:
   - Route and CTA scaffold exist; required narrative and links are not implemented.
 - Performance/validation instrumentation:
@@ -184,7 +186,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Observed: searchable full-ligand selector and ordering behavior are not implemented.
   - Impact: deferred by plan; non-blocking for M5-M8 progression.
 - `high` - `docs/specs/fragmap-controls-spec.md`:
-  - Observed: M5.1 shell is now implemented, but runtime map toggle engine, per-map iso behavior, exclusion-map runtime behavior, and bulk actions are still pending in later slices.
+  - Observed: M5.1 shell and M5.2 Primary-3 runtime are implemented, but Advanced/Exclusion runtime behavior, per-map iso behavior, bulk actions, and reliability hardening are still pending in later slices.
   - Impact: AC-2 and AC-5 cannot be met.
 - `high` - `docs/specs/overview-page-spec.md`:
   - Observed: overview narrative and required external reference link are missing.
@@ -252,6 +254,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Updated M5.2 Prompt-A preview decisions per reviewer feedback: changed success feedback from toast-only to inline `Loaded from cache` text (`Option A`) while keeping loading lock (`Option B`) and retry deferral (`Option B`). Updated packet files: `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
 - 2026-02-16: Implemented M5.2 Prompt B (Primary-3 visibility engine only). Updated `src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, `src/viewer/nglStage.ts`, and `src/store/modules/viewer.ts` for in-place toggle handling, lazy first-load, cache reuse, inline cache-hit text, row-level disable-on-failure, and camera-preserving map visibility updates. Added `scripts/validate-m5-2.js` and script wiring in `package.json`; updated `scripts/validate-m5-1.js`/`scripts/run_checks.sh` for sequential slice checks. Validation evidence: `npm run build` PASS; `npm run validate:m1` FAIL then PASS on rerun; `npm run validate:m2` PASS; `npm run validate:m3` PASS; `npm run validate:m4a` PASS; `npm run validate:m4b` PASS; `npm run validate:m5.1` PASS; `npm run validate:m5.2` first sandboxed attempt `ENV-BLOCKED`, unsandboxed rerun initially FAIL (validator timing), final rerun PASS after validator wait fix.
 - 2026-02-16: Re-ran post-approval sequential validation for M5.2 gate in this handoff window. Sandbox run of `bash scripts/run_checks.sh` produced expected `ENV-BLOCKED` local-port failures (`listen EPERM`) for Playwright-backed validators; unsandboxed rerun passed `build`, `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, and `validate:m5.1`. Interim unsandboxed run showed transient `viewer-ready-state` timeouts in `validate:m4b` and `validate:m5.2`, plus one parallel rerun collision (`validate:m4b` `EADDRINUSE` when validators were launched concurrently). Final sequential unsandboxed reruns passed: `npm run validate:m4b` -> PASS and `npm run validate:m5.2` -> PASS.
+- 2026-02-16: Completed docs-only rendering-contract alignment for upcoming `M5.3` scope so FragMaps are specified as triangulated wireframe isosurfaces (including `Exclusion Map` fixed gray wireframe with iso disabled). Updated spec/plan/prompt/preview docs plus context files. No milestone validator commands were run in this docs-only window.
 
 ## Open Risks
 - Major feature milestones remain incomplete: M5 implementation slices (`M5.3` through `M5.6`) and M6 are not started while M1-M4B and M5.1-M5.2 are complete.

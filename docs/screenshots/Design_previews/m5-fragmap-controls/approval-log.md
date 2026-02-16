@@ -12,6 +12,12 @@
 - Thread/message reference: In-thread approval message on 2026-02-16
 - Decision: `APPROVED UI PREVIEW`
 
+## Review Record (M5.3)
+- Date: Pending
+- Reviewer: Pending
+- Thread/message reference: Pending
+- Decision: `BLOCKED-DESIGN`
+
 ## Comments (M5.1)
 - Reviewer approved the M5.1 Prompt-A preview packet and confirmed progression to Prompt B.
 
@@ -21,6 +27,10 @@
   - temporary Primary-row lock during first-load,
   - inline `Loaded from cache` success text for explicit/debuggable confirmation,
   - inline retry deferred to `M5.6`.
+
+## Comments (M5.3)
+- Rendering contract update requested in-thread: use triangulated wireframe FragMap rendering for all rows, including `Exclusion Map`.
+- Exclusion-specific behavior remains unchanged for controls: visibility-toggleable and iso-disabled.
 
 ## Revision Notes
 - 2026-02-16: Created initial M5 packet front page and M5.1 Prompt-A preview page with one multi-panel desktop SVG covering default/loading/empty/error/success.
@@ -38,3 +48,4 @@
   - success panel now uses inline `Loaded from cache` confirmation for explicit/debuggable review,
   - retry remains deferred to `M5.6` reliability scope.
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for M5.2 Prompt A.
+- 2026-02-16: Started `M5.3` Prompt-A docs refresh and locked rendering direction to triangulated wireframe style for all maps, including `Exclusion Map`; gate remains `BLOCKED-DESIGN` pending new M5.3 preview artifact approval.

@@ -307,7 +307,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 |---|---|---|---|---|
 | `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | PASS | Completed |
 | `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | PASS | PASS | Completed |
-| `M5.3` | Advanced rows + Exclusion map fixed behavior | Pending | Pending | Not started |
+| `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
 | `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | Pending | Pending | Not started |
@@ -405,7 +405,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 #### Gate Checklist
 - Prompt A preview for `M5.3` approved (`APPROVED UI PREVIEW`): Pending.
 - Prompt B implementation stayed within `M5.3` scope boundary: Pending.
-- Advanced rows and Exclusion behavior match spec (toggleable visibility, fixed style, iso disabled): Pending.
+- Advanced rows and Exclusion behavior match spec (toggleable visibility, fixed gray triangulated wireframe style, iso disabled): Pending.
 - No regressions against completed slices (`M5.1`-`M5.2`) and M1-M4B baseline: Pending.
 
 #### Residual Risks/Blockers
