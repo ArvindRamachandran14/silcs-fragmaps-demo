@@ -1,9 +1,10 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5 slice renumber update to M5.6)
+Last updated: 2026-02-16 (pre-handoff checkpoint refresh)
 
 ## Current Milestone Target
 - Active target: `M5.1 FragMap Panel Shell` (M1-M4B validated complete; M5 now runs as slices `M5.1`..`M5.6`).
+- Baseline branch state at handoff prep: `dev` with last pushed plan/docs commit `f4f519f`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.

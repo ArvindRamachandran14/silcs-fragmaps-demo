@@ -5,6 +5,16 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Pre-handoff context refresh as docs-only checkpoint (no feature/test scope change)
+- Decision: run a docs/context-only pre-handoff refresh and keep active scope unchanged at `M5.1 Prompt A` (design preview only).
+- Why: establish a clean, explicit handoff boundary after the M5 slice renumber push without introducing non-doc changes.
+- Alternatives considered: no file updates because working tree was already clean.
+- Evidence:
+  - `docs/context/current-state.md`
+  - `docs/context/next-agent-brief.md`
+  - `docs/context/decision-log.md`
+- Validation/risk impact: no runtime behavior impact; no validator commands were rerun in this window.
+
 ### 2026-02-16 - Split previous M5.4 into ISO-only and bulk-actions-only, renumber reliability to M5.6
 - Decision: split old `M5.4` into two slices: `M5.4` (per-map ISO controls only) and `M5.5` (bulk actions only), then renumber prior reliability/final-gate slice from `M5.5` to `M5.6`.
 - Why: isolate ISO numeric-contract risk from camera/state-reset bulk-action risk, so review, debugging, and rollback remain slice-scoped.
