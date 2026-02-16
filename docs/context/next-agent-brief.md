@@ -1,15 +1,15 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (`M5.4` complete with post-QA inline iso + two-column header refinement (`FragMap` / centered `GFE (kcal/mol)`); `M5.5` Prompt A is next; `run_checks` optimized to single-build execution; `M5.2c` deferred exploratory)
+Last updated: 2026-02-16 (`M5.5` Prompt A approved and Prompt B implemented; regression green through `validate:m5.5`; next gate is `M5.6` Prompt A)
 
 ## Current Milestone Target
-- Active target: `M5.5 Bulk Actions` Prompt A design-preview gate.
-- Baseline branch state at takeover: required slices through `M5.4` are complete and validated.
+- Active target: `M5.6 Reliability Hardening` Prompt A design-preview gate.
+- Baseline branch state at takeover: required slices through `M5.5` are complete and validated.
 - `M5.2c` is deferred exploratory work only and is not a required runtime milestone gate.
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, and `M5.4` are complete, and required slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, and `M5.5` are complete, and required slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -33,11 +33,27 @@ Last updated: 2026-02-16 (`M5.4` complete with post-QA inline iso + two-column h
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.5` Prompt A (design preview only) and obtain explicit `APPROVED UI PREVIEW`.
-2. Execute `M5.5` Prompt B only after approval and run sequential regression through the active gate.
+1. Execute `M5.6` Prompt A design-preview artifacts and obtain explicit `APPROVED UI PREVIEW`.
+2. Execute `M5.6` Prompt B only after approval and run sequential regression through the active gate.
 3. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
 4. Keep `M4C` documented as deferred stretch scope.
 5. Optional/deferred: resume wireframe parity deep-dive using `docs/investigations/m5.2c-wireframe-parity-investigation.md` after required M5 flow is stable.
+
+## M5.5 Implementation Status
+- `M5.5` Prompt-A artifacts were produced and approved:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md`
+- Packet metadata was updated:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- `M5.5` Prompt B is implemented in code:
+  - `src/components/ControlsPanel.vue`: action row now exposes only `Hide all` + `Reset defaults` and emits bulk-action events.
+  - `src/pages/ViewerPage.vue`: bulk-action handlers implemented for hide/reset behavior and disabled-row retry-on-reset logic.
+  - `src/viewer/nglStage.ts`: debug counters added for hide/reset actions and per-row retry attempts.
+  - `scripts/validate-m5-5.js`, `package.json`, `scripts/run_checks.sh`: new validator/command wiring and sequential suite inclusion.
+- Gate evidence:
+  - `node scripts/validate-m5-5.js` -> PASS.
+  - `bash scripts/run_checks.sh` -> PASS through `validate:m5.5`.
 
 ## M5.4 Implementation Status
 - `M5.4` Prompt-A artifacts exist and were approved with explicit in-thread `APPROVED UI PREVIEW`:
@@ -132,7 +148,7 @@ Last updated: 2026-02-16 (`M5.4` complete with post-QA inline iso + two-column h
 
 ## Exact Commands To Run Next
 - `bash scripts/run_checks.sh`
-  - Current signal: PASS (2026-02-16; single-build optimized path through `validate:m5.4`).
+  - Current signal: PASS (2026-02-16; single-build optimized path through `validate:m5.5`).
 - `npm run build`
   - Current signal: PASS.
 - `npm run validate:m1`
@@ -157,6 +173,8 @@ Last updated: 2026-02-16 (`M5.4` complete with post-QA inline iso + two-column h
   - Current signal: PASS (after validator wait fix; final sequential run green).
 - `npm run validate:m5.4`
   - Current signal: PASS.
+- `npm run validate:m5.5`
+  - Current signal: PASS.
 ## Stop/Go Criteria For M5
 - Stop if the active slice Design Preview Gate is not approved (`BLOCKED-DESIGN`).
 - Stop if any M1-M4B validator regresses.
@@ -169,7 +187,7 @@ Last updated: 2026-02-16 (`M5.4` complete with post-QA inline iso + two-column h
 
 ## Known Divergences To Resolve Before M5 Completion
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
-- FragMap runtime behavior beyond M5.4 remains unimplemented (`M5.5` bulk actions, `M5.6` reliability hardening).
+- FragMap runtime behavior beyond M5.5 remains unimplemented (`M5.6` reliability hardening).
 - Performance evidence framework (`docs/specs/performance-and-validation-spec.md`) is unimplemented.
 - Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
 
@@ -195,4 +213,4 @@ Last updated: 2026-02-16 (`M5.4` complete with post-QA inline iso + two-column h
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.5` Prompt A design-preview artifacts only (default/loading/empty/error/success), then wait for explicit `APPROVED UI PREVIEW` before any `M5.5` runtime implementation.
+- Execute `M5.6` Prompt A design-preview artifacts only (default/loading/empty/error/success), then wait for explicit `APPROVED UI PREVIEW` before any `M5.6` runtime implementation.

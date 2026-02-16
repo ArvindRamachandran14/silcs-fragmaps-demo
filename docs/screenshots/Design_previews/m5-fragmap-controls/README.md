@@ -3,21 +3,21 @@
 This packet tracks the M5 sliced design gates under `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 
 ## Gate Status
-- Active slice: `M5.5 Bulk Actions`
-- Gate state: `BLOCKED-DESIGN` (awaiting explicit `APPROVED UI PREVIEW` for `M5.5` Prompt A)
-- Required token to unblock Prompt B: pending (`APPROVED UI PREVIEW` for `M5.5`)
+- Active slice: `M5.6 Reliability Hardening`
+- Gate state: `BLOCKED-DESIGN` (awaiting explicit `APPROVED UI PREVIEW` for `M5.6` Prompt A)
+- Required token to unblock Prompt B: pending (`APPROVED UI PREVIEW` for `M5.6`)
 
 ## Scope for This Packet Revision
 In scope:
 - Historical record: completed `M5.2a` and `M5.2b` Prompt-A artifacts and approval evidence.
 - Historical record: `M5.3` Prompt A preview was approved and Prompt B runtime behavior is implemented.
 - Historical record: `M5.4` Prompt A preview was approved and Prompt B runtime behavior is implemented.
-- Current execution scope: `M5.5` Prompt A preview artifacts are pending (design-only gate for bulk actions).
+- Historical record: `M5.5` Prompt A preview was approved and Prompt B runtime behavior is implemented.
+- Current execution scope: `M5.6` Prompt A design-preview gate is next.
 - Deferred exploratory scope: `M5.2c` parity artifacts retained for optional later investigation; non-blocking for required M5 flow.
 
 Out of scope in this revision:
-- `M5.5+` runtime behavior:
-  - bulk action runtime behavior (`M5.5`),
+- `M5.6+` runtime behavior:
   - reliability/error-isolation runtime contracts (`M5.6`).
 
 ## Packet Structure
@@ -36,7 +36,9 @@ Out of scope in this revision:
 - `desktop/m5.3-advanced-exclusion-wireframe-states.svg`: single multi-panel `M5.3` page covering default/loading/empty/error/success for Advanced rows + Exclusion fixed behavior.
 - `m5.4-preview-index.md`: `M5.4` state checklist, artifact matrix, and traceability for per-map iso controls.
 - `desktop/m5.4-per-map-iso-controls-states.svg`: single multi-panel `M5.4` page covering default/loading/empty/error/success for row-level iso controls.
+- `m5.5-preview-index.md`: `M5.5` state checklist, artifact matrix, open UI questions, and traceability for bulk actions.
+- `desktop/m5.5-bulk-actions-states.svg`: single multi-panel `M5.5` page covering default/loading/empty/error/success for bulk actions only.
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Review `M5.5` Prompt A artifacts when produced and provide explicit `APPROVED UI PREVIEW` (or revision feedback).
+- Review `M5.6` Prompt A artifacts (to be added in this packet) and provide explicit `APPROVED UI PREVIEW` (or revision feedback).

@@ -5,6 +5,63 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Accept M5.5 Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.5` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.5` Prompt-B implementation scope.
+- Why: reviewer approval satisfies the UI-first design gate for `M5.5`, allowing bulk-action runtime implementation to proceed.
+- Alternatives considered:
+  - keep `M5.5` in `BLOCKED-DESIGN` and request additional Prompt-A revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: no runtime behavior changed in this approval-record update; Prompt-B implementation is now permitted for `M5.5` only.
+
+### 2026-02-16 - Implement M5.5 bulk actions (`Hide all`, `Reset defaults`) and keep camera reset top-bar only
+- Decision: complete `M5.5` Prompt B by implementing in-panel `Hide all` and `Reset defaults` behavior only, removing in-panel `Reset view`, and preserving top-bar `Reset View` as the sole camera-reset control.
+- Why: approved scope for `M5.5` is FragMap-specific bulk actions; duplicate reset controls were reviewer-identified UX confusion.
+- Alternatives considered:
+  - retain in-panel `Reset view` with duplicated camera-reset behavior;
+  - defer bulk-action runtime behavior to `M5.6` (rejected to keep required slice progression intact).
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m5-1.js`
+  - `scripts/validate-m5-5.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: `node scripts/validate-m5-5.js` passes and full sequential `bash scripts/run_checks.sh` passes through `validate:m5.5`; remaining M5 work is `M5.6` reliability hardening.
+
+### 2026-02-16 - Remove in-panel `Reset view` from M5.5 bulk-actions contract
+- Decision: keep `M5.5` bulk actions scoped to `Hide all` and `Reset defaults` only; remove in-panel `Reset view` from Prompt-A artifacts and keep camera reset as top-bar viewer control.
+- Why: reviewer confirmed duplicate reset controls are confusing; FragMap-panel actions should remain FragMap-specific.
+- Alternatives considered:
+  - keep in-panel `Reset view` and document it as equivalent to top-bar reset;
+  - defer this contract change to `M5.6` (rejected because this is a design-scope clarification for active `M5.5` Prompt A).
+- Evidence:
+  - `docs/specs/fragmap-controls-spec.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+  - `docs/plans/execution-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `prompts/implementation.md`
+- Validation/risk impact: docs-only contract update; no runtime behavior changes in this window. `M5.5` remains `BLOCKED-DESIGN` pending explicit Prompt-A approval.
+
+### 2026-02-16 - Execute M5.5 Prompt A as a single multi-panel bulk-actions preview page
+- Decision: produce `M5.5` Prompt-A artifacts as one desktop multi-panel SVG (`default/loading/empty/error/success`) plus a dedicated `m5.5-preview-index.md`, while keeping milestone approval state at `BLOCKED-DESIGN` until explicit `APPROVED UI PREVIEW`.
+- Why: this satisfies the UI-first design gate for `M5.5` and makes `Hide all` / `Reset defaults` behavior reviewable before runtime implementation.
+- Alternatives considered:
+  - split `M5.5` previews into separate files per state;
+  - defer Prompt-A artifacts and move directly into `M5.5` Prompt-B runtime work (rejected by design gate policy).
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: docs-only design artifact update; no runtime behavior changes in this window; Prompt B remains blocked pending explicit approval.
+
 ### 2026-02-16 - Align M5.4 header row to explicit two-column table contract (`FragMap` + centered `GFE (kcal/mol)`)
 - Decision: render a visible `FragMap` column heading in Primary and Advanced sections and center `GFE (kcal/mol)` over the iso control/value column (rather than right-aligning to panel edge).
 - Why: reviewer feedback requested stronger visual column semantics and more direct units-to-value alignment.

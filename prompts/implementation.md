@@ -947,7 +947,7 @@ Scope:
 - M5.5 design-preview only.
 - Produce/update only M5.5 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 - Include/update packet front page plus M5.5 page.
-- M5.5 scope: bulk actions only (`Hide all`, `Reset defaults`, `Reset view`).
+- M5.5 scope: bulk actions only (`Hide all`, `Reset defaults`).
 
 Required deliverables:
 1) files created/updated
@@ -971,7 +971,7 @@ Precondition:
 
 Scope:
 - M5.5 only: bulk actions.
-- Implement `Hide all`, `Reset defaults`, and `Reset view` to match spec behavior.
+- Implement `Hide all` and `Reset defaults` to match spec behavior.
 - Preserve M5.1-M5.4 contracts and M1-M4B behavior.
 
 Required deliverables:

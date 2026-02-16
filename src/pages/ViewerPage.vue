@@ -69,12 +69,15 @@
             :frag-map-status-by-id="fragMapStatusById"
             :frag-map-iso-by-id="fragMapIsoById"
             :frag-map-error-by-id="fragMapErrorById"
+            :frag-map-actions-disabled="fragMapActionsDisabled"
             :camera-baseline="viewerState.cameraBaseline"
             :camera-snapshot="viewerState.cameraSnapshot"
             @toggle-protein="handleProteinToggle"
             @toggle-fragmap="handleFragMapToggle"
             @adjust-fragmap-iso="handleFragMapIsoStep"
             @set-fragmap-iso="handleFragMapIsoInput"
+            @hide-all-fragmaps="handleHideAllFragMaps"
+            @reset-default-fragmaps="handleResetDefaultFragMaps"
             @toggle-pose="handlePoseToggle"
             @select-featured-ligand="handleFeaturedLigandSwitch"
             @zoom-ligand="handleZoomLigand"
@@ -112,12 +115,15 @@
           :frag-map-status-by-id="fragMapStatusById"
           :frag-map-iso-by-id="fragMapIsoById"
           :frag-map-error-by-id="fragMapErrorById"
+          :frag-map-actions-disabled="fragMapActionsDisabled"
           :camera-baseline="viewerState.cameraBaseline"
           :camera-snapshot="viewerState.cameraSnapshot"
           @toggle-protein="handleProteinToggle"
           @toggle-fragmap="handleFragMapToggle"
           @adjust-fragmap-iso="handleFragMapIsoStep"
           @set-fragmap-iso="handleFragMapIsoInput"
+          @hide-all-fragmaps="handleHideAllFragMaps"
+          @reset-default-fragmaps="handleResetDefaultFragMaps"
           @toggle-pose="handlePoseToggle"
           @select-featured-ligand="handleFeaturedLigandSwitch"
           @zoom-ligand="handleZoomLigand"
@@ -293,6 +299,7 @@ export default Vue.extend({
       fragMapRuntime: {} as Record<string, FragMapRuntimeState>,
       fragMapIsoById: {} as Record<string, number>,
       fragMapLoadingRowId: null as string | null,
+      fragMapBulkActionLoading: false,
     };
   },
   computed: {
@@ -349,6 +356,16 @@ export default Vue.extend({
         return accumulator;
       }, {} as Record<string, string>);
     },
+    fragMapActionsDisabled(): boolean {
+      return (
+        this.viewerStatus !== "ready" ||
+        !this.stageController ||
+        this.proteinVisibilityLoading ||
+        this.viewerState.ligandSwitchLoading ||
+        this.fragMapBulkActionLoading ||
+        Boolean(this.fragMapLoadingRowId)
+      );
+    },
   },
   mounted() {
     void this.initializeStage();
@@ -383,6 +400,49 @@ export default Vue.extend({
     getFragMapIsoValue(rowId: string): number | null {
       const value = this.fragMapIsoById[rowId];
       return typeof value === "number" && !Number.isNaN(value) ? value : null;
+    },
+    getFragMapVisibilityOptions(row: FragMapShellRow) {
+      return {
+        id: row.id,
+        dxUrl: row.dxUrl || `/assets/maps/${row.id}`,
+        color: row.color,
+        defaultIso: row.defaultIso,
+        isoValue: this.getFragMapIsoValue(row.id) ?? undefined,
+      };
+    },
+    incrementM5DebugCounter(key: "hideAllCount" | "resetDefaultsCount") {
+      const globalWindow = window as Window & {
+        __viewerM5Debug?: {
+          hideAllCount?: number;
+          resetDefaultsCount?: number;
+          retryAttemptById?: Record<string, number>;
+        };
+      };
+
+      const debugState = globalWindow.__viewerM5Debug;
+      if (!debugState) {
+        return;
+      }
+
+      debugState[key] = (debugState[key] || 0) + 1;
+    },
+    incrementM5RetryDebugCounter(rowId: string) {
+      const globalWindow = window as Window & {
+        __viewerM5Debug?: {
+          retryAttemptById?: Record<string, number>;
+        };
+      };
+
+      const debugState = globalWindow.__viewerM5Debug;
+      if (!debugState) {
+        return;
+      }
+
+      if (!debugState.retryAttemptById) {
+        debugState.retryAttemptById = {};
+      }
+
+      debugState.retryAttemptById[rowId] = (debugState.retryAttemptById[rowId] || 0) + 1;
     },
     resetFragMapRuntime() {
       const nextState: Record<string, FragMapRuntimeState> = {};
@@ -662,13 +722,7 @@ export default Vue.extend({
 
       try {
         const visibilityResult = await this.stageController.setFragMapVisibility(
-          {
-            id: row.id,
-            dxUrl: row.dxUrl || `/assets/maps/${row.id}`,
-            color: row.color,
-            defaultIso: row.defaultIso,
-            isoValue: this.getFragMapIsoValue(row.id) ?? undefined,
-          },
+          this.getFragMapVisibilityOptions(row),
           payload.visible,
         );
 
@@ -727,10 +781,7 @@ export default Vue.extend({
 
       this.stageController.setFragMapIso(
         {
-          id: row.id,
-          dxUrl: row.dxUrl || `/assets/maps/${row.id}`,
-          color: row.color,
-          defaultIso: row.defaultIso,
+          ...this.getFragMapVisibilityOptions(row),
           isoValue: normalizedIso,
         },
         normalizedIso,
@@ -738,6 +789,10 @@ export default Vue.extend({
       this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
     },
     async handleFragMapIsoStep(payload: FragMapIsoStepPayload) {
+      if (this.fragMapBulkActionLoading) {
+        return;
+      }
+
       const row = this.getFragMapRowById(payload.id);
       if (!row || !this.isIsoAdjustableRow(row)) {
         return;
@@ -757,6 +812,10 @@ export default Vue.extend({
       await this.applyFragMapIsoValue(payload.id, nextIso);
     },
     async handleFragMapIsoInput(payload: FragMapIsoInputPayload) {
+      if (this.fragMapBulkActionLoading) {
+        return;
+      }
+
       const row = this.getFragMapRowById(payload.id);
       if (!row || !this.isIsoAdjustableRow(row)) {
         return;
@@ -782,6 +841,93 @@ export default Vue.extend({
       }
 
       await this.applyFragMapIsoValue(payload.id, parsedValue);
+    },
+    async handleHideAllFragMaps() {
+      if (this.fragMapActionsDisabled) {
+        return;
+      }
+
+      this.fragMapBulkActionLoading = true;
+      this.incrementM5DebugCounter("hideAllCount");
+
+      try {
+        const visibleRowIds = [...this.viewerState.visibleFragMapIds];
+        for (const rowId of visibleRowIds) {
+          await this.handleFragMapToggle({ id: rowId, visible: false });
+        }
+
+        if (visibleRowIds.length > 0) {
+          this.toastMessage = "All FragMaps hidden.";
+          this.showToast = true;
+        }
+      } finally {
+        this.fragMapBulkActionLoading = false;
+      }
+    },
+    async handleResetDefaultFragMaps() {
+      if (this.fragMapActionsDisabled) {
+        return;
+      }
+
+      this.fragMapBulkActionLoading = true;
+      this.incrementM5DebugCounter("resetDefaultsCount");
+
+      try {
+        const visibleRowIds = [...this.viewerState.visibleFragMapIds];
+        for (const rowId of visibleRowIds) {
+          await this.handleFragMapToggle({ id: rowId, visible: false });
+        }
+
+        this.resetFragMapIsoState();
+
+        const disabledRowIds = Object.entries(this.fragMapRuntime)
+          .filter(([, runtime]) => runtime.disabled)
+          .map(([rowId]) => rowId);
+
+        const failedRetryLabels: string[] = [];
+        for (const rowId of disabledRowIds) {
+          const row = this.getFragMapRowById(rowId);
+          const runtimeState = this.fragMapRuntime[rowId];
+          if (!row || !runtimeState || !this.stageController) {
+            continue;
+          }
+
+          this.incrementM5RetryDebugCounter(rowId);
+          runtimeState.loading = true;
+          runtimeState.error = null;
+          runtimeState.statusText = "Retrying...";
+
+          try {
+            await this.stageController.setFragMapVisibility(this.getFragMapVisibilityOptions(row), true);
+            await this.stageController.setFragMapVisibility(this.getFragMapVisibilityOptions(row), false);
+            runtimeState.loaded = true;
+            runtimeState.disabled = false;
+            runtimeState.error = null;
+            runtimeState.statusText = "Cached";
+          } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            runtimeState.disabled = true;
+            runtimeState.error = message;
+            runtimeState.statusText = null;
+            failedRetryLabels.push(row.label);
+          } finally {
+            runtimeState.loading = false;
+          }
+        }
+
+        if (this.stageController) {
+          this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+        }
+
+        if (failedRetryLabels.length > 0) {
+          this.toastMessage = `Defaults restored with ${failedRetryLabels.length} row retry failure(s): ${failedRetryLabels.join(", ")}`;
+        } else {
+          this.toastMessage = "FragMap defaults restored.";
+        }
+        this.showToast = true;
+      } finally {
+        this.fragMapBulkActionLoading = false;
+      }
     },
     async handleFeaturedLigandSwitch(ligandId: string) {
       if (!this.stageController || !this.manifest || this.viewerState.ligandSwitchLoading) {

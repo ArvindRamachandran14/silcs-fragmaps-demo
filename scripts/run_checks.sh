@@ -15,6 +15,7 @@ COMMANDS=(
   "node scripts/validate-m5-2b.js"
   "node scripts/validate-m5-3.js"
   "node scripts/validate-m5-4.js"
+  "node scripts/validate-m5-5.js"
 )
 
 # Pretty printing helpers

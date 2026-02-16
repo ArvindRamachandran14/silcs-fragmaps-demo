@@ -166,12 +166,13 @@ async function run() {
     assert(fragMapTabSelected === "true", "FragMap tab is not selected by default.");
     assert(ligandTabSelected === "false", "Ligand tab should be inactive by default.");
 
-    for (const actionId of ["fragmap-hide-all", "fragmap-reset-defaults", "fragmap-reset-view"]) {
+    for (const actionId of ["fragmap-hide-all", "fragmap-reset-defaults"]) {
       const selector = panelSelector(actionId);
       await assertVisible(page, selector, `Missing action button ${actionId}.`);
-      const disabled = await page.isDisabled(selector);
-      assert(disabled, `${actionId} must be disabled in M5.1 shell scope.`);
     }
+
+    const resetViewButtonCount = await page.locator(panelSelector("fragmap-reset-view")).count();
+    assert(resetViewButtonCount === 0, "FragMap panel must not expose in-panel Reset view button.");
 
     await assertVisible(page, panelSelector("fragmap-primary-section"), "Primary section is missing.");
     await assertVisible(page, panelSelector("fragmap-advanced-section"), "Advanced section is missing.");
@@ -211,7 +212,7 @@ async function run() {
 
     console.log("M5.1 validation passed:");
     console.log("- FragMap tab is default active and Ligand tab is inactive by default");
-    console.log("- FragMap shell action row is present and disabled by design in M5.1");
+    console.log("- FragMap shell action row contains Hide all + Reset defaults only");
     console.log("- Primary and Advanced canonical rows are present and unchecked by default");
     console.log("- Advanced section is collapsed by default and can be expanded in-place");
     console.log("- Ligand tab remains reachable and exposes existing ligand controls");

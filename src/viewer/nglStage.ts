@@ -30,6 +30,9 @@ interface FragMapRenderDebugEntry {
 interface ViewerM5DebugState {
   fragMapRenderById: Record<string, FragMapRenderDebugEntry>;
   proteinVisible: boolean;
+  hideAllCount: number;
+  resetDefaultsCount: number;
+  retryAttemptById: Record<string, number>;
 }
 
 export interface StageInitOptions {
@@ -177,6 +180,9 @@ function getM5DebugState(): ViewerM5DebugState {
     window.__viewerM5Debug = {
       fragMapRenderById: {},
       proteinVisible: true,
+      hideAllCount: 0,
+      resetDefaultsCount: 0,
+      retryAttemptById: {},
     };
   }
 
@@ -313,6 +319,9 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
   const m5DebugState = getM5DebugState();
   m5DebugState.fragMapRenderById = {};
   m5DebugState.proteinVisible = true;
+  m5DebugState.hideAllCount = 0;
+  m5DebugState.resetDefaultsCount = 0;
+  m5DebugState.retryAttemptById = {};
   debugState.stageInitAttempts += 1;
   debugState.cameraBaselineDefined = true;
   debugState.startupRenderEngine = "none";

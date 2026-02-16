@@ -142,7 +142,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Implementation: typed ligand manifest + featured quick-picks + in-place component swap + pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden) using `.sdf` as primary and `.pdb` fallback only when required. Full searchable selector is deferred to `M4C`.
 - UI Framework Requirement (approved M5.1 direction): right controls region supports in-place `FragMap` / `Ligand` tab navigation, with `Ligand` preserving existing M4B controls.
 - PRD Requirement: show/hide individual FragMap surfaces.
-- Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`, `Reset view`).
+- Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`), with camera reset retained as top-bar viewer control.
 - Visual parity note (deferred exploration): preserve triangulated wireframe rendering while optionally tuning rendering parameters in `M5.2c` to better match approved/reference SILCS wireframe appearance.
 - PRD Requirement: iso-value adjustment with fast response.
 - Implementation: per-map iso controls (`-`, value, `+`) on GFE rows + targeted parameter updates on the selected map representation; `Exclusion Map` uses fixed gray triangulated wireframe isosurface with disabled iso controls.

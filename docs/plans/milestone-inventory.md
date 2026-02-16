@@ -313,7 +313,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.2c` | Optional/deferred wireframe parity investigation (docs + exploratory packet only; non-blocking) | N/A | N/A | Deferred exploratory |
 | `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | PASS | PASS | Completed |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | PASS | PASS | Completed |
-| `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
+| `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`) | Completed | Completed | Prompt A approved; Prompt B implemented and validated |
 | `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | Pending | Pending | Not started |
 
 ### M5.1 - FragMap Panel Shell
@@ -593,29 +593,55 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 #### Residual Risks/Blockers
 - Per-row retry/error recovery for iso update transport/runtime failures remains part of `M5.6` reliability hardening.
-- Bulk action behavior (`M5.5`) is still pending and remains the active next required slice.
+- `M5.6` reliability hardening is the active next required slice.
 
 ### M5.5 - Bulk Actions
 
 #### Summary
-- Pending.
+- Prompt A preview artifacts were approved via explicit `APPROVED UI PREVIEW`.
+- Prompt B runtime implementation is complete for `Hide all` + `Reset defaults` only (no in-panel camera reset action).
+- Sequential regression is green through `validate:m5.5`.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.5 and why.` |
+| `src/components/ControlsPanel.vue` | Updated | Right-panel controls UI and action wiring. | Removed in-panel `Reset view`, enabled `Hide all` + `Reset defaults`, emitted bulk-action events, and updated M5 scope note text. |
+| `src/pages/ViewerPage.vue` | Updated | FragMap runtime orchestration and UI event handlers. | Implemented `handleHideAllFragMaps` + `handleResetDefaultFragMaps`, added disabled-row retry-on-reset behavior, and locked action execution while bulk actions are in progress. |
+| `src/viewer/nglStage.ts` | Updated | M5 debug telemetry baseline. | Extended `window.__viewerM5Debug` with bulk-action counters and retry-attempt tracking used by M5.5 validation. |
+| `scripts/validate-m5-1.js` | Updated | M5.1 shell-contract validator. | Updated action-row assertions for the two-button contract (`Hide all`, `Reset defaults`) and explicit absence of in-panel `Reset view`. |
+| `scripts/validate-m5-5.js` | Created | M5.5 milestone validator. | Added gate checks for bulk-action behavior, camera preservation, no-route-reload contract, and disabled-row retry isolation. |
+| `package.json` | Updated | Validator command contract. | Added `validate:m5.5` / `prevalidate:m5.5` scripts. |
+| `scripts/run_checks.sh` | Updated | Sequential validator runner. | Added `node scripts/validate-m5-5.js` to the single-build sequential suite. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md` | Updated | M5.5 Prompt-A preview index. | Marked approval state as `PASS` after explicit approval and Prompt-B completion. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg` | Updated | M5.5 Prompt-A state artifact. | Synced to final approved two-button contract (no in-panel `Reset view`). |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/README.md` | Updated | M5 preview packet front page. | Advanced active gate from `M5.5` to `M5.6` Prompt A. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` | Updated | M5 preview packet approval ledger. | Added `M5.5` review record and Prompt-B completion note. |
 
 #### Commands Run
-- Pending.
+- `node scripts/validate-m5-5.js` -> PASS.
+- `bash scripts/run_checks.sh` -> PASS, including:
+  - `npm run build` -> PASS
+  - `node scripts/validate-m1.js` -> PASS
+  - `node scripts/validate-m2.js` -> PASS
+  - `node scripts/validate-m3.js` -> PASS
+  - `node scripts/validate-m4a.js` -> PASS
+  - `node scripts/validate-m4b.js` -> PASS
+  - `node scripts/validate-m5-1.js` -> PASS
+  - `node scripts/validate-m5-2.js` -> PASS
+  - `node scripts/validate-m5-2a.js` -> PASS
+  - `node scripts/validate-m5-2b.js` -> PASS
+  - `node scripts/validate-m5-3.js` -> PASS
+  - `node scripts/validate-m5-4.js` -> PASS
+  - `node scripts/validate-m5-5.js` -> PASS
 
 #### Gate Checklist
-- Prompt A preview for `M5.5` approved (`APPROVED UI PREVIEW`): Pending.
-- Prompt B implementation stayed within `M5.5` scope boundary: Pending.
-- Bulk actions (`Hide all`, `Reset defaults`, `Reset view`) match spec in-place behavior: Pending.
-- No regressions against completed slices (`M5.1`-`M5.4`) and M1-M4B baseline: Pending.
+- Prompt A preview for `M5.5` approved (`APPROVED UI PREVIEW`): PASS.
+- Prompt B implementation stayed within `M5.5` scope boundary: PASS.
+- Bulk actions (`Hide all`, `Reset defaults`) match spec in-place behavior: PASS.
+- No regressions against completed slices (`M5.1`-`M5.4`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- `M5.6` reliability hardening remains pending (row-level retry UX polish, async race guards, and final `validate:m5` umbrella gate).
 
 ### M5.6 - Reliability Hardening + Final M5 Gate
 

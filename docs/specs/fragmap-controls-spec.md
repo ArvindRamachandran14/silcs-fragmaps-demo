@@ -26,7 +26,7 @@ In scope:
 - Per-map checkbox visibility controls.
 - Per-map iso controls for iso-adjustable GFE maps.
 - Exclusion-map fixed-style behavior with non-editable iso controls.
-- Bulk actions: `Hide all`, `Reset defaults`, `Reset view`.
+- Bulk actions: `Hide all`, `Reset defaults`.
 - Lazy-load/cache behavior and reliability guardrails.
 - Error handling for map load/update failures.
 - Optional exploratory wireframe parity investigation (`M5.2c`) for map mesh appearance only (deferred/non-blocking unless explicitly promoted).
@@ -80,7 +80,7 @@ Use structure direction from:
 
 Control layout order:
 1. Shared tab strip context (`M5.1+`): `FragMap` tab active with `Ligand` as sibling tab.
-2. Action row: `Hide all`, `Reset defaults`, `Reset view`.
+2. Action row: `Hide all`, `Reset defaults`.
 3. Protein visibility row: `Protein cartoon` toggle (default on).
 4. `Primary 3` section (always visible).
 5. `Advanced` section (expandable, includes remaining maps).
@@ -187,7 +187,7 @@ Default iso values (v1 canonical):
 2. Reset all iso-adjustable map `perMapIso` values to defaults.
 3. For rows currently disabled by prior errors, execute one retry per disabled row.
 4. Clear row disable state only when that row retry succeeds; keep row disabled when retry fails.
-- `Reset view`: restore the viewer camera to the same baseline state defined by viewer startup defaults (fixed orientation, position, and zoom captured after initial protein + default crystal ligand (`3fly_cryst_lig`) ready state), without changing ligand selection, map visibility, or per-map iso values.
+- Camera baseline reset remains a top-bar viewer control (`M3`) and is intentionally outside FragMap-panel bulk actions.
 
 ### 8.4 Per-Map Iso Controls
 - Controls for iso-adjustable rows: decrement button, numeric value, increment button.
@@ -257,9 +257,9 @@ FragMap controls are accepted when all checks pass:
 8. Per-map iso controls exist for iso-adjustable GFE map rows and update only intended map surfaces.
 9. `Exclusion Map` row does not expose editable iso controls and renders as fixed gray triangulated wireframe isosurface.
 10. No global iso control appears.
-11. `Hide all`, `Reset defaults`, and `Reset view` behaviors match this spec.
+11. `Hide all` and `Reset defaults` behaviors match this spec.
 12. Map toggle, protein toggle, and iso update actions happen with no page reload.
-13. Camera preserved for map toggle/protein toggle/iso updates; only `Reset view` changes camera.
+13. Camera preserved for map toggle/protein toggle/iso updates and FragMap-panel bulk actions; camera reset is only available via top-bar viewer `Reset View`.
 14. Map failures are isolated to affected row and surfaced with toast + retry.
 15. UI labels and controls remain non-overlapping and in-bounds at supported widths.
 16. Row legends and rendered surfaces use the canonical map-color mapping defined in Section 4.1.

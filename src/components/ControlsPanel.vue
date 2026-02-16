@@ -49,14 +49,23 @@
       <h2 class="text-subtitle-1 mb-3">FragMap Controls</h2>
 
       <div class="controls-panel__fragmap-actions mb-3" data-test-id="fragmap-action-row">
-        <button type="button" class="controls-panel__action" data-test-id="fragmap-hide-all" disabled>
+        <button
+          type="button"
+          class="controls-panel__action"
+          data-test-id="fragmap-hide-all"
+          :disabled="fragMapActionsDisabled"
+          @click="onHideAllFragMaps"
+        >
           Hide all
         </button>
-        <button type="button" class="controls-panel__action" data-test-id="fragmap-reset-defaults" disabled>
+        <button
+          type="button"
+          class="controls-panel__action"
+          data-test-id="fragmap-reset-defaults"
+          :disabled="fragMapActionsDisabled"
+          @click="onResetDefaultFragMaps"
+        >
           Reset defaults
-        </button>
-        <button type="button" class="controls-panel__action" data-test-id="fragmap-reset-view" disabled>
-          Reset view
         </button>
       </div>
 
@@ -243,7 +252,7 @@
       </div>
 
       <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
-        M5.4 scope: per-map iso controls are active for adjustable rows. Bulk actions and reliability handling remain deferred.
+        M5.5 scope: Hide all and Reset defaults are active. Reliability handling remains deferred.
       </p>
     </section>
 
@@ -477,6 +486,11 @@ export default Vue.extend({
       required: false,
       default: () => ({}),
     },
+    fragMapActionsDisabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     cameraBaseline: {
       type: Object,
       required: true,
@@ -538,11 +552,17 @@ export default Vue.extend({
       const target = event.target as HTMLInputElement;
       this.$emit("set-fragmap-iso", { id: rowId, value: target.value });
     },
+    onHideAllFragMaps() {
+      this.$emit("hide-all-fragmaps");
+    },
+    onResetDefaultFragMaps() {
+      this.$emit("reset-default-fragmaps");
+    },
     isFragMapRowChecked(rowId: string): boolean {
       return (this.visibleFragMapIds as string[]).includes(rowId);
     },
     isFragMapRowDisabled(row: FragMapShellRow): boolean {
-      if (this.fragMapLoadingRowId) {
+      if (this.fragMapLoadingRowId || this.fragMapActionsDisabled) {
         return true;
       }
 
@@ -641,7 +661,7 @@ export default Vue.extend({
 .controls-panel__fragmap-actions {
   display: grid;
   gap: 8px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .controls-panel__action {
