@@ -216,21 +216,13 @@ async function runBulkActionFlow(page) {
   const donorIsoEdited = await getInputValue(page, isoInputSelector(DONOR_ID));
   assert(donorIsoEdited === "-1.1", `Expected donor iso to update to -1.1 before reset (got ${donorIsoEdited}).`);
 
-  const cameraBeforeHideAll = await getText(page, panelSelector("camera-snapshot"));
-  await page.click(panelSelector("fragmap-hide-all"));
-  await waitForVisibleCount(page, 0);
-
-  const donorCheckedAfterHideAll = await page.isChecked(toggleSelector(DONOR_ID));
-  const apolarCheckedAfterHideAll = await page.isChecked(toggleSelector(APOLAR_ID));
-  assert(!donorCheckedAfterHideAll && !apolarCheckedAfterHideAll, "Hide all must clear visible map checkboxes.");
-  await waitForStatusIncludes(page, statusSelector(DONOR_ID), "Cached");
-  await waitForStatusIncludes(page, statusSelector(APOLAR_ID), "Cached");
-
-  const cameraAfterHideAll = await getText(page, panelSelector("camera-snapshot"));
-  assert(cameraAfterHideAll === cameraBeforeHideAll, "Camera changed after Hide all action.");
-
+  const cameraBeforeResetDefaults = await getText(page, panelSelector("camera-snapshot"));
   await page.click(panelSelector("fragmap-reset-defaults"));
-  await waitForVisibleCount(page, 0);
+  await waitForVisibleCount(page, 2);
+
+  const donorCheckedAfterReset = await page.isChecked(toggleSelector(DONOR_ID));
+  const apolarCheckedAfterReset = await page.isChecked(toggleSelector(APOLAR_ID));
+  assert(donorCheckedAfterReset && apolarCheckedAfterReset, "Reset defaults must preserve current map visibility.");
 
   const donorIsoDefault = await getInputValue(page, isoInputSelector(DONOR_ID));
   const apolarIsoDefault = await getInputValue(page, isoInputSelector(APOLAR_ID));
@@ -242,7 +234,19 @@ async function runBulkActionFlow(page) {
   assert(waterIsoDefault === "-0.3", `Reset defaults must restore water iso to -0.3 (got ${waterIsoDefault}).`);
 
   const cameraAfterResetDefaults = await getText(page, panelSelector("camera-snapshot"));
-  assert(cameraAfterResetDefaults === cameraBeforeHideAll, "Camera changed after Reset defaults action.");
+  assert(cameraAfterResetDefaults === cameraBeforeResetDefaults, "Camera changed after Reset defaults action.");
+
+  await page.click(panelSelector("fragmap-hide-all"));
+  await waitForVisibleCount(page, 0);
+
+  const donorCheckedAfterHideAll = await page.isChecked(toggleSelector(DONOR_ID));
+  const apolarCheckedAfterHideAll = await page.isChecked(toggleSelector(APOLAR_ID));
+  assert(!donorCheckedAfterHideAll && !apolarCheckedAfterHideAll, "Hide all must clear visible map checkboxes.");
+  await waitForStatusIncludes(page, statusSelector(DONOR_ID), "Cached");
+  await waitForStatusIncludes(page, statusSelector(APOLAR_ID), "Cached");
+
+  const cameraAfterHideAll = await getText(page, panelSelector("camera-snapshot"));
+  assert(cameraAfterHideAll === cameraBeforeResetDefaults, "Camera changed after Hide all action.");
 
   const debugCounts = await page.evaluate(() => {
     return {
@@ -263,6 +267,10 @@ async function runRetryIsolationFlow(page) {
   await page.goto(viewerUrl, { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer did not reach ready state for retry flow.");
 
+  await page.click(toggleSelector(DONOR_ID));
+  await waitForStatusIncludes(page, statusSelector(DONOR_ID), "Loaded");
+  await waitForVisibleCount(page, 1);
+
   await expandAdvancedSection(page);
   await page.click(toggleSelector(WATER_ID));
   await assertVisible(page, errorSelector(WATER_ID), "Water Oxygen row should show a load error.");
@@ -274,23 +282,23 @@ async function runRetryIsolationFlow(page) {
   }, WATER_ID);
 
   await page.click(panelSelector("fragmap-reset-defaults"));
-  await page.waitForFunction(
-    ({ rowId, previousCount }) => {
-      const currentCount =
-        (window.__viewerM5Debug?.retryAttemptById && window.__viewerM5Debug.retryAttemptById[rowId]) || 0;
-      return currentCount === previousCount + 1;
-    },
-    { rowId: WATER_ID, previousCount: retryCountBefore },
-  );
+  await waitForVisibleCount(page, 1);
+  await page.waitForTimeout(300);
+
+  const retryCountAfter = await page.evaluate((rowId) => {
+    return (window.__viewerM5Debug?.retryAttemptById && window.__viewerM5Debug.retryAttemptById[rowId]) || 0;
+  }, WATER_ID);
+  assert(retryCountAfter === retryCountBefore, "Reset defaults must not trigger row retries.");
 
   const waterDisabledAfterReset = await page.isDisabled(toggleSelector(WATER_ID));
-  assert(waterDisabledAfterReset, "Failed row should remain disabled when reset retry fails.");
-  await assertVisible(page, errorSelector(WATER_ID), "Failed row error should remain visible after retry failure.");
+  assert(waterDisabledAfterReset, "Failed row should remain disabled after reset defaults.");
+  await assertVisible(page, errorSelector(WATER_ID), "Failed row error should remain visible after reset defaults.");
+
+  const donorCheckedAfterReset = await page.isChecked(toggleSelector(DONOR_ID));
+  assert(donorCheckedAfterReset, "Reset defaults must preserve unaffected row visibility.");
 
   const donorDisabled = await page.isDisabled(toggleSelector(DONOR_ID));
-  assert(!donorDisabled, "Unaffected rows should remain interactive after failed row retry.");
-  await page.click(toggleSelector(DONOR_ID));
-  await waitForStatusIncludes(page, statusSelector(DONOR_ID), "Loaded");
+  assert(!donorDisabled, "Unaffected rows should remain interactive after reset defaults.");
 }
 
 async function run() {
@@ -316,8 +324,8 @@ async function run() {
     console.log("M5.5 validation passed:");
     console.log("- FragMap action row exposes Hide all + Reset defaults only (no in-panel Reset view)");
     console.log("- Hide all clears visible maps in place while preserving cached state");
-    console.log("- Reset defaults restores default hidden visibility + canonical per-map iso values");
-    console.log("- Disabled-row reset retries are attempted once and remain isolated on failure");
+    console.log("- Reset defaults restores canonical per-map iso values while preserving visibility");
+    console.log("- Reset defaults does not trigger row retries or recovery side-effects");
     console.log("- Bulk actions preserve camera and do not trigger route reload");
   } finally {
     await browser.close();

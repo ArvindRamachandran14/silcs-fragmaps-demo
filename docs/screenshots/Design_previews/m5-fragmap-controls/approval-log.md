@@ -48,6 +48,12 @@
 - Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
 - Decision: `APPROVED UI PREVIEW`
 
+## Review Record (M5.5a)
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
+- Decision: `APPROVED UI PREVIEW`
+
 ## Comments (M5.1)
 - Reviewer approved the M5.1 Prompt-A preview packet and confirmed progression to Prompt B.
 
@@ -99,6 +105,13 @@
 - Preview scope is constrained to `Hide all` and `Reset defaults` behavior with explicit state coverage (`default/loading/empty/error/success`).
 - Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now completed for `M5.5`.
 
+## Comments (M5.5a)
+- `M5.5a` is inserted after `M5.5` to refine `Reset defaults` semantics only.
+- Slice contract: `Reset defaults` resets per-map iso values to defaults and keeps map visibility unchanged.
+- Prompt-A artifacts now include one multi-panel state sheet (`default/loading/empty/error/success`) and a dedicated slice index for traceability.
+- Open UI questions: none currently.
+- Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now completed for `M5.5a`.
+
 ## Revision Notes
 - 2026-02-16: Created initial M5 packet front page and M5.1 Prompt-A preview page with one multi-panel desktop SVG covering default/loading/empty/error/success.
 - 2026-02-16: Added supplemental context-placement artifact (`desktop/m5.1-viewer-context-placement.svg`) to show where the M5.1 panel sits in the full viewer layout; existing state artifact retained unchanged.
@@ -138,4 +151,8 @@
 - 2026-02-16: Executed `M5.5` Prompt A (design-preview only): added `desktop/m5.5-bulk-actions-states.svg`, created `m5.5-preview-index.md`, and updated packet front page (`README.md`) to point reviewer approval to the new M5.5 artifacts.
 - 2026-02-16: Applied reviewer-requested M5.5 scope clarification to remove in-panel `Reset view`; Prompt-A artifacts now show only `Hide all` + `Reset defaults` in the FragMap action row.
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.5` Prompt A.
-- 2026-02-16: Completed `M5.5` Prompt B runtime implementation and advanced packet active gate to `M5.6` Prompt A.
+- 2026-02-16: Completed `M5.5` Prompt B runtime implementation.
+- 2026-02-16: Added docs-only `M5.5a` scope split for `Reset defaults` iso-only semantics and moved active packet gate to `M5.5a` Prompt A.
+- 2026-02-16: Executed `M5.5a` Prompt A (design-preview only): added `desktop/m5.5a-reset-defaults-iso-only-states.svg`, updated `m5.5a-preview-index.md`, and refreshed packet front page (`README.md`) for reviewer approval.
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.5a` Prompt A.
+- 2026-02-16: Completed `M5.5a` Prompt B runtime implementation and advanced packet active gate to `M5.6` Prompt A.

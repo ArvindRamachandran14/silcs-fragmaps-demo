@@ -415,7 +415,6 @@ export default Vue.extend({
         __viewerM5Debug?: {
           hideAllCount?: number;
           resetDefaultsCount?: number;
-          retryAttemptById?: Record<string, number>;
         };
       };
 
@@ -425,24 +424,6 @@ export default Vue.extend({
       }
 
       debugState[key] = (debugState[key] || 0) + 1;
-    },
-    incrementM5RetryDebugCounter(rowId: string) {
-      const globalWindow = window as Window & {
-        __viewerM5Debug?: {
-          retryAttemptById?: Record<string, number>;
-        };
-      };
-
-      const debugState = globalWindow.__viewerM5Debug;
-      if (!debugState) {
-        return;
-      }
-
-      if (!debugState.retryAttemptById) {
-        debugState.retryAttemptById = {};
-      }
-
-      debugState.retryAttemptById[rowId] = (debugState.retryAttemptById[rowId] || 0) + 1;
     },
     resetFragMapRuntime() {
       const nextState: Record<string, FragMapRuntimeState> = {};
@@ -873,56 +854,43 @@ export default Vue.extend({
       this.incrementM5DebugCounter("resetDefaultsCount");
 
       try {
-        const visibleRowIds = [...this.viewerState.visibleFragMapIds];
-        for (const rowId of visibleRowIds) {
-          await this.handleFragMapToggle({ id: rowId, visible: false });
-        }
-
         this.resetFragMapIsoState();
 
-        const disabledRowIds = Object.entries(this.fragMapRuntime)
-          .filter(([, runtime]) => runtime.disabled)
-          .map(([rowId]) => rowId);
-
-        const failedRetryLabels: string[] = [];
-        for (const rowId of disabledRowIds) {
-          const row = this.getFragMapRowById(rowId);
-          const runtimeState = this.fragMapRuntime[rowId];
-          if (!row || !runtimeState || !this.stageController) {
-            continue;
-          }
-
-          this.incrementM5RetryDebugCounter(rowId);
-          runtimeState.loading = true;
-          runtimeState.error = null;
-          runtimeState.statusText = "Retrying...";
-
-          try {
-            await this.stageController.setFragMapVisibility(this.getFragMapVisibilityOptions(row), true);
-            await this.stageController.setFragMapVisibility(this.getFragMapVisibilityOptions(row), false);
-            runtimeState.loaded = true;
-            runtimeState.disabled = false;
-            runtimeState.error = null;
-            runtimeState.statusText = "Cached";
-          } catch (error) {
-            const message = error instanceof Error ? error.message : String(error);
-            runtimeState.disabled = true;
-            runtimeState.error = message;
-            runtimeState.statusText = null;
-            failedRetryLabels.push(row.label);
-          } finally {
-            runtimeState.loading = false;
-          }
-        }
-
         if (this.stageController) {
+          const visibleRowIds = [...this.viewerState.visibleFragMapIds];
+          for (const rowId of visibleRowIds) {
+            const nextIso = this.getFragMapIsoValue(rowId);
+            if (nextIso === null) {
+              continue;
+            }
+
+            const row = this.getFragMapRowById(rowId);
+            if (!row) {
+              continue;
+            }
+
+            this.stageController.setFragMapIso(
+              {
+                ...this.getFragMapVisibilityOptions(row),
+                isoValue: nextIso,
+              },
+              nextIso,
+            );
+          }
+
           this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
         }
 
-        if (failedRetryLabels.length > 0) {
-          this.toastMessage = `Defaults restored with ${failedRetryLabels.length} row retry failure(s): ${failedRetryLabels.join(", ")}`;
+        const failedRows = Object.entries(this.fragMapRuntime)
+          .filter(([, runtime]) => runtime.disabled)
+          .map(([rowId]) => this.getFragMapRowById(rowId))
+          .filter((row): row is FragMapShellRow => Boolean(row));
+
+        if (failedRows.length > 0) {
+          const failedLabels = failedRows.map((row) => row.label).join(", ");
+          this.toastMessage = `Iso defaults restored. Disabled rows remain unchanged: ${failedLabels}.`;
         } else {
-          this.toastMessage = "FragMap defaults restored.";
+          this.toastMessage = "FragMap iso defaults restored.";
         }
         this.showToast = true;
       } finally {

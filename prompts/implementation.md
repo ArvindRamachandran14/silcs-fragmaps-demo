@@ -554,13 +554,13 @@ Return format:
 ### Deferred note for M4C
 - `M4C` (full ligand list + searchable selector + deterministic ordering + `No ligands found`) is deferred stretch scope and not required for M5-M8 progression unless re-promoted.
 
-## M5 - FragMap Controls (Required slices: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6; optional exploratory: M5.2c)
+## M5 - FragMap Controls (Required slices: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.5a, M5.6; optional exploratory: M5.2c)
 
 ### M5 Preview Packet Contract (locked)
 - Packet path: `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 - Packet structure:
   - One front page (`README.md` and/or index page).
-  - One preview page per required slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`); optional exploratory `M5.2c` page may be retained for reference.
+  - One preview page per required slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.5a`, `M5.6`); optional exploratory `M5.2c` page may be retained for reference.
 - Per-slice Prompt A can use a single multi-panel SVG page as long as it covers default/loading/empty/error/success for that slice.
 - Prompt B for a slice cannot begin until that slice has explicit `APPROVED UI PREVIEW`.
 
@@ -990,6 +990,61 @@ Return format:
 - Residual risks/blockers
 ```
 
+### Prompt A to assign M5.5a (Design Preview only)
+```text
+Implement Prompt A only for M5.5a from docs/plans/execution-plan.md.
+
+Scope:
+- M5.5a design-preview only.
+- Produce/update only M5.5a preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.5a page.
+- M5.5a scope: refine `Reset defaults` semantics only.
+- `Reset defaults` must reset per-map iso values to canonical defaults and keep map visibility unchanged.
+- Do not implement reliability UX or retry flows in this slice preview.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.5a page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.5a status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M5.5a (Post-approval implementation only)
+```text
+Implement Prompt B only for M5.5a from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.5a Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.5a only: `Reset defaults` semantics refinement.
+- Update `Reset defaults` to reset per-map iso values to defaults while leaving map visibility unchanged.
+- Do not modify `Hide all` behavior.
+- Do not add retry/reliability behavior in this slice.
+- Preserve M5.1-M5.5 contracts and M1-M4B behavior.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.5a gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.5a section)
+
+Return format:
+- M5.5a status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
 ### Prompt A to assign M5.6 (Design Preview only)
 ```text
 Implement Prompt A only for M5.6 from docs/plans/execution-plan.md.
@@ -1024,7 +1079,7 @@ Scope:
 - M5.6 only: reliability hardening and final M5 gate closure.
 - Implement row-level failure isolation, retry path, and async race guards.
 - Keep unaffected rows stable on failures.
-- Preserve M5.1-M5.5 contracts and M1-M4B behavior.
+- Preserve M5.1-M5.5a contracts and M1-M4B behavior.
 - Add/enable `validate:m5` and run sequential regression through M5.
 
 Required deliverables:
@@ -1044,7 +1099,7 @@ Return format:
 - Residual risks/blockers
 ```
 
-### Prompt to verify M5 slice (use for required flow M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6; optional exploratory M5.2c as needed)
+### Prompt to verify M5 slice (use for required flow M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.5a, M5.6; optional exploratory M5.2c as needed)
 ```text
 Use this only after Prompt B implementation starts for the target M5 slice.
 
@@ -1074,7 +1129,7 @@ Return format:
 ```
 
 ### Manual verification for M5
-- Execute required slices one at a time (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`).
+- Execute required slices one at a time (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.5a` -> `M5.6`).
 - For each slice:
   - Finish Prompt A preview and collect explicit `APPROVED UI PREVIEW`.
   - Run Prompt B implementation only for that slice scope.

@@ -24,7 +24,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Design preview gate rule:
   - For milestones that introduce/change user-facing UI, include artifact paths under `docs/design-previews/<milestone-or-feature>/` and an explicit in-thread approval reference (`APPROVED UI PREVIEW`) before implementation evidence.
   - If approval is missing, mark milestone as `BLOCKED-DESIGN` for that scope.
-  - Locked M5 exception: track previews under `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one preview page per required slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`); optional exploratory `M5.2c` preview artifacts may be retained for reference.
+  - Locked M5 exception: track previews under `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one preview page per required slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.5a`, `M5.6`); optional exploratory `M5.2c` preview artifacts may be retained for reference.
 
 ## M1 - Project Scaffold + Routing Foundation
 
@@ -298,7 +298,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ## M5 - FragMap Controls (Sliced Delivery)
 
 ### Summary
-- M5 is executed as eight required gated slices (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`) with Prompt A + Prompt B per slice.
+- M5 is executed as nine required gated slices (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.5a`, `M5.6`) with Prompt A + Prompt B per slice.
 - `M5.2c` is tracked as optional exploratory parity investigation only (non-blocking, not part of required milestone flow).
 - Preview packet path is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 - Packet structure is locked to one front page plus one preview page per slice.
@@ -314,6 +314,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | PASS | PASS | Completed |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | PASS | PASS | Completed |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`) | Completed | Completed | Prompt A approved; Prompt B implemented and validated |
+| `M5.5a` | `Reset defaults` semantics refinement (iso-only reset, visibility unchanged) | PASS | PASS | Completed |
 | `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | Pending | Pending | Not started |
 
 ### M5.1 - FragMap Panel Shell
@@ -592,8 +593,9 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - No regressions against completed slices (`M5.1`-`M5.3`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
+- `Reset defaults` visibility-coupled behavior observed in M5.4/M5.5 has now been refined in `M5.5a` to iso-only semantics.
 - Per-row retry/error recovery for iso update transport/runtime failures remains part of `M5.6` reliability hardening.
-- `M5.6` reliability hardening is the active next required slice.
+- `M5.6` reliability hardening is now the active next required slice.
 
 ### M5.5 - Bulk Actions
 
@@ -637,8 +639,51 @@ Use this file to track implementation and gate evidence for each milestone in `d
 #### Gate Checklist
 - Prompt A preview for `M5.5` approved (`APPROVED UI PREVIEW`): PASS.
 - Prompt B implementation stayed within `M5.5` scope boundary: PASS.
-- Bulk actions (`Hide all`, `Reset defaults`) match spec in-place behavior: PASS.
+- Bulk actions (`Hide all`, `Reset defaults`) match the approved `M5.5` contract at implementation time: PASS.
 - No regressions against completed slices (`M5.1`-`M5.4`) and M1-M4B baseline: PASS.
+
+#### Residual Risks/Blockers
+- `M5.5a` refinement changed reset semantics in-place; future validator changes must preserve this contract.
+- `M5.6` reliability hardening remains pending (row-level retry UX polish, async race guards, and final `validate:m5` umbrella gate).
+
+### M5.5a - Reset Defaults Semantics Refinement
+
+#### Summary
+- Completed (`PASS`): `Reset defaults` now resets per-map iso values to canonical defaults while preserving current map visibility and avoiding retry/recovery side-effects.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `src/pages/ViewerPage.vue` | Updated | Viewer-page orchestration for FragMap actions and runtime state. | Refined `handleResetDefaultFragMaps` to perform iso-only reset semantics (no implicit hide/show, no row retry side-effects) and reapply default iso values in place for currently visible rows. |
+| `src/components/ControlsPanel.vue` | Updated | Right-panel controls UI and action hints. | Updated scope note text to reflect M5.5a contract (`Reset defaults` is iso-only; `Hide all` unchanged). |
+| `scripts/validate-m5-5.js` | Updated | M5 bulk-action validator script. | Updated gate assertions so reset action must preserve visibility, restore canonical iso values, avoid retry side-effects, and keep camera/route stable. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/README.md` | Updated | M5 preview packet front page. | Marked M5.5a design gate as approved/completed and advanced active gate to `M5.6` Prompt A. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` | Updated | M5 preview approval ledger. | Added explicit M5.5a approval record and Prompt-B completion notes. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md` | Updated | M5.5a Prompt-A index and state checklist. | Updated approval state to `PASS` after explicit `APPROVED UI PREVIEW` and Prompt-B completion. |
+
+#### Commands Run
+- `npm run build` -> PASS.
+- `node scripts/validate-m5-5.js` -> PASS.
+- `bash scripts/run_checks.sh` -> PASS, including:
+  - `npm run build` -> PASS
+  - `node scripts/validate-m1.js` -> PASS
+  - `node scripts/validate-m2.js` -> PASS
+  - `node scripts/validate-m3.js` -> PASS
+  - `node scripts/validate-m4a.js` -> PASS
+  - `node scripts/validate-m4b.js` -> PASS
+  - `node scripts/validate-m5-1.js` -> PASS
+  - `node scripts/validate-m5-2.js` -> PASS
+  - `node scripts/validate-m5-2a.js` -> PASS
+  - `node scripts/validate-m5-2b.js` -> PASS
+  - `node scripts/validate-m5-3.js` -> PASS
+  - `node scripts/validate-m5-4.js` -> PASS
+  - `node scripts/validate-m5-5.js` -> PASS
+
+#### Gate Checklist
+- Prompt A preview for `M5.5a` approved (`APPROVED UI PREVIEW`): PASS.
+- Prompt B implementation stayed within `M5.5a` scope boundary: PASS.
+- `Reset defaults` resets per-map iso values only and leaves visibility unchanged: PASS.
+- No regressions against completed slices (`M5.1`-`M5.5`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
 - `M5.6` reliability hardening remains pending (row-level retry UX polish, async race guards, and final `validate:m5` umbrella gate).

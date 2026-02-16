@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.5 Prompt A approved and Prompt B implemented; sequential validation green through `validate:m5.5`; next required gate is M5.6 Prompt A)
+Last updated: 2026-02-16 (M5.5a Prompt B implemented and validated; next gate is M5.6 Prompt A)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -100,10 +100,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - Gaps to exit criteria:
   - Add implementation and validation only if stretch scope is reactivated.
 
-### M5 FragMap Controls (Required slices: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6; optional exploratory: M5.2c)
-- Status: `in progress (M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, and M5.5 complete; M5.6 Prompt A is next)`
+### M5 FragMap Controls (Required slices: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.5a, M5.6; optional exploratory: M5.2c)
+- Status: `in progress (M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, and M5.5a complete; M5.6 pending)`
 - Evidence:
-  - Required M5 execution order is `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6` with Prompt A + Prompt B per required slice.
+  - Required M5 execution order is `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.5a` -> `M5.6` with Prompt A + Prompt B per required slice.
   - `M5.2c` is retained as optional exploratory parity investigation only (non-blocking, not part of required gate flow).
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
   - `M5.2a` Prompt-A preview artifacts include full state coverage (`default/loading/empty/error/success`) via `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2a-wireframe-rendering-states.svg` plus index/front-page/log updates.
@@ -141,16 +141,20 @@ Audit type: one-time reconstruction audit after local thread-history loss
     - `src/viewer/nglStage.ts` applies a dedicated fixed Exclusion isolevel (`0.5`) so `3fly.excl.dx` renders visible wireframe geometry (the prior fallback `-0.8` produced no contour for non-negative exclusion-grid data).
     - `scripts/validate-m5-3.js` was added with command wiring in `package.json` (`validate:m5.3`, `prevalidate:m5.3`).
     - `scripts/run_checks.sh` now includes `validate:m5.3` and executes one upfront build followed by direct validator scripts (`node scripts/validate-*.js`) to avoid repeated `prevalidate:*` rebuilds.
-  - Active next scope is `M5.6` Prompt-A design-preview gate.
+  - Active next scope is `M5.6` Prompt-A design-preview approval gate.
+  - `M5.5a` Prompt-A preview artifacts were produced and approved:
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5a-reset-defaults-iso-only-states.svg`
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md`
+    - Packet metadata updated in `docs/screenshots/Design_previews/m5-fragmap-controls/README.md` and `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`.
   - `M5.5` Prompt-A preview artifacts were produced and approved:
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg`
     - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md`
     - Packet metadata updated in `docs/screenshots/Design_previews/m5-fragmap-controls/README.md` and `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`.
-  - `M5.5` Prompt-B runtime implementation is complete:
+  - `M5.5` + `M5.5a` Prompt-B runtime implementation is complete:
     - `src/components/ControlsPanel.vue` now exposes only `Hide all` + `Reset defaults` in-panel and emits bulk-action events.
-    - `src/pages/ViewerPage.vue` now implements bulk-action handlers, including disabled-row retry-on-reset behavior and action-lock orchestration.
-    - `src/viewer/nglStage.ts` now provides M5 debug counters for bulk actions and reset retries.
-    - `scripts/validate-m5-5.js` was added with command wiring in `package.json` (`validate:m5.5`, `prevalidate:m5.5`) and sequential inclusion in `scripts/run_checks.sh`.
+    - `src/pages/ViewerPage.vue` now implements final reset semantics: `Reset defaults` is iso-only, leaves visibility unchanged, and does not trigger row retries.
+    - `src/viewer/nglStage.ts` continues to provide M5 debug counters for bulk actions.
+    - `scripts/validate-m5-5.js` now asserts M5.5a semantics (iso-only reset + visibility preserved + no retry side-effects) with command wiring in `package.json` (`validate:m5.5`, `prevalidate:m5.5`) and sequential inclusion in `scripts/run_checks.sh`.
   - `M5.4` Prompt-A preview artifacts were created and approved:
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.4-per-map-iso-controls-states.svg`
     - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.4-preview-index.md`
@@ -176,7 +180,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Visible right-panel debug/context blocks were removed from the user UI (`Viewer Context`, lower `Reset view`, and camera contract/snapshot pre blocks); required validator selectors remain in a hidden diagnostics container for compatibility.
   - `src/pages/ViewerPage.vue` now passes canonical FragMap shell rows (manifest-mapped with fallback constants) into the controls panel.
   - Existing ligand behavior is preserved under the `Ligand` tab; M4 validators were updated to select that tab explicitly.
-  - Reliability handling (`M5.6`) remains pending.
+  - `M5.6` reliability handling remains pending.
 - Validation signal:
   - `npm run build` -> PASS (2026-02-16).
   - `npm run validate:m1` -> FAIL then PASS on rerun (known intermittent snackbar click interception).
@@ -198,6 +202,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Post-optimization sequential run: `bash scripts/run_checks.sh` -> PASS with a single `npm run build` step and direct `node scripts/validate-*.js` execution for all validators through `validate:m5.3` (2026-02-16).
   - Exclusion-map visibility hotfix validation: `npm run validate:m5.3` -> first sandboxed attempt `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4180`), unsandboxed rerun -> PASS (2026-02-16).
   - Sequential regression run after M5.5 implementation: `bash scripts/run_checks.sh` -> PASS, including `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1`, `validate:m5.2`, `validate:m5.2a`, `validate:m5.2b`, `validate:m5.3`, `validate:m5.4`, and `validate:m5.5` (2026-02-16).
+  - Sequential regression run after M5.5a implementation: `bash scripts/run_checks.sh` -> PASS, including `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1`, `validate:m5.2`, `validate:m5.2a`, `validate:m5.2b`, `validate:m5.3`, `validate:m5.4`, and `validate:m5.5` with updated reset-semantics assertions (2026-02-16).
 - Gaps to exit criteria:
   - Implement remaining FragMap-side reliability behavior from `docs/specs/fragmap-controls-spec.md` Sections 10-11 in `M5.6`.
 
@@ -241,7 +246,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - FragMap controls:
   - M5.1 shell, M5.2 Primary-3 runtime toggles, M5.2a wireframe rendering pass, M5.2b protein visibility toggle, M5.3 Advanced/Exclusion runtime behavior, M5.4 per-map iso controls, and M5.5 bulk actions are implemented (lazy-load + cache reuse + camera preservation + wireframe style conversion including fixed gray exclusion style + in-place protein show/hide + default-collapsed Advanced section flow + row-level iso clamp/revert + hidden-row iso persistence + bulk action reset/hide behavior).
   - `M5.2c` parity investigation is documented as exploratory/deferred and not part of required milestone gating.
-  - Reliability hardening (`M5.6`) remains pending.
+  - `M5.5a` reset-semantics refinement is implemented; reliability hardening (`M5.6`) remains pending.
 - Overview page:
   - Route and CTA scaffold exist; required narrative and links are not implemented.
 - Performance/validation instrumentation:
@@ -252,8 +257,8 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Observed: searchable full-ligand selector and ordering behavior are not implemented.
   - Impact: deferred by plan; non-blocking for M5-M8 progression.
 - `high` - `docs/specs/fragmap-controls-spec.md`:
-  - Observed: M5.1 shell, M5.2 Primary-3 runtime, M5.2a wireframe rendering, M5.2b protein visibility toggle, M5.3 Advanced/Exclusion behavior, M5.4 per-map iso controls, and M5.5 bulk actions are implemented; reliability hardening (`M5.6`) is still pending.
-  - Impact: M5 acceptance remains incomplete until M5.6 failure-path/retry/async-guard checks are implemented and validated.
+  - Observed: M5.1 shell, M5.2 Primary-3 runtime, M5.2a wireframe rendering, M5.2b protein visibility toggle, M5.3 Advanced/Exclusion behavior, M5.4 per-map iso controls, M5.5 bulk actions, and M5.5a reset semantics are implemented. Reliability hardening (`M5.6`) is pending.
+  - Impact: M5 acceptance remains incomplete until `M5.6` failure-path/retry/async-guard checks are implemented and validated.
 - `high` - `docs/specs/overview-page-spec.md`:
   - Observed: overview narrative and required external reference link are missing.
   - Impact: PRD overview acceptance is not met.
@@ -347,9 +352,12 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Applied final M5.4 header-alignment refinement per UI feedback: added `FragMap` column headers and centered `GFE (kcal/mol)` directly over iso control/value columns in both Primary and Advanced sections (`src/components/ControlsPanel.vue`). Updated `scripts/validate-m5-4.js` to assert `FragMap` header presence. Validation evidence: `npm run validate:m5.4` -> PASS; `bash scripts/run_checks.sh` -> PASS through `validate:m5.4`.
 - 2026-02-16: Executed `M5.5` Prompt A (design-preview only). Added `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg`, created `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md`, and updated packet docs (`README.md`, `approval-log.md`) to keep gate state at `BLOCKED-DESIGN` pending explicit `APPROVED UI PREVIEW`. Then applied reviewer-requested scope clarification to remove in-panel `Reset view` and keep only `Hide all` + `Reset defaults` in the FragMap action row. Command evidence: `rg -n "A\\. Default|B\\. Loading|C\\. Empty|D\\. Error|E\\. Success|Hide all|Reset defaults" docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg` -> PASS; `rg -n "Hide all|Reset defaults|M5\\.5" docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md docs/screenshots/Design_previews/m5-fragmap-controls/README.md` -> PASS. Milestone validators were not run (`not run`; Prompt-A design-preview/docs-only update).
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.5` Prompt A and completed `M5.5` Prompt B runtime implementation (`Hide all` + `Reset defaults` only). Updated runtime files (`src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, `src/viewer/nglStage.ts`), added validator `scripts/validate-m5-5.js`, and wired commands in `package.json` and `scripts/run_checks.sh`. Validation evidence: `node scripts/validate-m5-5.js` -> PASS; `bash scripts/run_checks.sh` -> PASS through `validate:m5.5`.
+- 2026-02-16: Drafted `M5.5a` as the next required scope to refine `Reset defaults` semantics to iso-only reset with visibility unchanged (between `M5.5` and `M5.6`). Updated spec/plan/prompt/context docs and M5 preview packet tracking (`m5.5a-preview-index.md`) to set active gate to `M5.5a` Prompt A (`BLOCKED-DESIGN`). Command evidence: `rg -n "M5\\.5a|Reset defaults|visibility unchanged"` across updated docs -> PASS. Milestone validators were not run (`not run`; docs-only scope draft).
+- 2026-02-16: Executed `M5.5a` Prompt A (design-preview only). Added `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5a-reset-defaults-iso-only-states.svg` and updated `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md`, `README.md`, and `approval-log.md` with full state coverage (`default/loading/empty/error/success`) and reviewer action for approval. Command evidence: `rg -n "A\\. Default|B\\. Loading|C\\. Empty|D\\. Error|E\\. Success|Reset defaults|visibility" docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5a-reset-defaults-iso-only-states.svg` -> PASS; `rg -n "m5\\.5a|BLOCKED-DESIGN|APPROVED UI PREVIEW|reset-defaults-iso-only" docs/screenshots/Design_previews/m5-fragmap-controls/README.md docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` -> PASS. Milestone validators were not run (`not run`; Prompt-A design-preview/docs-only update).
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.5a` Prompt A and executed `M5.5a` Prompt B runtime implementation. Updated `src/pages/ViewerPage.vue` (`Reset defaults` iso-only, visibility unchanged, no retry side-effects), `src/components/ControlsPanel.vue` scope note text, and `scripts/validate-m5-5.js` assertions. Validation evidence: `npm run build` -> PASS; `node scripts/validate-m5-5.js` -> PASS; `bash scripts/run_checks.sh` -> PASS through `validate:m5.5`.
 
 ## Open Risks
-- Major feature milestones remain incomplete: M5 implementation slice `M5.6` and M6 are not started while M1-M4B and required M5 slices through M5.5 are complete.
+- Major feature milestones remain incomplete: M5 implementation slice `M5.6` and M6 are not started while M1-M4B and required M5 slices through M5.5a are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.

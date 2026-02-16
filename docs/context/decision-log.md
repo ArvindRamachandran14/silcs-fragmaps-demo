@@ -5,6 +5,64 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Accept M5.5a Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.5a` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.5a` Prompt-B implementation scope.
+- Why: reviewer approval satisfies the UI-first design gate for `M5.5a`, allowing reset-semantics refinement to proceed.
+- Alternatives considered:
+  - keep `M5.5a` in `BLOCKED-DESIGN` and request additional Prompt-A revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: no runtime behavior changed in this approval-record update; Prompt-B implementation is now permitted for `M5.5a` only.
+
+### 2026-02-16 - Implement M5.5a iso-only reset semantics (visibility preserved, no retry side-effects)
+- Decision: complete `M5.5a` Prompt B by refining `Reset defaults` to reset per-map iso values only, preserve current visibility, and avoid row retry/recovery side-effects.
+- Why: this is the approved M5.5a scope and aligns runtime behavior with the locked fragmap spec bulk-action semantics.
+- Alternatives considered:
+  - keep prior M5.5 reset behavior that hid all maps;
+  - couple reset semantics changes with reliability/retry behavior (deferred to `M5.6`).
+- Evidence:
+  - `src/pages/ViewerPage.vue`
+  - `src/components/ControlsPanel.vue`
+  - `scripts/validate-m5-5.js`
+  - `docs/plans/milestone-inventory.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: `npm run build`, `node scripts/validate-m5-5.js`, and full sequential `bash scripts/run_checks.sh` all pass; next required slice is `M5.6`.
+
+### 2026-02-16 - Execute M5.5a Prompt A as a single multi-panel reset-semantics preview page
+- Decision: produce `M5.5a` Prompt-A artifacts as one desktop multi-panel SVG (`default/loading/empty/error/success`) plus updated packet metadata/index while keeping milestone approval state at `BLOCKED-DESIGN` until explicit `APPROVED UI PREVIEW`.
+- Why: this satisfies the UI-first design gate for `M5.5a` and makes iso-only `Reset defaults` semantics reviewable before runtime changes.
+- Alternatives considered:
+  - skip Prompt-A artifacts and implement `M5.5a` behavior directly;
+  - split `M5.5a` previews into separate files per state.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5a-reset-defaults-iso-only-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: docs-only design artifact update; no runtime behavior changes in this step; Prompt B remains blocked pending explicit approval.
+
+### 2026-02-16 - Insert M5.5a mini-slice to refine `Reset defaults` to iso-only semantics
+- Decision: add required slice `M5.5a` between `M5.5` and `M5.6` with narrow scope: `Reset defaults` resets per-map iso values to defaults and leaves map visibility unchanged.
+- Why: reviewer feedback identified current `Reset defaults` behavior (also hiding maps) as unintuitive for bulk-action semantics.
+- Alternatives considered:
+  - keep current `M5.5` behavior where `Reset defaults` resets visibility and iso together;
+  - defer the semantic change into `M5.6` reliability hardening.
+- Evidence:
+  - `docs/specs/fragmap-controls-spec.md`
+  - `docs/plans/execution-plan.md`
+  - `docs/plans/technical-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `prompts/implementation.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md`
+  - `docs/context/current-state.md`
+  - `docs/context/next-agent-brief.md`
+- Validation/risk impact: docs/planning-only change in this step; runtime still reflects pre-`M5.5a` behavior until Prompt A approval and Prompt B implementation are completed.
+
 ### 2026-02-16 - Accept M5.5 Prompt-A preview and unblock Prompt-B runtime slice
 - Decision: accept `M5.5` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.5` Prompt-B implementation scope.
 - Why: reviewer approval satisfies the UI-first design gate for `M5.5`, allowing bulk-action runtime implementation to proceed.

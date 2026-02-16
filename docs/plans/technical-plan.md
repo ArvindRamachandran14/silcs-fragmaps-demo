@@ -9,7 +9,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
 - Use `NGL Viewer` for protein/ligand rendering and `.dx` FragMap wireframe-isosurface overlays.
 - Implement ligand workflow incrementally: `M4A` single-ligand core, then `M4B` curated featured subset (`3fly_cryst_lig` shown as `Crystal Ligand` + 3); defer full-list searchable access to `M4C` stretch scope.
-- Execute FragMap controls as required sliced milestones through `M5.6` (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+- Execute FragMap controls as required sliced milestones through `M5.6` (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.5a`, `M5.6`).
 - Treat `M5.2c` wireframe parity work as optional exploratory/deferred investigation (non-blocking unless explicitly promoted).
 - Follow a Vue architecture with `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
@@ -142,7 +142,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Implementation: typed ligand manifest + featured quick-picks + in-place component swap + pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden) using `.sdf` as primary and `.pdb` fallback only when required. Full searchable selector is deferred to `M4C`.
 - UI Framework Requirement (approved M5.1 direction): right controls region supports in-place `FragMap` / `Ligand` tab navigation, with `Ligand` preserving existing M4B controls.
 - PRD Requirement: show/hide individual FragMap surfaces.
-- Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`), with camera reset retained as top-bar viewer control.
+- Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`), with `Reset defaults` constrained to iso-only reset semantics (visibility unchanged) and camera reset retained as top-bar viewer control.
 - Visual parity note (deferred exploration): preserve triangulated wireframe rendering while optionally tuning rendering parameters in `M5.2c` to better match approved/reference SILCS wireframe appearance.
 - PRD Requirement: iso-value adjustment with fast response.
 - Implementation: per-map iso controls (`-`, value, `+`) on GFE rows + targeted parameter updates on the selected map representation; `Exclusion Map` uses fixed gray triangulated wireframe isosurface with disabled iso controls.

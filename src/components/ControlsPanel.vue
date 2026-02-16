@@ -252,7 +252,7 @@
       </div>
 
       <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
-        M5.5 scope: Hide all and Reset defaults are active. Reliability handling remains deferred.
+        M5.5a scope: Hide all is unchanged; Reset defaults resets iso values only. Reliability handling remains deferred.
       </p>
     </section>
 

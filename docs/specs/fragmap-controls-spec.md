@@ -19,7 +19,7 @@ Resolution adopted across docs:
 ## 3. Scope / Out of Scope
 In scope:
 - Right-panel FragMap controls.
-- Required M5 runtime flow for this spec: `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Required M5 runtime flow for this spec: `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.5a` -> `M5.6`.
 - Placement within shared right-panel two-tab framework (`FragMap`, `Ligand`) for `M5.1+`, with FragMap behavior defined under the `FragMap` tab.
 - Protein cartoon visibility toggle (`M5.2b+`) for overlap inspection while using FragMap controls.
 - `Primary 3 + Advanced full list` organization.
@@ -183,10 +183,9 @@ Default iso values (v1 canonical):
 ### 8.3 Bulk Actions
 - `Hide all`: set all currently visible maps invisible; keep caches.
 - `Reset defaults`:
-1. Reset all map visibility to default (all hidden).
-2. Reset all iso-adjustable map `perMapIso` values to defaults.
-3. For rows currently disabled by prior errors, execute one retry per disabled row.
-4. Clear row disable state only when that row retry succeeds; keep row disabled when retry fails.
+1. Reset all iso-adjustable map `perMapIso` values to defaults.
+2. Keep current map visibility unchanged (no implicit hide/show side effects).
+3. Do not trigger row retries as a side effect of this action.
 - Camera baseline reset remains a top-bar viewer control (`M3`) and is intentionally outside FragMap-panel bulk actions.
 
 ### 8.4 Per-Map Iso Controls
@@ -257,7 +256,7 @@ FragMap controls are accepted when all checks pass:
 8. Per-map iso controls exist for iso-adjustable GFE map rows and update only intended map surfaces.
 9. `Exclusion Map` row does not expose editable iso controls and renders as fixed gray triangulated wireframe isosurface.
 10. No global iso control appears.
-11. `Hide all` and `Reset defaults` behaviors match this spec.
+11. `Hide all` and `Reset defaults` behaviors match this spec, including iso-only `Reset defaults` semantics with visibility unchanged.
 12. Map toggle, protein toggle, and iso update actions happen with no page reload.
 13. Camera preserved for map toggle/protein toggle/iso updates and FragMap-panel bulk actions; camera reset is only available via top-bar viewer `Reset View`.
 14. Map failures are isolated to affected row and surfaced with toast + retry.
