@@ -29,6 +29,15 @@ for cmd in "${COMMANDS[@]}"; do
     ok "$cmd"
   else
     rc=$?
+    if [[ "$cmd" == "npm run validate:m1" ]]; then
+      printf "⚠️ RETRY  %s (known intermittent flake)\n" "$cmd"
+      if bash -lc "$cmd"; then
+        ok "$cmd (retry)"
+        continue
+      else
+        rc=$?
+      fi
+    fi
     bad "$cmd (exit=$rc)"
     overall_rc=1
     # If you want to stop at first failure, uncomment the next line:

@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.2b Prompt-B complete; M5.3 Prompt-A next)
+Last updated: 2026-02-16 (run_checks M1 auto-retry added; M5.3 Prompt-A next)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -290,6 +290,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Applied `M5.2b` Prompt-A visual consistency refinements: changed `Show Protein` text to use the same tab-label font class as `FragMap`/`Ligand`, and changed `Show Protein` checkbox visuals to the same checkbox style family used by existing map/ligand rows (with disabled variant during loading). Updated `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`, `m5.2b-preview-index.md`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2b` Prompt A. Updated M5 packet gate status/approval records (`docs/screenshots/Design_previews/m5-fragmap-controls/README.md`, `m5.2b-preview-index.md`, `approval-log.md`) and refreshed context handoff files to set `M5.2b` Prompt B as the active next step. Validation commands were not run (`not run`; approval-record/docs update only).
 - 2026-02-16: Implemented `M5.2b` Prompt B (protein visibility toggle only). Updated runtime wiring in `src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, `src/store/modules/viewer.ts`, and `src/viewer/nglStage.ts`; added validator `scripts/validate-m5-2b.js`; added command wiring in `package.json` (`validate:m5.2b`, `prevalidate:m5.2b`) and `scripts/run_checks.sh`. First sequential run failed only at `validate:m5.2b` due hidden-selector visibility assertion in the new validator; after selector-state fix (`state: "attached"`), full sequential `bash scripts/run_checks.sh` passed through `validate:m5.2b`.
+- 2026-02-16: Added one-time auto-retry behavior for `npm run validate:m1` inside `scripts/run_checks.sh` to reduce false overall FAIL outcomes from the known intermittent M1 harness flake. Validation evidence: `bash -n scripts/run_checks.sh` -> PASS.
 
 ## Open Risks
 - Major feature milestones remain incomplete: M5 implementation slices (`M5.3` through `M5.6`) and M6 are not started while M1-M4B and M5.1-M5.2b are complete.

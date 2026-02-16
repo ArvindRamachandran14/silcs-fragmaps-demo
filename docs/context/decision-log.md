@@ -5,6 +5,16 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Add one-time M1 retry in `run_checks.sh` to reduce false overall FAILs
+- Decision: update `scripts/run_checks.sh` so `npm run validate:m1` is retried once automatically before marking the command as failed.
+- Why: `validate:m1` has an intermittent harness flake; a single retry avoids frequent false negatives while preserving strict failure behavior for persistent regressions.
+- Alternatives considered:
+  - keep current behavior and require manual reruns;
+  - add retries for all validators (rejected to avoid masking real failures in later milestones).
+- Evidence:
+  - `scripts/run_checks.sh`
+- Validation/risk impact: lowers false overall FAIL noise for routine sequential runs; persistent M1 failures still fail the script after the retry.
+
 ### 2026-02-16 - Implement M5.2b as a tab-row `Show Protein` runtime toggle with camera-preserving stage updates
 - Decision: complete `M5.2b` Prompt B by wiring an in-place `Show Protein` checkbox in the right-panel tab row that toggles protein-cartoon visibility (`ON` by default) through a dedicated stage API, while preserving map/ligand contracts and camera state.
 - Why: this is the approved M5.2b slice scope and addresses the reviewer-prioritized need to reduce protein visual noise during FragMap/ligand overlap inspection without introducing broader M5.3+ behavior.

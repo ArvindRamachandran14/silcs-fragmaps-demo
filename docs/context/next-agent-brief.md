@@ -1,6 +1,6 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2b Prompt-B complete; start M5.3 Prompt A)
+Last updated: 2026-02-16 (M5.2b complete; run_checks M1 auto-retry added; start M5.3 Prompt A)
 
 ## Current Milestone Target
 - Active target: `M5.3 Advanced Rows + Exclusion Map` Prompt A design-preview generation only.
@@ -138,6 +138,8 @@ Last updated: 2026-02-16 (M5.2b Prompt-B complete; start M5.3 Prompt A)
   - Mitigation: incremental commits and validator checks after each behavior slice.
 - Risk: validator noise when milestone scripts are run concurrently.
   - Mitigation: run regression commands sequentially in milestone order (`m1` -> `mN`) for authoritative evidence.
+- Risk: intermittent first-pass `validate:m1` harness flake causing false overall FAIL in aggregate runs.
+  - Mitigation: `scripts/run_checks.sh` now retries `validate:m1` once before failing.
 - Risk: M5.1 shell regressions while implementing later M5 runtime slices.
   - Mitigation: include `npm run validate:m5.1` in post-slice regression runs until `validate:m5` is introduced at `M5.6`.
 - Escalate if:
