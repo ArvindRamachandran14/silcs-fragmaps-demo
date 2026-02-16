@@ -315,7 +315,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | PASS | PASS | Completed |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`) | Completed | Completed | Prompt A approved; Prompt B implemented and validated |
 | `M5.5a` | `Reset defaults` semantics refinement (iso-only reset, visibility unchanged) | PASS | PASS | Completed |
-| `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | Pending | Pending | Not started |
+| `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | PASS | PASS | Completed |
 
 ### M5.1 - FragMap Panel Shell
 
@@ -691,24 +691,42 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### M5.6 - Reliability Hardening + Final M5 Gate
 
 #### Summary
-- Pending.
+- Prompt A preview was approved via explicit `APPROVED UI PREVIEW`.
+- Prompt B runtime implementation is complete for row-level failure isolation, row-level retry, and async-intent guard behavior.
+- Final M5 umbrella gate is now enabled and passing (`validate:m5`).
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.6 and why.` |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/m5.6-preview-index.md` | Created | M5.6 Prompt-A preview index. | Added M5.6 scope lock, state coverage checklist, artifact matrix, and traceability for reliability + final-gate views. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.6-reliability-final-gate-states.svg` | Created | M5.6 Prompt-A state artifact. | Added multi-panel default/loading/empty/error/success preview focused on row-level retry isolation, async guard outcomes, and final `validate:m5` evidence view. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/README.md` | Updated | M5 preview packet front page. | Marked M5.6 gate as pass and recorded Prompt-B completion. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` | Updated | M5 preview packet approval ledger. | Recorded explicit M5.6 approval token and Prompt-B completion note. |
+| `src/components/ControlsPanel.vue` | Updated | Right-panel FragMap controls UI. | Added row-level retry action UI (`Retry` button), removed global row lock behavior, added empty-state helper text, and updated M5 scope note to reliability-complete semantics. |
+| `src/pages/ViewerPage.vue` | Updated | FragMap runtime orchestration and reliability guards. | Replaced global loading lock with per-row async-intent orchestration, added row-level retry handler, isolated row loading state, and ensured stale intents are resolved toward latest desired visibility. |
+| `src/viewer/nglStage.ts` | Updated | Runtime debug telemetry contract. | Added `staleCompletionIgnoredById` debug bucket reset/init for M5.6 guardrail evidence. |
+| `scripts/validate-m5-2.js` | Updated | M5.2 regression validator. | Updated expectation so non-loading rows remain interactive during another row's load (aligned with M5.6 reliability behavior). |
+| `scripts/validate-m5-6.js` | Created | M5.6 milestone validator. | Added checks for row-level failure isolation, row-level retry behavior, and latest-intent preservation under rapid conflicting toggles. |
+| `scripts/validate-m5.js` | Created | Final M5 umbrella validator. | Runs `validate-m5-1` through `validate-m5-6` in sequence for final M5 gate evidence. |
+| `package.json` | Updated | Validation command contract. | Added `validate:m5.6` / `prevalidate:m5.6` and final `validate:m5` / `prevalidate:m5`. |
+| `scripts/run_checks.sh` | Updated | Sequential local regression runner. | Extended single-build suite through `node scripts/validate-m5-6.js`. |
 
 #### Commands Run
-- Pending.
+- `rg -n "A\\. Default|B\\. Loading|C\\. Empty|D\\. Error|E\\. Success|M5\\.6|validate:m5" docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.6-reliability-final-gate-states.svg docs/screenshots/Design_previews/m5-fragmap-controls/m5.6-preview-index.md` -> PASS.
+- `npm run build` -> PASS.
+- `node scripts/validate-m5-6.js` -> PASS.
+- `bash scripts/run_checks.sh` -> PASS (sequential through `validate-m5-6`).
+- `npm run validate:m5` -> first run `ENV-BLOCKED` in sandbox (`listen EPERM 127.0.0.1:4176`), unsandboxed rerun -> PASS.
 
 #### Gate Checklist
-- Prompt A preview for `M5.6` approved (`APPROVED UI PREVIEW`): Pending.
-- Prompt B implementation stayed within `M5.6` scope boundary: Pending.
-- Row-level failure isolation + retry + async race guards are validated: Pending.
-- `validate:m5` and required sequential regression (`m1` through `m5`) are green: Pending.
+- Prompt A artifacts for `M5.6` produced with default/loading/empty/error/success coverage: PASS.
+- Prompt A preview for `M5.6` approved (`APPROVED UI PREVIEW`): PASS.
+- Prompt B implementation stayed within `M5.6` scope boundary: PASS.
+- Row-level failure isolation + retry + async race guards are validated: PASS.
+- `validate:m5` and required sequential regression (`m1` through `m5`) are green: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- No blocker remains for M5. Next required milestone is `M6`.
 
 ---
 

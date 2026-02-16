@@ -5,6 +5,48 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Accept M5.6 Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.6` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.6` Prompt-B implementation scope.
+- Why: reviewer approval satisfies the UI-first design gate for `M5.6`, allowing reliability hardening and final M5 gate execution.
+- Alternatives considered:
+  - keep `M5.6` in `BLOCKED-DESIGN` and request additional Prompt-A revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.6-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: no runtime behavior changed in this approval-record update; Prompt-B implementation is now permitted for `M5.6` only.
+
+### 2026-02-16 - Implement M5.6 reliability hardening and close final M5 gate
+- Decision: complete `M5.6` Prompt B by replacing global FragMap row lock with per-row async intent guards, adding row-level retry for failed rows, preserving latest-intent outcomes under rapid toggle races, and adding final M5 umbrella validation command coverage.
+- Why: this is the approved `M5.6` scope and required final gate to close M5 before advancing to `M6`.
+- Alternatives considered:
+  - retain global row-lock behavior during map loads;
+  - defer row-level retry and stale-intent protections to later milestones.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m5-6.js`
+  - `scripts/validate-m5.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: `npm run build`, `node scripts/validate-m5-6.js`, and `bash scripts/run_checks.sh` pass through `validate:m5.6`; `npm run validate:m5` first sandboxed run was `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4176`) and unsandboxed rerun passed. M5 is now fully closed; next required scope is `M6` Prompt A.
+
+### 2026-02-16 - Execute M5.6 Prompt A as docs-only reliability/final-gate preview and keep Prompt B blocked pending approval
+- Decision: produce `M5.6` Prompt-A design artifacts (`default/loading/empty/error/success`) and update packet tracking while keeping runtime implementation blocked until explicit in-thread `APPROVED UI PREVIEW`.
+- Why: the UI-first protocol requires a design gate before user-facing reliability-hardening behavior is implemented.
+- Alternatives considered:
+  - start `M5.6` Prompt B without new Prompt-A artifacts;
+  - split Prompt-A states into separate files instead of one multi-panel sheet.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.6-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.6-reliability-final-gate-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: docs-only change; milestone validators were intentionally not run in this window. Risk remains that `M5.6` runtime scope is blocked until approval token is provided.
+
 ### 2026-02-16 - Accept M5.5a Prompt-A preview and unblock Prompt-B runtime slice
 - Decision: accept `M5.5a` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.5a` Prompt-B implementation scope.
 - Why: reviewer approval satisfies the UI-first design gate for `M5.5a`, allowing reset-semantics refinement to proceed.

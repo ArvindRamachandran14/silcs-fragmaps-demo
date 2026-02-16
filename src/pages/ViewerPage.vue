@@ -64,7 +64,7 @@
             :baseline-pose-error="viewerState.baselinePoseError"
             :refined-pose-error="viewerState.refinedPoseError"
             :visible-frag-map-ids="viewerState.visibleFragMapIds"
-            :frag-map-loading-row-id="fragMapLoadingRowId"
+            :frag-map-loading-row-ids="fragMapLoadingRowIds"
             :frag-map-disabled-row-ids="fragMapDisabledRowIds"
             :frag-map-status-by-id="fragMapStatusById"
             :frag-map-iso-by-id="fragMapIsoById"
@@ -78,6 +78,7 @@
             @set-fragmap-iso="handleFragMapIsoInput"
             @hide-all-fragmaps="handleHideAllFragMaps"
             @reset-default-fragmaps="handleResetDefaultFragMaps"
+            @retry-fragmap-row="handleRetryFragMapRow"
             @toggle-pose="handlePoseToggle"
             @select-featured-ligand="handleFeaturedLigandSwitch"
             @zoom-ligand="handleZoomLigand"
@@ -110,7 +111,7 @@
           :baseline-pose-error="viewerState.baselinePoseError"
           :refined-pose-error="viewerState.refinedPoseError"
           :visible-frag-map-ids="viewerState.visibleFragMapIds"
-          :frag-map-loading-row-id="fragMapLoadingRowId"
+          :frag-map-loading-row-ids="fragMapLoadingRowIds"
           :frag-map-disabled-row-ids="fragMapDisabledRowIds"
           :frag-map-status-by-id="fragMapStatusById"
           :frag-map-iso-by-id="fragMapIsoById"
@@ -124,6 +125,7 @@
           @set-fragmap-iso="handleFragMapIsoInput"
           @hide-all-fragmaps="handleHideAllFragMaps"
           @reset-default-fragmaps="handleResetDefaultFragMaps"
+          @retry-fragmap-row="handleRetryFragMapRow"
           @toggle-pose="handlePoseToggle"
           @select-featured-ligand="handleFeaturedLigandSwitch"
           @zoom-ligand="handleZoomLigand"
@@ -298,7 +300,10 @@ export default Vue.extend({
       proteinVisibilityLoading: false,
       fragMapRuntime: {} as Record<string, FragMapRuntimeState>,
       fragMapIsoById: {} as Record<string, number>,
-      fragMapLoadingRowId: null as string | null,
+      fragMapLoadingRowIds: [] as string[],
+      fragMapDesiredVisibilityById: {} as Record<string, boolean>,
+      fragMapRequestIdById: {} as Record<string, number>,
+      fragMapInFlightById: {} as Record<string, boolean>,
       fragMapBulkActionLoading: false,
     };
   },
@@ -362,8 +367,7 @@ export default Vue.extend({
         !this.stageController ||
         this.proteinVisibilityLoading ||
         this.viewerState.ligandSwitchLoading ||
-        this.fragMapBulkActionLoading ||
-        Boolean(this.fragMapLoadingRowId)
+        this.fragMapBulkActionLoading
       );
     },
   },
@@ -415,6 +419,8 @@ export default Vue.extend({
         __viewerM5Debug?: {
           hideAllCount?: number;
           resetDefaultsCount?: number;
+          retryAttemptById?: Record<string, number>;
+          staleCompletionIgnoredById?: Record<string, number>;
         };
       };
 
@@ -425,8 +431,44 @@ export default Vue.extend({
 
       debugState[key] = (debugState[key] || 0) + 1;
     },
+    incrementM5RetryCounter(rowId: string) {
+      const globalWindow = window as Window & {
+        __viewerM5Debug?: {
+          retryAttemptById?: Record<string, number>;
+        };
+      };
+      const debugState = globalWindow.__viewerM5Debug;
+      if (!debugState) {
+        return;
+      }
+
+      if (!debugState.retryAttemptById) {
+        debugState.retryAttemptById = {};
+      }
+      debugState.retryAttemptById[rowId] = (debugState.retryAttemptById[rowId] || 0) + 1;
+    },
+    incrementM5StaleCompletionCounter(rowId: string) {
+      const globalWindow = window as Window & {
+        __viewerM5Debug?: {
+          staleCompletionIgnoredById?: Record<string, number>;
+        };
+      };
+      const debugState = globalWindow.__viewerM5Debug;
+      if (!debugState) {
+        return;
+      }
+
+      if (!debugState.staleCompletionIgnoredById) {
+        debugState.staleCompletionIgnoredById = {};
+      }
+      debugState.staleCompletionIgnoredById[rowId] =
+        (debugState.staleCompletionIgnoredById[rowId] || 0) + 1;
+    },
     resetFragMapRuntime() {
       const nextState: Record<string, FragMapRuntimeState> = {};
+      const nextDesiredById: Record<string, boolean> = {};
+      const nextRequestIdById: Record<string, number> = {};
+      const nextInFlightById: Record<string, boolean> = {};
       for (const row of this.fragMapShellRows) {
         nextState[row.id] = {
           loaded: false,
@@ -435,10 +477,16 @@ export default Vue.extend({
           statusText: null,
           error: null,
         };
+        nextDesiredById[row.id] = false;
+        nextRequestIdById[row.id] = 0;
+        nextInFlightById[row.id] = false;
       }
       this.fragMapRuntime = nextState;
+      this.fragMapDesiredVisibilityById = nextDesiredById;
+      this.fragMapRequestIdById = nextRequestIdById;
+      this.fragMapInFlightById = nextInFlightById;
+      this.fragMapLoadingRowIds = [];
       this.resetFragMapIsoState();
-      this.fragMapLoadingRowId = null;
       this.$store.commit("viewer/setVisibleFragMapIds", []);
     },
     getFragMapRowById(rowId: string): FragMapShellRow | null {
@@ -667,6 +715,133 @@ export default Vue.extend({
         this.proteinVisibilityLoading = false;
       }
     },
+    setFragMapDesiredVisibility(rowId: string, visible: boolean) {
+      this.fragMapDesiredVisibilityById = {
+        ...this.fragMapDesiredVisibilityById,
+        [rowId]: visible,
+      };
+    },
+    getFragMapDesiredVisibility(rowId: string): boolean {
+      return Boolean(this.fragMapDesiredVisibilityById[rowId]);
+    },
+    refreshFragMapLoadingRows() {
+      this.fragMapLoadingRowIds = Object.entries(this.fragMapRuntime)
+        .filter(([, runtime]) => runtime.loading)
+        .map(([rowId]) => rowId);
+    },
+    setFragMapVisibleState(rowId: string, visible: boolean) {
+      const nextVisibleIds = new Set(this.viewerState.visibleFragMapIds);
+      if (visible) {
+        nextVisibleIds.add(rowId);
+      } else {
+        nextVisibleIds.delete(rowId);
+      }
+      this.$store.commit("viewer/setVisibleFragMapIds", Array.from(nextVisibleIds));
+    },
+    async applyFragMapVisibilityIntent(
+      row: FragMapShellRow,
+      desiredVisible: boolean,
+      requestId: number,
+    ): Promise<"applied" | "stale" | "failed"> {
+      const runtimeState = this.fragMapRuntime[row.id];
+      if (!runtimeState || !this.stageController) {
+        return "failed";
+      }
+
+      runtimeState.loading = true;
+      runtimeState.error = null;
+      runtimeState.statusText = desiredVisible ? "Loading..." : runtimeState.loaded ? "Updating..." : null;
+      this.refreshFragMapLoadingRows();
+
+      try {
+        const visibilityResult = await this.stageController.setFragMapVisibility(
+          this.getFragMapVisibilityOptions(row),
+          desiredVisible,
+        );
+
+        const nextDesiredVisible = this.getFragMapDesiredVisibility(row.id);
+        const currentRequestId = this.fragMapRequestIdById[row.id];
+        if (nextDesiredVisible !== desiredVisible || currentRequestId !== requestId) {
+          runtimeState.loaded = runtimeState.loaded || visibilityResult.firstLoad || visibilityResult.loadedFromCache;
+          this.incrementM5StaleCompletionCounter(row.id);
+          return "stale";
+        }
+
+        this.setFragMapVisibleState(row.id, desiredVisible);
+        this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+
+        runtimeState.loaded = runtimeState.loaded || visibilityResult.firstLoad || visibilityResult.loadedFromCache;
+        runtimeState.disabled = false;
+        runtimeState.error = null;
+        runtimeState.statusText = desiredVisible
+          ? visibilityResult.loadedFromCache
+            ? "Loaded from cache"
+            : "Loaded"
+          : runtimeState.loaded
+            ? "Cached"
+            : null;
+
+        return "applied";
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        runtimeState.disabled = true;
+        runtimeState.error = message;
+        runtimeState.statusText = null;
+        this.setFragMapVisibleState(row.id, false);
+        this.toastMessage = `${row.label} failed to load: ${message}`;
+        this.showToast = true;
+        return "failed";
+      } finally {
+        runtimeState.loading = false;
+        this.refreshFragMapLoadingRows();
+      }
+    },
+    async drainFragMapVisibilityQueue(rowId: string) {
+      const row = this.getFragMapRowById(rowId);
+      if (!row || !this.stageController || this.viewerStatus !== "ready") {
+        return;
+      }
+
+      if (this.fragMapInFlightById[rowId]) {
+        return;
+      }
+
+      this.fragMapInFlightById = {
+        ...this.fragMapInFlightById,
+        [rowId]: true,
+      };
+
+      try {
+        while (true) {
+          const runtimeState = this.fragMapRuntime[rowId];
+          if (!runtimeState || runtimeState.disabled || !this.stageController || this.viewerStatus !== "ready") {
+            break;
+          }
+
+          const desiredVisible = this.getFragMapDesiredVisibility(rowId);
+          const currentlyVisible = this.viewerState.visibleFragMapIds.includes(rowId);
+          if (desiredVisible === currentlyVisible) {
+            break;
+          }
+
+          const nextRequestId = (this.fragMapRequestIdById[rowId] || 0) + 1;
+          this.fragMapRequestIdById = {
+            ...this.fragMapRequestIdById,
+            [rowId]: nextRequestId,
+          };
+
+          const result = await this.applyFragMapVisibilityIntent(row, desiredVisible, nextRequestId);
+          if (result === "failed") {
+            break;
+          }
+        }
+      } finally {
+        this.fragMapInFlightById = {
+          ...this.fragMapInFlightById,
+          [rowId]: false,
+        };
+      }
+    },
     async handleFragMapToggle(payload: { id: string; visible: boolean }) {
       if (!this.stageController || !this.manifest || this.viewerStatus !== "ready") {
         return;
@@ -682,67 +857,21 @@ export default Vue.extend({
         return;
       }
 
-      if (runtimeState.disabled || this.fragMapLoadingRowId) {
+      if (runtimeState.disabled) {
         return;
       }
 
-      const isCurrentlyVisible = this.viewerState.visibleFragMapIds.includes(payload.id);
-      if (isCurrentlyVisible === payload.visible) {
-        return;
-      }
-
-      const isFirstLoad = payload.visible && !runtimeState.loaded;
-      if (isFirstLoad) {
-        runtimeState.loading = true;
-        runtimeState.statusText = "Loading...";
-        runtimeState.error = null;
-        this.fragMapLoadingRowId = payload.id;
-      } else {
-        runtimeState.error = null;
-      }
-
-      try {
-        const visibilityResult = await this.stageController.setFragMapVisibility(
-          this.getFragMapVisibilityOptions(row),
-          payload.visible,
-        );
-
-        const nextVisibleIds = new Set(this.viewerState.visibleFragMapIds);
-        if (payload.visible) {
-          nextVisibleIds.add(payload.id);
-        } else {
-          nextVisibleIds.delete(payload.id);
-        }
-        this.$store.commit("viewer/setVisibleFragMapIds", Array.from(nextVisibleIds));
-        this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
-
-        runtimeState.loaded = runtimeState.loaded || visibilityResult.firstLoad || visibilityResult.loadedFromCache;
-        runtimeState.disabled = false;
-        runtimeState.error = null;
-
-        if (payload.visible) {
-          runtimeState.statusText = visibilityResult.loadedFromCache ? "Loaded from cache" : "Loaded";
-        } else {
-          runtimeState.statusText = runtimeState.loaded ? "Cached" : null;
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        runtimeState.loading = false;
-        runtimeState.disabled = true;
-        runtimeState.error = message;
-        runtimeState.statusText = null;
-        this.toastMessage = `${row.label} failed to load: ${message}`;
-        this.showToast = true;
-      } finally {
-        runtimeState.loading = false;
-        if (this.fragMapLoadingRowId === payload.id) {
-          this.fragMapLoadingRowId = null;
-        }
-      }
+      this.setFragMapDesiredVisibility(payload.id, payload.visible);
+      await this.drainFragMapVisibilityQueue(payload.id);
     },
     async applyFragMapIsoValue(rowId: string, nextIso: number) {
       const row = this.getFragMapRowById(rowId);
       if (!row || !this.isIsoAdjustableRow(row)) {
+        return;
+      }
+
+      const runtimeState = this.fragMapRuntime[rowId];
+      if (!runtimeState || runtimeState.disabled || runtimeState.loading) {
         return;
       }
 
@@ -760,14 +889,23 @@ export default Vue.extend({
         return;
       }
 
-      this.stageController.setFragMapIso(
-        {
-          ...this.getFragMapVisibilityOptions(row),
-          isoValue: normalizedIso,
-        },
-        normalizedIso,
-      );
-      this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+      try {
+        this.stageController.setFragMapIso(
+          {
+            ...this.getFragMapVisibilityOptions(row),
+            isoValue: normalizedIso,
+          },
+          normalizedIso,
+        );
+        this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        runtimeState.disabled = true;
+        runtimeState.error = message;
+        runtimeState.statusText = null;
+        this.toastMessage = `${row.label} failed to update: ${message}`;
+        this.showToast = true;
+      }
     },
     async handleFragMapIsoStep(payload: FragMapIsoStepPayload) {
       if (this.fragMapBulkActionLoading) {
@@ -780,7 +918,7 @@ export default Vue.extend({
       }
 
       const runtimeState = this.fragMapRuntime[payload.id];
-      if (runtimeState?.disabled || runtimeState?.loading || this.fragMapLoadingRowId) {
+      if (runtimeState?.disabled || runtimeState?.loading) {
         return;
       }
 
@@ -803,7 +941,7 @@ export default Vue.extend({
       }
 
       const runtimeState = this.fragMapRuntime[payload.id];
-      if (runtimeState?.disabled || runtimeState?.loading || this.fragMapLoadingRowId) {
+      if (runtimeState?.disabled || runtimeState?.loading) {
         return;
       }
 
@@ -832,12 +970,15 @@ export default Vue.extend({
       this.incrementM5DebugCounter("hideAllCount");
 
       try {
-        const visibleRowIds = [...this.viewerState.visibleFragMapIds];
-        for (const rowId of visibleRowIds) {
+        const targetRowIds = this.fragMapShellRows
+          .map((row) => row.id)
+          .filter((rowId) => this.viewerState.visibleFragMapIds.includes(rowId) || this.getFragMapDesiredVisibility(rowId));
+
+        for (const rowId of targetRowIds) {
           await this.handleFragMapToggle({ id: rowId, visible: false });
         }
 
-        if (visibleRowIds.length > 0) {
+        if (targetRowIds.length > 0) {
           this.toastMessage = "All FragMaps hidden.";
           this.showToast = true;
         }
@@ -896,6 +1037,24 @@ export default Vue.extend({
       } finally {
         this.fragMapBulkActionLoading = false;
       }
+    },
+    async handleRetryFragMapRow(rowId: string) {
+      if (this.fragMapActionsDisabled || !this.stageController || this.viewerStatus !== "ready") {
+        return;
+      }
+
+      const row = this.getFragMapRowById(rowId);
+      const runtimeState = this.fragMapRuntime[rowId];
+      if (!row || !runtimeState || !runtimeState.error) {
+        return;
+      }
+
+      runtimeState.disabled = false;
+      runtimeState.error = null;
+      runtimeState.statusText = "Retrying...";
+      this.incrementM5RetryCounter(rowId);
+      this.setFragMapDesiredVisibility(rowId, true);
+      await this.drainFragMapVisibilityQueue(rowId);
     },
     async handleFeaturedLigandSwitch(ligandId: string) {
       if (!this.stageController || !this.manifest || this.viewerState.ligandSwitchLoading) {

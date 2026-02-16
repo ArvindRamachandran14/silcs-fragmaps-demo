@@ -1,0 +1,255 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1540" viewBox="0 0 1900 1540" role="img" aria-labelledby="title desc">
+  <title id="title">M5.6 reliability hardening and final gate states</title>
+  <desc id="desc">M5.6 Prompt A preview showing default, loading, empty, error, and success states for row-level retry isolation, async guard outcomes, and final M5 gate evidence.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f5f7; }
+      .card { fill: #ffffff; stroke: #cfd8dc; stroke-width: 1.5; }
+      .heading { font: 700 22px Arial, sans-serif; fill: #102027; }
+      .subhead { font: 700 15px Arial, sans-serif; fill: #263238; }
+      .body { font: 13px Arial, sans-serif; fill: #37474f; }
+      .muted { font: 12px Arial, sans-serif; fill: #607d8b; }
+      .tab-active { fill: #3f51b5; stroke: #2c3a8c; stroke-width: 1; }
+      .tab-inactive { fill: #eceff1; stroke: #c7d0d6; stroke-width: 1; }
+      .tab-text-active { font: 700 12px Arial, sans-serif; fill: #ffffff; }
+      .tab-text { font: 700 12px Arial, sans-serif; fill: #5f6b73; }
+      .button { fill: #eceff1; stroke: #b0bec5; stroke-width: 1; }
+      .button-disabled { fill: #f5f5f5; stroke: #d7d7d7; stroke-width: 1; }
+      .button-text { font: 700 12px Arial, sans-serif; fill: #334155; }
+      .button-text-disabled { font: 700 12px Arial, sans-serif; fill: #94a3b8; }
+      .retry { fill: #fff3e0; stroke: #ffb74d; stroke-width: 1; }
+      .retry-text { font: 700 11px Arial, sans-serif; fill: #8a4b08; }
+      .divider { stroke: #e0e0e0; stroke-width: 1; }
+      .legend { stroke: #455a64; stroke-width: 0.6; }
+      .checkbox { fill: #ffffff; stroke: #607d8b; stroke-width: 1.2; }
+      .checkbox-on { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 1.2; }
+      .checkbox-disabled { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1.2; }
+      .row-title { font: 12px Arial, sans-serif; fill: #263238; }
+      .row-title-disabled { font: 12px Arial, sans-serif; fill: #90a4ae; }
+      .status-good { font: 12px Arial, sans-serif; fill: #2e7d32; }
+      .status-warn { font: 12px Arial, sans-serif; fill: #8a4b08; }
+      .status-bad { font: 12px Arial, sans-serif; fill: #b71c1c; }
+      .viewer { fill: #f6f8fa; stroke: #c5d0d9; stroke-width: 1; }
+      .protein { fill: none; stroke: #273b96; stroke-width: 3; stroke-linecap: round; opacity: 0.95; }
+      .mesh-blue { fill: none; stroke: #1976d2; stroke-width: 1.2; }
+      .mesh-green { fill: none; stroke: #2e7d32; stroke-width: 1.2; }
+      .mesh-orange { fill: none; stroke: #f57c00; stroke-width: 1.2; }
+      .helper { fill: #f8fbff; stroke: #bbdefb; stroke-width: 1; }
+      .warn { fill: #fff8e1; stroke: #ffcc80; stroke-width: 1; }
+      .error { fill: #ffebee; stroke: #ef9a9a; stroke-width: 1; }
+      .good { fill: #e8f5e9; stroke: #a5d6a7; stroke-width: 1; }
+      .mono { font: 12px 'Courier New', monospace; fill: #37474f; }
+      .mono-dim { font: 12px 'Courier New', monospace; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1900" height="1540"/>
+  <text class="heading" x="48" y="44">M5.6 Prompt A: Reliability Hardening + Final M5 Gate</text>
+  <text class="muted" x="48" y="68">Scope: row-level failure isolation, retry affordance, async guard outcomes, and final M5 gate evidence views. No new control semantics beyond M5.5a.</text>
+
+  <!-- Panel A -->
+  <g transform="translate(40,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">A. Default</text>
+    <text class="muted" x="20" y="54">One failed row is isolated; unaffected rows stay interactive.</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="button-text" x="42" y="127">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="button-text" x="144" y="127">Reset defaults</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="178">Advanced (row-level reliability state)</text>
+
+    <rect class="checkbox-on" x="20" y="194" width="16" height="16"/>
+    <text class="body" x="24" y="207">✓</text>
+    <circle class="legend" cx="54" cy="202" r="6" fill="#f57c00"/>
+    <text class="row-title" x="68" y="206">Positively Charged</text>
+    <text class="status-good" x="318" y="206">Loaded from cache</text>
+
+    <rect class="checkbox-disabled" x="20" y="226" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="234" r="6" fill="#f9a825"/>
+    <text class="row-title-disabled" x="68" y="238">Water Oxygen</text>
+    <text class="status-bad" x="318" y="238">Load failed (row disabled)</text>
+    <rect class="retry" x="438" y="220" width="80" height="24" rx="4"/>
+    <text class="retry-text" x="462" y="236">Retry</text>
+
+    <rect class="helper" x="20" y="262" width="520" height="98" rx="6"/>
+    <text class="body" x="36" y="288">Retry affordance is row-scoped to failed map only.</text>
+    <text class="muted" x="36" y="310">Other rows and visible maps remain stable and interactive.</text>
+    <text class="muted" x="36" y="332">Camera remains unchanged during row-level retry actions.</text>
+
+    <rect class="viewer" x="20" y="372" width="520" height="134" rx="6"/>
+    <path class="protein" d="M44 488 C98 420, 170 500, 230 436 C286 392, 350 470, 512 414"/>
+    <polyline class="mesh-orange" points="130,448 170,420 214,442 182,482 134,472 130,448"/>
+    <text class="muted" x="32" y="394">Viewer remains populated by unaffected maps while failed row is isolated.</text>
+  </g>
+
+  <!-- Panel B -->
+  <g transform="translate(670,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">B. Loading</text>
+    <text class="muted" x="20" y="54">Retry in progress for one row; only that row is locked.</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="button-text" x="42" y="127">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="button-text" x="144" y="127">Reset defaults</text>
+
+    <rect class="warn" x="20" y="158" width="520" height="98" rx="6"/>
+    <text class="body" x="36" y="184">Retrying `Water Oxygen` map...</text>
+    <text class="muted" x="36" y="206">Only `Water Oxygen` controls are disabled while retry is running.</text>
+    <text class="muted" x="36" y="228">No global panel lock and no implicit visibility reset.</text>
+
+    <line class="divider" x1="20" y1="272" x2="540" y2="272"/>
+    <text class="subhead" x="20" y="296">Row states during retry</text>
+
+    <rect class="checkbox-on" x="20" y="312" width="16" height="16"/>
+    <text class="body" x="24" y="325">✓</text>
+    <circle class="legend" cx="54" cy="320" r="6" fill="#1976d2"/>
+    <text class="row-title" x="68" y="324">Generic Donor</text>
+    <text class="status-good" x="318" y="324">Interactive</text>
+
+    <rect class="checkbox-disabled" x="20" y="344" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="352" r="6" fill="#f9a825"/>
+    <text class="row-title-disabled" x="68" y="356">Water Oxygen</text>
+    <text class="status-warn" x="318" y="356">Retrying...</text>
+    <rect class="button-disabled" x="438" y="338" width="80" height="24" rx="4"/>
+    <text class="button-text-disabled" x="458" y="354">Retry</text>
+
+    <rect class="viewer" x="20" y="382" width="520" height="124" rx="6"/>
+    <path class="protein" d="M44 496 C98 430, 170 500, 230 440 C286 398, 350 470, 512 418"/>
+    <polyline class="mesh-blue" points="132,458 166,434 208,454 180,486 136,478 132,458"/>
+    <text class="muted" x="32" y="406">Unrelated map interactions remain stable while retry is in flight.</text>
+  </g>
+
+  <!-- Panel C -->
+  <g transform="translate(1300,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">C. Empty</text>
+    <text class="muted" x="20" y="54">No maps visible and no active row failures.</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="button-text" x="42" y="127">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="button-text" x="144" y="127">Reset defaults</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="178">Primary</text>
+    <rect class="checkbox" x="20" y="194" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="202" r="6" fill="#1976d2"/>
+    <text class="row-title" x="68" y="206">Generic Donor</text>
+    <text class="mono" x="338" y="206">-0.8</text>
+
+    <rect class="checkbox" x="20" y="226" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="234" r="6" fill="#2e7d32"/>
+    <text class="row-title" x="68" y="238">Generic Apolar</text>
+    <text class="mono" x="338" y="238">-1.0</text>
+
+    <rect class="helper" x="20" y="262" width="520" height="96" rx="6"/>
+    <text class="body" x="36" y="288">No active failures: retry controls are hidden in empty steady state.</text>
+    <text class="muted" x="36" y="310">Panel remains responsive and prepared for future map toggles.</text>
+    <text class="muted" x="36" y="332">This state confirms no unintended failure residue.</text>
+
+    <rect class="viewer" x="20" y="372" width="520" height="134" rx="6"/>
+    <path class="protein" d="M44 490 C104 420, 172 496, 238 430 C298 386, 354 462, 514 420"/>
+    <text class="muted" x="32" y="394">Viewer is map-empty; no retry or error banners are present.</text>
+  </g>
+
+  <!-- Panel D -->
+  <g transform="translate(40,820)">
+    <rect class="card" x="0" y="0" width="905" height="680" rx="8"/>
+    <text class="subhead" x="20" y="34">D. Error</text>
+    <text class="muted" x="20" y="54">Retry fails again; stale prior completion is ignored by async guard.</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="button-text" x="42" y="127">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="button-text" x="144" y="127">Reset defaults</text>
+
+    <rect class="error" x="20" y="158" width="865" height="104" rx="6"/>
+    <text class="body" x="36" y="184">Retry failed for `Water Oxygen` (attempt 2). Row remains isolated and disabled.</text>
+    <text class="muted" x="36" y="206">Async guard: stale response from prior request is ignored; newer intent stays authoritative.</text>
+    <text class="muted" x="36" y="228">Unaffected rows keep current visibility and remain interactive.</text>
+    <text class="mono" x="36" y="250">debug.requestId: water=12 (stale 11 ignored)</text>
+
+    <rect class="viewer" x="20" y="278" width="470" height="234" rx="6"/>
+    <path class="protein" d="M48 470 C106 308, 166 486, 230 320 C286 246, 340 432, 454 276"/>
+    <polyline class="mesh-green" points="262,426 292,396 334,420 312,456 270,446 262,426"/>
+    <text class="muted" x="32" y="302">Viewer remains stable; no global reset/reload despite retry failure.</text>
+
+    <line class="divider" x1="510" y1="278" x2="885" y2="278"/>
+    <text class="subhead" x="510" y="304">Rows after retry failure</text>
+    <rect class="checkbox-on" x="510" y="322" width="16" height="16"/>
+    <text class="body" x="514" y="335">✓</text>
+    <circle class="legend" cx="544" cy="330" r="6" fill="#2e7d32"/>
+    <text class="row-title" x="558" y="334">Generic Apolar</text>
+    <text class="status-good" x="748" y="334">Still interactive</text>
+
+    <rect class="checkbox-disabled" x="510" y="354" width="16" height="16"/>
+    <circle class="legend" cx="544" cy="362" r="6" fill="#f9a825"/>
+    <text class="row-title-disabled" x="558" y="366">Water Oxygen</text>
+    <text class="status-bad" x="748" y="366">Disabled (retry failed)</text>
+    <rect class="retry" x="760" y="386" width="88" height="24" rx="4"/>
+    <text class="retry-text" x="784" y="402">Retry</text>
+  </g>
+
+  <!-- Panel E -->
+  <g transform="translate(975,820)">
+    <rect class="card" x="0" y="0" width="885" height="680" rx="8"/>
+    <text class="subhead" x="20" y="34">E. Success</text>
+    <text class="muted" x="20" y="54">Retry succeeds; row recovers and final M5 gate evidence is ready.</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="button-text" x="42" y="127">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="button-text" x="144" y="127">Reset defaults</text>
+
+    <rect class="good" x="20" y="158" width="845" height="94" rx="6"/>
+    <text class="body" x="36" y="184">Retry succeeded: `Water Oxygen` row is re-enabled and cache is restored.</text>
+    <text class="muted" x="36" y="206">Failure isolation and async guard behavior passed in this flow.</text>
+    <text class="muted" x="36" y="228">Final M5-gate validation view is now available.</text>
+
+    <rect class="viewer" x="20" y="268" width="430" height="244" rx="6"/>
+    <path class="protein" d="M44 468 C104 320, 164 476, 224 328 C282 252, 336 424, 414 296"/>
+    <polyline class="mesh-blue" points="146,420 186,392 228,416 196,452 150,444 146,420"/>
+    <polyline class="mesh-orange" points="262,438 304,412 342,432 318,462 278,454 262,438"/>
+    <text class="muted" x="32" y="292">Recovered row is visible and behaves like other rows again.</text>
+
+    <line class="divider" x1="470" y1="268" x2="865" y2="268"/>
+    <text class="subhead" x="470" y="294">Final M5 gate evidence view</text>
+    <rect class="helper" x="470" y="312" width="380" height="200" rx="6"/>
+    <text class="mono" x="488" y="338">$ npm run validate:m5</text>
+    <text class="status-good" x="488" y="362">PASS</text>
+    <text class="mono" x="488" y="388">required sequence:</text>
+    <text class="mono-dim" x="488" y="410">validate:m1 -> validate:m2 -> validate:m3</text>
+    <text class="mono-dim" x="488" y="432">-> validate:m4a -> validate:m4b -> validate:m5</text>
+    <text class="muted" x="488" y="458">Artifacts: row retry isolation + async guard + no regression</text>
+    <text class="muted" x="488" y="480">Gate result: M5 ready to close and proceed to M6.</text>
+  </g>
+</svg>

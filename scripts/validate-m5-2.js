@@ -194,8 +194,8 @@ async function runPrimaryFlow(page) {
   const acceptorDisabledDuringLoad = await page.isDisabled(toggleSelector("3fly.hbacc.gfe.dx"));
   const apolarDisabledDuringLoad = await page.isDisabled(toggleSelector("3fly.apolar.gfe.dx"));
   assert(
-    acceptorDisabledDuringLoad && apolarDisabledDuringLoad,
-    "Non-loading Primary rows should be temporarily disabled during first-load lock.",
+    !acceptorDisabledDuringLoad && !apolarDisabledDuringLoad,
+    "Non-loading Primary rows should remain interactive while a different row is loading.",
   );
 
   await page.waitForFunction(
@@ -296,7 +296,7 @@ async function run() {
 
     console.log("M5.2 validation passed:");
     console.log("- Primary-3 rows are interactive and Advanced rows remain hidden until expanded");
-    console.log("- First toggle performs lazy load and temporarily locks non-loading Primary rows");
+    console.log("- First toggle performs lazy load while non-loading rows remain interactive");
     console.log("- Toggle-off preserves cache and cached toggle-on shows inline 'Loaded from cache' text");
     console.log("- Camera snapshot remains unchanged during map toggle flow");
     console.log("- Row-level failure isolation disables only failed row and keeps unaffected rows usable");

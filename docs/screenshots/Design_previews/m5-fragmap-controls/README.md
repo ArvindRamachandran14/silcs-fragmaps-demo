@@ -4,8 +4,8 @@ This packet tracks the M5 sliced design gates under `docs/screenshots/Design_pre
 
 ## Gate Status
 - Active slice: `M5.6 Reliability Hardening + Final M5 Gate`
-- Gate state: `BLOCKED-DESIGN` (awaiting explicit `APPROVED UI PREVIEW` for `M5.6` Prompt A)
-- Required token to unblock Prompt B: pending (`APPROVED UI PREVIEW` for `M5.6`)
+- Gate state: `PASS` (`APPROVED UI PREVIEW` received for `M5.6` Prompt A and Prompt B completed)
+- Required token to unblock Prompt B: satisfied (`APPROVED UI PREVIEW` for `M5.6`)
 
 ## Scope for This Packet Revision
 In scope:
@@ -14,13 +14,11 @@ In scope:
 - Historical record: `M5.4` Prompt A preview was approved and Prompt B runtime behavior is implemented.
 - Historical record: `M5.5` Prompt A preview was approved and Prompt B runtime behavior is implemented.
 - Historical record: `M5.5a` Prompt A preview was approved and Prompt B runtime behavior is implemented.
-- Current execution scope: `M5.6` Prompt-A design-preview gate is next.
+- Current execution scope: `M5.6` Prompt-A artifacts are approved and Prompt-B reliability behavior is implemented.
 - Deferred exploratory scope: `M5.2c` parity artifacts retained for optional later investigation; non-blocking for required M5 flow.
 
 Out of scope in this revision:
-- `M5.6` runtime behavior:
-  - row-level retry UX and failure-isolation refinements,
-  - async race guard handling and final M5 gate validation.
+- Post-M5 work (`M6` onward).
 
 ## Packet Structure
 - `m5.1-preview-index.md`: approved `M5.1` preview index (historical reference).
@@ -42,7 +40,9 @@ Out of scope in this revision:
 - `desktop/m5.5-bulk-actions-states.svg`: single multi-panel `M5.5` page covering default/loading/empty/error/success for bulk actions only.
 - `m5.5a-preview-index.md`: `M5.5a` state checklist, artifact matrix, open UI questions, and traceability for reset-default semantics refinement.
 - `desktop/m5.5a-reset-defaults-iso-only-states.svg`: single multi-panel `M5.5a` page covering default/loading/empty/error/success for iso-only `Reset defaults` semantics with visibility preserved.
+- `m5.6-preview-index.md`: `M5.6` state checklist, artifact matrix, open UI questions, and traceability for reliability hardening and final-gate evidence views.
+- `desktop/m5.6-reliability-final-gate-states.svg`: single multi-panel `M5.6` page covering default/loading/empty/error/success for row-level retry isolation, async guards, and final M5 gate evidence view.
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Execute `M5.6` Prompt A for this packet and obtain explicit `APPROVED UI PREVIEW` before `M5.6` Prompt B runtime implementation.
+- `M5` preview packet is complete. Use this packet as historical design evidence while implementation progresses to `M6`.

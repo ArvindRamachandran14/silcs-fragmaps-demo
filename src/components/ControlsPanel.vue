@@ -147,6 +147,16 @@
           >
             {{ fragMapErrorText(row.id) }}
           </p>
+          <button
+            v-if="fragMapErrorText(row.id)"
+            type="button"
+            class="controls-panel__retry"
+            :data-test-id="`fragmap-row-retry-${row.id}`"
+            :disabled="!canRetryFragMapRow(row.id)"
+            @click="onRetryFragMapRow(row.id)"
+          >
+            Retry
+          </button>
         </div>
       </div>
 
@@ -240,6 +250,16 @@
             >
               {{ fragMapErrorText(row.id) }}
             </p>
+            <button
+              v-if="fragMapErrorText(row.id)"
+              type="button"
+              class="controls-panel__retry"
+              :data-test-id="`fragmap-row-retry-${row.id}`"
+              :disabled="!canRetryFragMapRow(row.id)"
+              @click="onRetryFragMapRow(row.id)"
+            >
+              Retry
+            </button>
           </div>
         </div>
         <p
@@ -251,8 +271,16 @@
         </p>
       </div>
 
+      <p
+        v-if="visibleFragMapIds.length === 0"
+        class="controls-panel__muted mb-3"
+        data-test-id="fragmap-empty-helper-text"
+      >
+        No FragMaps are currently visible.
+      </p>
+
       <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
-        M5.5a scope: Hide all is unchanged; Reset defaults resets iso values only. Reliability handling remains deferred.
+        M5.6 scope: row-level failures stay isolated, retry is row-scoped, and stale async completions are ignored.
       </p>
     </section>
 
@@ -461,10 +489,10 @@ export default Vue.extend({
       type: Array,
       required: true,
     },
-    fragMapLoadingRowId: {
-      type: String,
+    fragMapLoadingRowIds: {
+      type: Array,
       required: false,
-      default: null,
+      default: () => [],
     },
     fragMapDisabledRowIds: {
       type: Array,
@@ -558,15 +586,24 @@ export default Vue.extend({
     onResetDefaultFragMaps() {
       this.$emit("reset-default-fragmaps");
     },
+    onRetryFragMapRow(rowId: string) {
+      this.$emit("retry-fragmap-row", rowId);
+    },
     isFragMapRowChecked(rowId: string): boolean {
       return (this.visibleFragMapIds as string[]).includes(rowId);
     },
     isFragMapRowDisabled(row: FragMapShellRow): boolean {
-      if (this.fragMapLoadingRowId || this.fragMapActionsDisabled) {
+      if (this.fragMapActionsDisabled) {
         return true;
       }
 
       return (this.fragMapDisabledRowIds as string[]).includes(row.id);
+    },
+    isFragMapRowLoading(rowId: string): boolean {
+      return (this.fragMapLoadingRowIds as string[]).includes(rowId);
+    },
+    canRetryFragMapRow(rowId: string): boolean {
+      return !this.fragMapActionsDisabled && !this.isFragMapRowLoading(rowId);
     },
     fragMapStatusText(rowId: string): string | null {
       const statusById = this.fragMapStatusById as Record<string, string>;
@@ -583,7 +620,7 @@ export default Vue.extend({
       return !this.isExclusionRow(row.id) && typeof row.defaultIso === "number";
     },
     isFragMapIsoControlDisabled(row: FragMapShellRow): boolean {
-      return !this.isIsoAdjustableRow(row) || this.isFragMapRowDisabled(row);
+      return !this.isIsoAdjustableRow(row) || this.isFragMapRowDisabled(row) || this.isFragMapRowLoading(row.id);
     },
     fragMapIsoValueText(rowId: string): string {
       const isoById = this.fragMapIsoById as Record<string, number>;
@@ -888,6 +925,24 @@ export default Vue.extend({
   color: #b91c1c;
   font-size: 12px;
   margin: 4px 0 0;
+}
+
+.controls-panel__retry {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 4px;
+  color: #991b1b;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 4px;
+  min-height: 24px;
+  padding: 3px 8px;
+}
+
+.controls-panel__retry:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .controls-panel__code-block {

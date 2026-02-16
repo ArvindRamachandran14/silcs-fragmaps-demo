@@ -33,6 +33,7 @@ interface ViewerM5DebugState {
   hideAllCount: number;
   resetDefaultsCount: number;
   retryAttemptById: Record<string, number>;
+  staleCompletionIgnoredById: Record<string, number>;
 }
 
 export interface StageInitOptions {
@@ -183,6 +184,7 @@ function getM5DebugState(): ViewerM5DebugState {
       hideAllCount: 0,
       resetDefaultsCount: 0,
       retryAttemptById: {},
+      staleCompletionIgnoredById: {},
     };
   }
 
@@ -322,6 +324,7 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
   m5DebugState.hideAllCount = 0;
   m5DebugState.resetDefaultsCount = 0;
   m5DebugState.retryAttemptById = {};
+  m5DebugState.staleCompletionIgnoredById = {};
   debugState.stageInitAttempts += 1;
   debugState.cameraBaselineDefined = true;
   debugState.startupRenderEngine = "none";

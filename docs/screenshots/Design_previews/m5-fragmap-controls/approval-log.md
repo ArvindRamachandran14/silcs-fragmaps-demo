@@ -54,6 +54,12 @@
 - Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
 - Decision: `APPROVED UI PREVIEW`
 
+## Review Record (M5.6)
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
+- Decision: `APPROVED UI PREVIEW`
+
 ## Comments (M5.1)
 - Reviewer approved the M5.1 Prompt-A preview packet and confirmed progression to Prompt B.
 
@@ -112,6 +118,13 @@
 - Open UI questions: none currently.
 - Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now completed for `M5.5a`.
 
+## Comments (M5.6)
+- `M5.6` is the final required M5 slice and is scoped to reliability hardening + final M5 gate evidence.
+- Prompt-A artifact set now includes one multi-panel state sheet (`default/loading/empty/error/success`) and a dedicated slice index for traceability.
+- Prompt-A preview emphasizes row-level retry isolation, async guard outcomes (stale completion ignored), and final `validate:m5` evidence view.
+- Open UI questions: none currently.
+- Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now completed for `M5.6`.
+
 ## Revision Notes
 - 2026-02-16: Created initial M5 packet front page and M5.1 Prompt-A preview page with one multi-panel desktop SVG covering default/loading/empty/error/success.
 - 2026-02-16: Added supplemental context-placement artifact (`desktop/m5.1-viewer-context-placement.svg`) to show where the M5.1 panel sits in the full viewer layout; existing state artifact retained unchanged.
@@ -156,3 +169,6 @@
 - 2026-02-16: Executed `M5.5a` Prompt A (design-preview only): added `desktop/m5.5a-reset-defaults-iso-only-states.svg`, updated `m5.5a-preview-index.md`, and refreshed packet front page (`README.md`) for reviewer approval.
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.5a` Prompt A.
 - 2026-02-16: Completed `M5.5a` Prompt B runtime implementation and advanced packet active gate to `M5.6` Prompt A.
+- 2026-02-16: Executed `M5.6` Prompt A (design-preview only): added `desktop/m5.6-reliability-final-gate-states.svg`, created `m5.6-preview-index.md`, and updated packet front page (`README.md`) with reviewer action for M5.6 approval.
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.6` Prompt A.
+- 2026-02-16: Completed `M5.6` Prompt B runtime implementation and final M5 gate validation (`validate:m5` PASS).

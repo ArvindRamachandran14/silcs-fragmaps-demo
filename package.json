@@ -30,7 +30,11 @@
     "validate:m5.4": "node scripts/validate-m5-4.js",
     "prevalidate:m5.4": "npm run build",
     "validate:m5.5": "node scripts/validate-m5-5.js",
-    "prevalidate:m5.5": "npm run build"
+    "prevalidate:m5.5": "npm run build",
+    "validate:m5.6": "node scripts/validate-m5-6.js",
+    "prevalidate:m5.6": "npm run build",
+    "validate:m5": "node scripts/validate-m5.js",
+    "prevalidate:m5": "npm run build"
   },
   "dependencies": {
     "core-js": "^3.41.0",

@@ -1,233 +1,71 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (`M5.5a` Prompt B implemented and validated; next gate is `M5.6` Prompt A)
+Last updated: 2026-02-16 (`M5.6` Prompt B complete; final M5 gate PASS)
 
 ## Current Milestone Target
-- Active target: `M5.6 Reliability Hardening + Final M5 Gate` Prompt A design-preview gate.
-- Baseline branch state at takeover: required slices through `M5.5a` are complete and validated.
-- `M5.2c` is deferred exploratory work only and is not a required runtime milestone gate.
+- Active target: `M6 Overview Page` Prompt A design-preview gate.
+- Baseline branch state at takeover: required M5 slices (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.5a` -> `M5.6`) are complete and validated.
+- `M5.2c` remains deferred exploratory parity investigation only (non-blocking).
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, and `M5.5a` are complete, and required slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.5a` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
 - If tooling/sandbox prevents a required command, record `ENV-BLOCKED` (not `FAIL`) and include exact rerun command.
 - After implementing milestone `Mn`, run sequential regression from `validate:m1` through `validate:mn`.
-- For full sequential runs, prefer `bash scripts/run_checks.sh` (single upfront build + direct `node scripts/validate-*.js` execution) to avoid repeated `prevalidate:*` rebuilds.
+- For full sequential runs, prefer `bash scripts/run_checks.sh` (single upfront build + direct `node scripts/validate-*.js` execution).
+
+## M5.6 Completion Summary
+- Prompt A approval: explicit in-thread token `APPROVED UI PREVIEW` received.
+- Prompt B scope implemented:
+  - `src/components/ControlsPanel.vue`: row-level retry affordance; removed global row-lock behavior.
+  - `src/pages/ViewerPage.vue`: per-row async intent guards, row-level retry flow, stale completion suppression.
+  - `src/viewer/nglStage.ts`: debug state includes stale-completion counter bucket.
+- Validation/tooling updates:
+  - Added `scripts/validate-m5-6.js` and `scripts/validate-m5.js`.
+  - Added npm scripts `validate:m5.6`, `prevalidate:m5.6`, `validate:m5`, `prevalidate:m5`.
+  - Extended `scripts/run_checks.sh` through `node scripts/validate-m5-6.js`.
+- M5.6 + final M5 gate evidence:
+  - `npm run build` -> PASS
+  - `node scripts/validate-m5-6.js` -> PASS
+  - `bash scripts/run_checks.sh` -> PASS through `validate:m5.6`
+  - `npm run validate:m5` -> first sandboxed run `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4176`), unsandboxed rerun -> PASS
 
 ## Scope Policy (Locked)
 - Required forward scope:
-  - `M4A`: single-ligand core (`3fly_cryst_lig`) with four pose states, zoom, optional both-unchecked helper guidance, and per-pose error isolation.
+  - `M4A`: single-ligand core (`3fly_cryst_lig`) with four pose states and per-pose error isolation.
   - `M4B`: featured-ligand switching only (fixed subset).
 - Deferred scope:
   - `M4C`: full ligand list + searchable selector + deterministic ordering + `No ligands found`.
 - Progression rule:
-  - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
-- M5 slicing rule:
-  - Execute required M5 flow as `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.5a` -> `M5.6`.
-  - Treat `M5.2c` as optional/deferred exploratory investigation unless explicitly promoted.
-  - Run Prompt A and Prompt B per slice.
-  - Prompt B for a slice cannot start without that slice's `APPROVED UI PREVIEW`.
-  - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
+  - `M4C` is non-blocking for `M6`, `M7`, and `M8` unless explicitly re-promoted.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.6` Prompt A design-preview artifacts and obtain explicit `APPROVED UI PREVIEW`.
-2. Execute `M5.6` Prompt B only after approval, then add/enable `validate:m5` and run full sequential regression through `validate:m5`.
-3. Keep `M4C` documented as deferred stretch scope.
-4. Optional/deferred: resume wireframe parity deep-dive using `docs/investigations/m5.2c-wireframe-parity-investigation.md` after required M5 flow is stable.
-
-## M5.5 Implementation Status
-- `M5.5` Prompt-A artifacts were produced and approved:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5-bulk-actions-states.svg`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5-preview-index.md`
-- Packet metadata was updated:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
-- `M5.5` Prompt B is implemented in code:
-  - `src/components/ControlsPanel.vue`: action row now exposes only `Hide all` + `Reset defaults` and emits bulk-action events.
-  - `src/pages/ViewerPage.vue`: bulk-action handlers implemented for hide/reset behavior, now with `M5.5a` iso-only reset semantics (visibility unchanged).
-  - `src/viewer/nglStage.ts`: debug counters added for hide/reset actions and per-row retry attempts.
-  - `scripts/validate-m5-5.js`, `package.json`, `scripts/run_checks.sh`: new validator/command wiring and sequential suite inclusion.
-- Gate evidence:
-  - `node scripts/validate-m5-5.js` -> PASS.
-  - `bash scripts/run_checks.sh` -> PASS through `validate:m5.5`.
-
-## M5.5a Completion Status
-- Goal was to refine `Reset defaults` so it resets per-map iso values only and leaves map visibility unchanged.
-- Prompt-A state: approved via explicit `APPROVED UI PREVIEW`.
-- Prompt-A artifacts:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.5a-reset-defaults-iso-only-states.svg`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.5a-preview-index.md`
-  - Packet metadata updated in:
-    - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
-    - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
-- Prompt-B implementation status:
-  - `src/pages/ViewerPage.vue`: `handleResetDefaultFragMaps` now resets iso values only, preserves visibility, and does not trigger row retries.
-  - `src/components/ControlsPanel.vue`: scope note updated to match M5.5a contract.
-  - `scripts/validate-m5-5.js`: updated checks for iso-only reset semantics and no retry side-effects.
-- Gate evidence:
-  - `npm run build` -> PASS.
-  - `node scripts/validate-m5-5.js` -> PASS.
-  - `bash scripts/run_checks.sh` -> PASS through `validate:m5.5`.
-
-## M5.4 Implementation Status
-- `M5.4` Prompt-A artifacts exist and were approved with explicit in-thread `APPROVED UI PREVIEW`:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.4-per-map-iso-controls-states.svg`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.4-preview-index.md`
-- Packet metadata was updated:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
-- `M5.4` Prompt B is implemented in code:
-  - `src/components/ControlsPanel.vue`: per-row iso controls (`-`, value, `+`) for adjustable rows and fixed disabled controls for Exclusion row; controls are inline with map labels and section headers now show explicit two-column headings (`FragMap` and centered `GFE (kcal/mol)`).
-  - `src/pages/ViewerPage.vue`: per-row iso state, clamp/revert handling, hidden-row iso persistence, and in-place iso orchestration for visible maps.
-  - `src/viewer/nglStage.ts`: in-place isolevel update API plus current iso application during map visibility toggles.
-  - `scripts/validate-m5-4.js`, `package.json`, `scripts/run_checks.sh`: validator/commands and sequential runner coverage through `validate:m5.4` (including inline-layout + GFE-header assertions).
-- Gate evidence:
-  - `npm run validate:m5.4` -> first sandboxed run `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4181`), unsandboxed rerun `PASS`.
-  - `bash scripts/run_checks.sh` -> PASS through `validate:m5.4` (expected one-time M1 retry due known flake).
-
-## M5.2b Design Preview Status
-- Prompt-A artifacts now exist:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`
-- Reviewer feedback revision has been applied in the active Prompt-A artifact:
-  - protein control is now a tab-row `Show Protein` checkbox to the right of `FragMap` and `Ligand` in all five state panels.
-  - `Show Protein` label+checkbox is centered as a single cluster within the pill across all five state panels.
-  - `Show Protein` now uses the same tab-label font as `FragMap`/`Ligand`, and the checkbox matches the existing map/ligand row checkbox style family.
-- Packet docs are updated for active gate tracking:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
-- Approval state: `APPROVED UI PREVIEW` (Prompt B completed).
-
-## M5.2b Implementation Status
-- `M5.2b` Prompt B is implemented in code:
-  - `src/components/ControlsPanel.vue`: tab-row `Show Protein` control added with dedicated emit path (`toggle-protein`) and diagnostics probe.
-  - `src/pages/ViewerPage.vue`: protein toggle wiring for desktop/mobile panels with in-place update guards and snapshot sync.
-  - `src/store/modules/viewer.ts`: canonical `proteinVisible` state + `setProteinVisible` mutation, default ON via loading reset.
-  - `src/viewer/nglStage.ts`: `setProteinVisibility` API with camera/transform preservation and debug visibility telemetry.
-  - `scripts/validate-m5-2b.js`, `package.json`, `scripts/run_checks.sh`: new validator/commands and sequential runner coverage.
-- Gate evidence:
-  - First `bash scripts/run_checks.sh` attempt -> FAIL at `validate:m5.2b` only (validator hidden-selector visibility expectation bug).
-  - After validator selector-state fix (`state: "attached"`), `bash scripts/run_checks.sh` -> PASS through `validate:m5.2b`.
-
-## M5.3 Implementation Status
-- `M5.3` Prompt A approved with explicit in-thread `APPROVED UI PREVIEW`.
-- `M5.3` Prompt B is implemented in code:
-  - `src/components/ControlsPanel.vue`: Advanced section now defaults collapsed, expands/collapses in-place, and Advanced/Exclusion toggles are active; Exclusion row shows fixed/disabled iso cue text.
-  - `src/pages/ViewerPage.vue`: FragMap runtime orchestration now covers all rows (Primary + Advanced + Exclusion) with existing lazy-load/cache and camera-preservation behavior.
-  - `src/viewer/nglStage.ts`: Exclusion map now uses fixed internal isolevel `0.5` (with UI iso still disabled) so checked Exclusion state renders visible mesh for non-negative `3fly.excl.dx` data.
-  - `scripts/validate-m5-3.js`, `package.json`, `scripts/run_checks.sh`: new validator/commands and sequential runner coverage through `validate:m5.3`.
-- Gate evidence:
-  - First `bash scripts/run_checks.sh` attempt -> FAIL at `validate:m5.3` only (validator asserted before status transitioned from `Loading...`).
-  - After validator wait fix, `bash scripts/run_checks.sh` -> PASS through `validate:m5.3`.
-  - Post-implementation bugfix validation: sandboxed `npm run validate:m5.3` -> `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4180`), unsandboxed rerun -> PASS.
-
-## M5.1 Implementation Status
-- `M5.1` Prompt B is implemented in code:
-  - `src/components/ControlsPanel.vue`: two-tab framework (`FragMap` default active, `Ligand` secondary), FragMap shell action row + Primary/Advanced rows (all-hidden defaults), ligand controls preserved under `Ligand`.
-  - M5.1 cleanup: visible right-panel context/debug blocks were removed from the user UI (`Viewer Context`, lower `Reset view`, camera contract/snapshot blocks) while preserving hidden diagnostics selectors for validator compatibility.
-  - `src/pages/ViewerPage.vue`: canonical FragMap shell row data passed into controls panel (manifest-backed with fallback constants).
-- M4 validators were updated for deterministic tabbed UI checks:
-  - `scripts/validate-m4a.js`, `scripts/validate-m4b.js`.
-- Gate evidence: `npm run validate:m1` (PASS on rerun after known intermittent first-run fail), `npm run validate:m2` PASS, `npm run validate:m3` PASS, `npm run validate:m4a` PASS, `npm run validate:m4b` PASS, targeted M5.1 shell check PASS.
-
-## M5.2 Implementation Status
-- `M5.2` Prompt A approved with explicit in-thread `APPROVED UI PREVIEW`.
-- `M5.2` Prompt B is implemented in code:
-  - `src/components/ControlsPanel.vue`: Primary-3 runtime toggles enabled, row status/error text shown, and loading-lock disable behavior applied (Advanced behavior was deferred at M5.2 completion).
-  - `src/pages/ViewerPage.vue`: Primary-3 toggle orchestration added (lazy first load, cache reuse status, row disable-on-failure, visible-map synchronization).
-  - `src/viewer/nglStage.ts`: FragMap visibility API added with lazy load/cache, camera-preserving updates, and deterministic query hooks (`m5FailMap`, `m5MapLoadMs`) for validation.
-  - `src/store/modules/viewer.ts`: `setVisibleFragMapIds` mutation added.
-  - `scripts/validate-m5-2.js`: new M5.2 validator; `scripts/validate-m5-1.js` adjusted for post-M5.2 shell expectations.
-- Gate evidence: `npm run build` PASS, `npm run validate:m1` FAIL then PASS on rerun, `npm run validate:m2` PASS, `npm run validate:m3` PASS, `npm run validate:m4a` PASS, `npm run validate:m4b` PASS, `npm run validate:m5.1` PASS, `npm run validate:m5.2` PASS (first sandboxed attempt `ENV-BLOCKED`; unsandboxed rerun passed after validator timing fix).
-- Fresh rerun note (same day): full unsandboxed `bash scripts/run_checks.sh` rerun showed transient `viewer-ready-state` timeout noise in `validate:m4b`/`validate:m5.2`; both passed on immediate sequential rerun (`npm run validate:m4b`, `npm run validate:m5.2`). Do not parallelize validator reruns to avoid port collisions.
-
-## M5.2a Design Contract Note
-- Rendering direction is now docs-locked before `M5.2a` implementation:
-  - FragMaps use triangulated wireframe isosurface rendering (polygon edges visible).
-  - `Exclusion Map` follows the same wireframe rendering direction with fixed gray styling.
-  - `Exclusion Map` remains iso-disabled/non-editable.
-- Prompt-A preview artifact is now produced:
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2a-wireframe-rendering-states.svg` (single multi-panel default/loading/empty/error/success page).
-- Prompt-B implementation status:
-  - `src/viewer/nglStage.ts`: wireframe surface style applied for FragMaps with fixed-gray Exclusion-map enforcement.
-  - `scripts/validate-m5-2a.js`, `package.json`, and `scripts/run_checks.sh`: new M5.2a command contract and gate coverage.
-- Related docs were synchronized in this window: spec, technical plan, execution plan, milestone inventory, implementation prompts, and M5 preview packet docs.
-
-## M5.2c Exploratory Note (Deferred)
-- `M5.2c` is tracked as exploratory parity investigation only and is not part of the required milestone gate flow.
-- Investigation artifacts are retained for later optional use:
-  - `docs/investigations/m5.2c-wireframe-parity-investigation.md`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md`
-  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2c-wireframe-parity-states.svg`
+1. Execute `M6` Prompt A only (design-preview artifacts + gate checklist), then wait for explicit `APPROVED UI PREVIEW`.
+2. Execute `M6` Prompt B only after approval and run sequential regression (`validate:m1` through `validate:m6` when command contract exists).
+3. Keep `M4C` and `M5.2c` documented as deferred/non-blocking.
 
 ## Exact Commands To Run Next
 - `bash scripts/run_checks.sh`
-  - Current signal: PASS (2026-02-16; single-build optimized path through `validate:m5.5`).
+- `npm run validate:m5`
 - `npm run build`
-  - Current signal: PASS.
-- `npm run validate:m1`
-  - Current signal: PASS on rerun; first-run intermittent snackbar click interception can still occur.
-- `npm run validate:m2`
-  - Current signal: PASS.
-- `npm run validate:m3`
-  - Current signal: PASS (post-cleanup rerun 2026-02-16).
-- `npm run validate:m4a`
-  - Current signal: PASS (post-cleanup rerun 2026-02-16).
-- `npm run validate:m4b`
-  - Current signal: PASS (post-cleanup rerun 2026-02-16).
-- `npm run validate:m5.1`
-  - Current signal: PASS (post-cleanup rerun 2026-02-16; first sandboxed attempt earlier in session was `ENV-BLOCKED` on localhost bind, unsandboxed run passed).
-- `npm run validate:m5.2`
-  - Current signal: PASS (first sandboxed attempt `ENV-BLOCKED` on localhost bind; unsandboxed rerun passed after validator timing wait fix).
-- `npm run validate:m5.2a`
-  - Current signal: PASS.
-- `npm run validate:m5.2b`
-  - Current signal: PASS (initial validator-only failure corrected via hidden-selector wait-state fix; final sequential run PASS).
-- `npm run validate:m5.3`
-  - Current signal: PASS (after validator wait fix; final sequential run green).
-- `npm run validate:m5.4`
-  - Current signal: PASS.
-- `npm run validate:m5.5`
-  - Current signal: PASS.
-## Stop/Go Criteria For M5
-- Stop if the active slice Design Preview Gate is not approved (`BLOCKED-DESIGN`).
-- Stop if any M1-M4B validator regresses.
-- Stop if implementation crosses active slice scope boundaries.
-- Go from `M5.6` to `M6` only after `M5.5a` + `M5.6` are complete, map controls are stable, and `validate:m5` is green.
 
-## Recent Hotfix Note
-- Post-M4B manual QA camera drift issues (featured-switch and reset behavior) were addressed in `src/viewer/nglStage.ts`; current regression sequence (`validate:m1`..`validate:m4b`) is green after the second-pass camera fix.
-- Follow-up fix removed transform replay sign inversion during featured switch restore (`viewerControls.center` after `orient`) and resynced live camera snapshots post-switch/resize; targeted runtime smoke sequence now keeps viewport centered across default reset and repeated featured switches.
-
-## Known Divergences To Resolve Before M5 Completion
-- Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
-- FragMap runtime reliability behavior remains unimplemented (`M5.6` row-level retry/error hardening and async guards).
-- Performance evidence framework (`docs/specs/performance-and-validation-spec.md`) is unimplemented.
-- Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
+## Stop/Go Criteria
+- Stop if Prompt A approval token is missing for active user-facing scope (`BLOCKED-DESIGN`).
+- Stop if any existing validator from `m1`..`m5` regresses.
+- Stop if implementation crosses active milestone scope boundaries.
+- Go from `M6` to `M7` only after M6 Prompt A approval + Prompt B completion and green regression evidence.
 
 ## Risks and Escalation Rules
-- Risk: async pose loading races during rapid toggles.
-  - Mitigation: per-ligand request-id/single-flight guards.
-- Risk: reintroducing startup instability from prior big-bang M4 attempt.
-  - Mitigation: incremental commits and validator checks after each behavior slice.
-- Risk: validator noise when milestone scripts are run concurrently.
-  - Mitigation: run regression commands sequentially in milestone order (`m1` -> `mN`) for authoritative evidence.
-- Risk: intermittent first-pass `validate:m1` harness flake causing false overall FAIL in aggregate runs.
-  - Mitigation: `scripts/run_checks.sh` now retries `validate:m1` once before failing.
-- Risk: M5.1 shell regressions while implementing later M5 runtime slices.
-  - Mitigation: include `npm run validate:m5.1` in post-slice regression runs until `validate:m5` is introduced at `M5.6`.
+- Risk: intermittent first-pass `validate:m1` flake.
+  - Mitigation: one retry is already built into `scripts/run_checks.sh`.
+- Risk: unresolved visual parity versus reference wireframe screenshots.
+  - Mitigation: keep investigation deferred in `docs/investigations/m5.2c-wireframe-parity-investigation.md`.
 - Escalate if:
-  - manifest contract cannot express required featured-ligand scope,
-  - NGL representation layering blocks both-visible differentiation,
-  - validator instability returns in otherwise unchanged baseline routes.
-
-## Session Exit Requirements
-1. Append command outcomes and evidence paths to `docs/context/current-state.md` validation ledger.
-2. Log any architecture or behavior decision in `docs/context/decision-log.md`.
-3. Refresh this brief with the exact next unresolved `M5.x` slice task.
+  - M6 narrative/link requirements conflict with current overview architecture.
+  - Existing M1-M5 validators regress after M6 changes.
 
 ## Immediate Next Concrete Step
-- Execute `M5.6` Prompt A design-preview artifacts and obtain explicit `APPROVED UI PREVIEW` before any `M5.6` runtime implementation.
+- Start `M6` Prompt A (design preview only), produce required state artifacts, and request explicit `APPROVED UI PREVIEW` before any M6 runtime implementation.
