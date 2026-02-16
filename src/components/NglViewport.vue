@@ -12,6 +12,21 @@
     <div v-else-if="isReady" class="ngl-viewport__ready" data-test-id="viewer-ready-state">
       Ready
     </div>
+
+    <div class="ngl-viewport__interaction-hints" data-test-id="viewer-interaction-hints">
+      <div class="ngl-viewport__hint-item">
+        <div class="ngl-viewport__hint-chip">SCROLL UP/DOWN</div>
+        <div class="ngl-viewport__hint-label">Zoom In/Out</div>
+      </div>
+      <div class="ngl-viewport__hint-item">
+        <div class="ngl-viewport__hint-chip">LEFT + MOVE</div>
+        <div class="ngl-viewport__hint-label">Rotation</div>
+      </div>
+      <div class="ngl-viewport__hint-item">
+        <div class="ngl-viewport__hint-chip">RIGHT + MOVE</div>
+        <div class="ngl-viewport__hint-label">Move</div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -48,13 +63,13 @@ export default Vue.extend({
   background: radial-gradient(circle at top left, #edf4ff 0%, #d6e6ff 40%, #c7d7ee 100%);
   border: 1px solid #b7c7de;
   border-radius: 10px;
-  min-height: 460px;
+  min-height: 548px;
   overflow: hidden;
   position: relative;
 }
 
 .ngl-stage-host {
-  height: 100%;
+  height: 460px;
   min-height: 460px;
   width: 100%;
 }
@@ -88,6 +103,71 @@ export default Vue.extend({
   position: absolute;
   right: 10px;
   top: 10px;
+}
+
+.ngl-viewport__interaction-hints {
+  align-items: flex-start;
+  background: rgba(243, 246, 251, 0.96);
+  border-top: 1px solid #c8d3e2;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  min-height: 88px;
+  padding: 10px 14px 10px;
+}
+
+.ngl-viewport__hint-item {
+  align-items: center;
+  display: flex;
+  flex: 0 0 240px;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 240px;
+  min-width: 220px;
+}
+
+.ngl-viewport__hint-chip {
+  background: #2f78d2;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  line-height: 1;
+  padding: 10px 14px;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.ngl-viewport__hint-label {
+  color: #5f748f;
+  font-size: 15px;
+  line-height: 1.1;
+  text-align: center;
+}
+
+@media (max-width: 880px) {
+  .ngl-viewport {
+    min-height: 584px;
+  }
+
+  .ngl-stage-host {
+    height: 420px;
+    min-height: 420px;
+  }
+
+  .ngl-viewport__interaction-hints {
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 148px;
+    padding-bottom: 12px;
+  }
+
+  .ngl-viewport__hint-item {
+    flex: 1 1 210px;
+    max-width: 260px;
+  }
 }
 
 .ngl-stage-host ::v-deep canvas {

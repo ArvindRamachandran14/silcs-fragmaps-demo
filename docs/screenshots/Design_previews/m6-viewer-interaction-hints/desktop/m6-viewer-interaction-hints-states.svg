@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="2200" viewBox="0 0 1600 2200" role="img" aria-labelledby="title desc">
+  <title id="title">M6 Viewer Interaction Hints - Desktop States</title>
+  <desc id="desc">Design preview showing default, loading, empty, error, and success states for viewer interaction hints.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f3f6fa; }
+      .panel { fill: #ffffff; stroke: #c6d2e3; stroke-width: 2; }
+      .viewer { fill: #e7effa; stroke: #a9bdd8; stroke-width: 2; }
+      .hint-strip { fill: #eef2f7; stroke: #c8d3e2; stroke-width: 1; }
+      .chip { fill: #2f78d2; }
+      .chip-muted { fill: #9fb0c8; }
+      .chip-text { fill: #ffffff; font-family: Arial, sans-serif; font-size: 18px; font-weight: 700; letter-spacing: 0.4px; }
+      .title { fill: #1f2d3d; font-family: Arial, sans-serif; font-size: 42px; font-weight: 700; }
+      .panel-title { fill: #1f2d3d; font-family: Arial, sans-serif; font-size: 34px; font-weight: 700; }
+      .status { fill: #5c6f85; font-family: Arial, sans-serif; font-size: 22px; font-weight: 600; }
+      .body { fill: #2a3f56; font-family: Arial, sans-serif; font-size: 20px; }
+      .sub { fill: #6a7f96; font-family: Arial, sans-serif; font-size: 18px; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="2200" />
+  <text class="title" x="60" y="78">M6 Viewer Interaction Hints (Desktop)</text>
+  <text class="sub" x="60" y="118">Add three guidance chips below the stage: Scroll Up/Down, Left + Move, Right + Move.</text>
+
+  <!-- A: Default -->
+  <rect class="panel" x="60" y="150" width="1480" height="370" rx="18" />
+  <text class="panel-title" x="92" y="208">A. Default</text>
+  <text class="status" x="1360" y="208">Ready</text>
+  <rect class="viewer" x="92" y="230" width="1416" height="210" rx="12" />
+  <rect class="hint-strip" x="92" y="452" width="1416" height="66" rx="10" />
+  <rect class="chip" x="130" y="458" width="290" height="32" rx="8" />
+  <text class="chip-text" x="168" y="480">SCROLL UP/DOWN</text>
+  <text class="sub" x="275" y="510" text-anchor="middle">Zoom In/Out</text>
+  <rect class="chip" x="660" y="458" width="250" height="32" rx="8" />
+  <text class="chip-text" x="702" y="480">LEFT + MOVE</text>
+  <text class="sub" x="785" y="510" text-anchor="middle">Rotation</text>
+  <rect class="chip" x="1120" y="458" width="260" height="32" rx="8" />
+  <text class="chip-text" x="1162" y="480">RIGHT + MOVE</text>
+  <text class="sub" x="1250" y="510" text-anchor="middle">Move</text>
+
+  <!-- B: Loading -->
+  <rect class="panel" x="60" y="550" width="1480" height="370" rx="18" />
+  <text class="panel-title" x="92" y="608">B. Loading</text>
+  <text class="status" x="1328" y="608">Loading viewer...</text>
+  <rect class="viewer" x="92" y="630" width="1416" height="210" rx="12" />
+  <text class="body" x="118" y="748">Preparing protein and ligand scene.</text>
+  <rect class="hint-strip" x="92" y="852" width="1416" height="48" rx="10" />
+  <rect class="chip-muted" x="130" y="860" width="290" height="32" rx="8" />
+  <text class="chip-text" x="168" y="882">SCROLL UP/DOWN</text>
+  <rect class="chip-muted" x="660" y="860" width="250" height="32" rx="8" />
+  <text class="chip-text" x="702" y="882">LEFT + MOVE</text>
+  <rect class="chip-muted" x="1120" y="860" width="260" height="32" rx="8" />
+  <text class="chip-text" x="1162" y="882">RIGHT + MOVE</text>
+
+  <!-- C: Empty -->
+  <rect class="panel" x="60" y="950" width="1480" height="370" rx="18" />
+  <text class="panel-title" x="92" y="1008">C. Empty</text>
+  <text class="status" x="1338" y="1008">No structure loaded</text>
+  <rect class="viewer" x="92" y="1030" width="1416" height="210" rx="12" />
+  <text class="body" x="118" y="1148">No geometry rendered yet. Interaction hints remain visible.</text>
+  <rect class="hint-strip" x="92" y="1252" width="1416" height="48" rx="10" />
+  <rect class="chip" x="130" y="1260" width="290" height="32" rx="8" />
+  <text class="chip-text" x="168" y="1282">SCROLL UP/DOWN</text>
+  <rect class="chip" x="660" y="1260" width="250" height="32" rx="8" />
+  <text class="chip-text" x="702" y="1282">LEFT + MOVE</text>
+  <rect class="chip" x="1120" y="1260" width="260" height="32" rx="8" />
+  <text class="chip-text" x="1162" y="1282">RIGHT + MOVE</text>
+
+  <!-- D: Error -->
+  <rect class="panel" x="60" y="1350" width="1480" height="370" rx="18" />
+  <text class="panel-title" x="92" y="1408">D. Error</text>
+  <text class="status" x="1310" y="1408">Viewer startup failed</text>
+  <rect class="viewer" x="92" y="1430" width="1416" height="210" rx="12" />
+  <text class="body" x="118" y="1548">Fallback is active. Interaction hints still shown for reference.</text>
+  <rect class="hint-strip" x="92" y="1652" width="1416" height="48" rx="10" />
+  <rect class="chip-muted" x="130" y="1660" width="290" height="32" rx="8" />
+  <text class="chip-text" x="168" y="1682">SCROLL UP/DOWN</text>
+  <rect class="chip-muted" x="660" y="1660" width="250" height="32" rx="8" />
+  <text class="chip-text" x="702" y="1682">LEFT + MOVE</text>
+  <rect class="chip-muted" x="1120" y="1660" width="260" height="32" rx="8" />
+  <text class="chip-text" x="1162" y="1682">RIGHT + MOVE</text>
+
+  <!-- E: Success -->
+  <rect class="panel" x="60" y="1750" width="1480" height="370" rx="18" />
+  <text class="panel-title" x="92" y="1808">E. Success</text>
+  <text class="status" x="1360" y="1808">Ready</text>
+  <rect class="viewer" x="92" y="1830" width="1416" height="210" rx="12" />
+  <rect class="hint-strip" x="92" y="2052" width="1416" height="66" rx="10" />
+  <rect class="chip" x="130" y="2058" width="290" height="32" rx="8" />
+  <text class="chip-text" x="168" y="2080">SCROLL UP/DOWN</text>
+  <text class="sub" x="275" y="2110" text-anchor="middle">Zoom In/Out</text>
+  <rect class="chip" x="660" y="2058" width="250" height="32" rx="8" />
+  <text class="chip-text" x="702" y="2080">LEFT + MOVE</text>
+  <text class="sub" x="785" y="2110" text-anchor="middle">Rotation</text>
+  <rect class="chip" x="1120" y="2058" width="260" height="32" rx="8" />
+  <text class="chip-text" x="1162" y="2080">RIGHT + MOVE</text>
+  <text class="sub" x="1250" y="2110" text-anchor="middle">Move</text>
+</svg>

@@ -5,6 +5,51 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Move `Reset view` into the viewer panel (top-left) and remove it from sub-header row
+- Decision: relocate the `Reset view` action from `src/components/ViewerTopBar.vue` into `src/components/NglViewport.vue` as a top-left overlay control, while keeping the same `data-test-id` (`viewer-reset-view`) and event behavior.
+- Why: reviewer requested that reset be visually grouped with the viewer panel itself for clarity and to avoid duplicated navigation/actions in the sub-header row.
+- Alternatives considered:
+  - keep `Reset view` in sub-header row;
+  - move reset action into right controls panel.
+- Evidence:
+  - `src/components/NglViewport.vue`
+  - `src/components/ViewerTopBar.vue`
+  - `src/pages/ViewerPage.vue`
+- Validation/risk impact: `npm run validate:m3`, `npm run validate:m5`, and `npm run validate:m6` pass after relocation. Interaction semantics are unchanged; only control placement changed.
+
+### 2026-02-16 - Remove redundant viewer sub-header `Home` action and keep `Reset view` only
+- Decision: remove the `Home` button from `src/components/ViewerTopBar.vue` so the viewer sub-header row exposes only `Reset view`.
+- Why: reviewer requested removal because app-level nav already contains `HOME` and `VIEWER`; duplicate home action in the sub-header was redundant and visually noisy.
+- Alternatives considered:
+  - keep both `Reset view` and `Home` in the sub-header;
+  - remove both actions from the sub-header.
+- Evidence:
+  - `src/components/ViewerTopBar.vue`
+  - `scripts/validate-m3.js` (updated to use `nav-home` selector for remount check)
+- Validation/risk impact: `npm run build`, `npm run validate:m3`, `npm run validate:m5`, and `npm run validate:m6` passed after the change. Behavior change is limited to action availability in the sub-header; global nav home path remains available.
+
+### 2026-02-16 - Keep viewer interaction hints compact and centered (not full-width stretched)
+- Decision: update `src/components/NglViewport.vue` hint-strip layout so the three hint chips render at fixed compact widths and stay centered as a grouped row.
+- Why: reviewer feedback indicated full-width stretched chips diverged from the reference UI pattern.
+- Alternatives considered:
+  - keep `space-between` full-width chip layout;
+  - remove hint strip from the stage area.
+- Evidence:
+  - `src/components/NglViewport.vue`
+- Validation/risk impact: `npm run build`, `npm run validate:m5`, and `npm run validate:m6` passed after the refinement. Change is layout-only and does not affect FragMap/Ligand runtime semantics.
+
+### 2026-02-16 - Add viewer interaction-hint strip below stage with labels under each hint chip
+- Decision: implement a viewer interaction-hint strip in `src/components/NglViewport.vue` with three chips (`SCROLL UP/DOWN`, `LEFT + MOVE`, `RIGHT + MOVE`) and helper labels rendered directly below each chip (`Zoom In/Out`, `Rotation`, `Move`).
+- Why: reviewer requested parity with reference screenshots and explicitly requested helper labels below (not beside) the chips for clearer scanability.
+- Alternatives considered:
+  - omit hint strip entirely;
+  - place helper labels inline next to chip text (rejected by reviewer feedback).
+- Evidence:
+  - `src/components/NglViewport.vue`
+  - `docs/screenshots/Design_previews/m6-viewer-interaction-hints/README.md`
+  - `docs/screenshots/Design_previews/m6-viewer-interaction-hints/approval-log.md`
+- Validation/risk impact: `npm run build`, `npm run validate:m5`, and `npm run validate:m6` passed after implementation. Change is presentation-only and does not modify FragMap/Ligand runtime behavior contracts.
+
 ### 2026-02-16 - Simplify README opening tagline to concise scope wording
 - Decision: replace the README opening sentence with "Browser-based interactive visualization demo for P38 MAP Kinase (PDB: 3FLY) with SILCS FragMaps."
 - Why: reviewer requested removal of awkward phrasing and a cleaner first-line summary.

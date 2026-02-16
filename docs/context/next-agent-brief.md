@@ -1,9 +1,9 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (submission-mode packaging pass; README drafted)
+Last updated: 2026-02-16 (post-M6 reset-view relocation complete)
 
 ## Current Milestone Target
-- Active target: submission-ready PRD deliverables packaging (README + repo/live links) using completed `M1`-`M6` functionality.
+- Active target: post-M6 UI refinement and submission-ready stabilization using completed `M1`-`M6` functionality.
 - Baseline branch state at takeover: `M1` through `M6` are complete and validated.
 - Deferred/non-blocking scopes remain `M4C` and exploratory `M5.2c` parity investigation.
 
@@ -44,6 +44,25 @@ Last updated: 2026-02-16 (submission-mode packaging pass; README drafted)
   - Live URL populated: `https://arvindramachandran14.github.io/silcs-fragmaps-demo/`.
   - Project Overview sentence refined for clearer submission wording.
   - Opening README tagline simplified for concise scope statement.
+  - Viewer interaction hints were added below the viewer stage with helper labels below each chip.
+
+## Recent UI Refinement Summary (Post-M6)
+- Prompt-A preview packet created at `docs/screenshots/Design_previews/m6-viewer-interaction-hints/` and approved with explicit `APPROVED UI PREVIEW`.
+- Runtime implementation completed in `src/components/NglViewport.vue`:
+  - Added hint chips `SCROLL UP/DOWN`, `LEFT + MOVE`, `RIGHT + MOVE`.
+  - Added helper labels below each chip: `Zoom In/Out`, `Rotation`, `Move`.
+  - Added responsive wrapping behavior for narrow viewports.
+  - Refined layout so chips are compact and centered (not stretched across full viewport width).
+- Viewer top-bar cleanup completed:
+  - Removed duplicate sub-header `Home` action from `src/components/ViewerTopBar.vue`.
+  - Removed sub-header `Reset view` action and moved reset control into the viewer panel (`src/components/NglViewport.vue`, top-left overlay).
+  - Updated `src/pages/ViewerPage.vue` wiring so viewport reset emits the same handler path.
+  - Updated `scripts/validate-m3.js` to use app-shell `nav-home` for remount navigation checks.
+- Validation evidence:
+  - `npm run build` -> PASS.
+  - `npm run validate:m3` -> PASS.
+  - `npm run validate:m5` -> PASS.
+  - `npm run validate:m6` -> PASS.
 
 ## Scope Policy (Locked)
 - Deferred scope:
@@ -55,18 +74,19 @@ Last updated: 2026-02-16 (submission-mode packaging pass; README drafted)
   - M7/M8 execution is explicitly deferred in this window to prioritize PRD deliverable completeness.
 
 ## Priority Tasks (ordered)
-1. Set final live deployment URL in `README.md` (`Submission Links` section).
-2. Run one final sanity pass: `npm run validate:m6` and optionally `bash scripts/run_checks.sh`.
-3. Submit PRD deliverables: GitHub URL + live URL + README.
+1. Manually verify viewer interaction hints in desktop/mobile viewport layouts.
+2. Commit and push post-M6 viewer interaction-hint updates once visual sign-off is confirmed.
+3. Continue submission deliverable finalization.
 4. Resume M7/M8 only if additional time remains after submission packaging.
 
 ## Exact Commands To Run Next
-- `npm run validate:m6`
-- `bash scripts/run_checks.sh`
 - `npm run build`
+- `npm run validate:m5`
+- `npm run validate:m6`
 
 ## Stop/Go Criteria
 - Stop if `validate:m6` regresses or Home/Viewer routes fail.
+- Stop if hint labels render inline next to chips instead of below chips.
 - Stop if last-minute changes expand scope beyond submission packaging.
 - Go to M7/M8 only after submission package is finalized.
 
@@ -80,4 +100,4 @@ Last updated: 2026-02-16 (submission-mode packaging pass; README drafted)
   - Required browser evidence (especially Safari sign-off requirements) cannot be collected under current tooling.
 
 ## Immediate Next Concrete Step
-- Fill the live URL placeholder in `README.md`, then run `npm run validate:m6` as final pre-submission confirmation.
+- Perform a quick manual UI check of viewer interaction hints, then commit/push this post-M6 refinement if approved.

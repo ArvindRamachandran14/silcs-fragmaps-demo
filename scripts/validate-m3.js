@@ -253,7 +253,7 @@ async function main() {
 
     assert(listenerStatsInitial.active === 1, "Expected one active resize listener after startup.");
 
-    await page.click('[data-test-id="viewer-go-home"]');
+    await page.click('[data-test-id="nav-home"]');
     await page.waitForURL(appUrl("/"));
     await page.goto(appUrl("/viewer"), { waitUntil: "domcontentloaded" });
     await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer did not remount to ready state.");

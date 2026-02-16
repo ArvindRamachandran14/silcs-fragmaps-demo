@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M6 Prompt B implemented; M6 gate is PASS)
+Last updated: 2026-02-16 (post-M6 reset-view relocated into viewer panel)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -261,6 +261,9 @@ Audit type: one-time reconstruction audit after local thread-history loss
 ## Implemented Behavior Inventory
 - Viewer core:
   - NGL-based startup rendering, loading/ready states, fallback retry/home flow, camera reset/resize lifecycle are implemented.
+  - Viewer interaction-hint strip is implemented below the stage (`Scroll Up/Down`, `Left + Move`, `Right + Move`) with helper labels rendered below each chip (`Zoom In/Out`, `Rotation`, `Move`).
+  - Interaction hint chips now use fixed, smaller widths and are center-aligned as a grouped strip (no full-width stretch across the viewport).
+  - `Reset view` control is now positioned inside the viewer panel at the top-left corner; the viewer sub-header no longer contains `Reset view`/`Home` actions.
 - Ligand workflow:
   - M4A and M4B are implemented: baseline/refined pose controls with in-place switching plus featured-ligand quick picks (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`) and camera-preserving ligand switches.
   - M4C full-list searchable ligand selector remains deferred.
@@ -390,6 +393,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Updated `README.md` Submission Links section with the live GitHub Pages URL (`https://arvindramachandran14.github.io/silcs-fragmaps-demo/`) based on the configured Pages deployment workflow and prior milestone inventory deployment evidence. No validator commands were run in this step (`not run`; docs-only README refinement).
 - 2026-02-16: Refined one sentence in `README.md` Project Overview to use clearer wording ("website for evaluating ligand pose quality using SILCS FragMaps"). No validator commands were run in this step (`not run`; docs-only README wording refinement).
 - 2026-02-16: Simplified the top README tagline sentence to remove awkward phrasing and keep concise scope wording: "Browser-based interactive visualization demo for P38 MAP Kinase (PDB: 3FLY) with SILCS FragMaps." No validator commands were run in this step (`not run`; docs-only README wording refinement).
+- 2026-02-16: Executed post-M6 viewer interaction-hints refinement. Prompt-A preview packet was created at `docs/screenshots/Design_previews/m6-viewer-interaction-hints/`, reviewer requested helper-label placement change (labels below chips), explicit `APPROVED UI PREVIEW` token was received, and runtime implementation was completed in `src/components/NglViewport.vue` with responsive layout. Validation evidence: `npm run build` -> PASS; `npm run validate:m5` -> PASS; `npm run validate:m6` -> PASS.
+- 2026-02-16: Applied post-approval interaction-hint spacing refinement in `src/components/NglViewport.vue` so hint chips are smaller and centered as a group (matching reference layout intent) while preserving labels below each chip. Validation evidence: `npm run build` -> PASS; `npm run validate:m5` -> PASS; `npm run validate:m6` -> PASS.
+- 2026-02-16: Removed duplicate viewer sub-header `Home` button from `src/components/ViewerTopBar.vue` (kept `Reset view` only) and updated `scripts/validate-m3.js` to navigate via app-shell `nav-home`. Validation evidence: `npm run build` -> PASS; `npm run validate:m3` -> PASS; `npm run validate:m5` -> PASS; `npm run validate:m6` -> PASS. Note: an initial parallel validator launch produced asset-staging `ENOTEMPTY` collisions; sequential rerun produced authoritative PASS results.
+- 2026-02-16: Relocated `Reset view` from viewer sub-header into the viewer panel (`src/components/NglViewport.vue`) at top-left corner per UI feedback, removed sub-header action-row reset control in `src/components/ViewerTopBar.vue`, and rewired `src/pages/ViewerPage.vue` so the viewport emits the same reset handler. Validation evidence: `npm run validate:m3` -> PASS; `npm run validate:m5` -> PASS; `npm run validate:m6` -> PASS.
 
 ## Open Risks
 - `M7` instrumentation/evidence pipeline is not started and remains the next major delivery risk.

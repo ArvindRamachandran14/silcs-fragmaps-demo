@@ -39,7 +39,10 @@
           lg="9"
           class="viewer-page__viewport-col"
         >
-          <ngl-viewport ref="viewport" :status="viewerStatus" />
+          <ngl-viewport
+            ref="viewport"
+            :status="viewerStatus"
+          />
         </v-col>
         <v-col
           cols="12"

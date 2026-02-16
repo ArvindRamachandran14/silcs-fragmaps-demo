@@ -26,9 +26,6 @@
       >
         Reset view
       </v-btn>
-      <v-btn text color="primary" data-test-id="viewer-go-home" to="/">
-        Home
-      </v-btn>
     </div>
   </header>
 </template>
