@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-15 (M4B camera-switch/reset hotfix validated)
+Last updated: 2026-02-16 (M5 slice renumber update to M5.6)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -100,9 +100,12 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - Gaps to exit criteria:
   - Add implementation and validation only if stretch scope is reactivated.
 
-### M5 FragMap Controls
+### M5 FragMap Controls (Sliced: M5.1..M5.6)
 - Status: `not started`
 - Evidence:
+  - M5 execution is now locked to six slices (`M5.1` -> `M5.6`) with Prompt A + Prompt B per slice.
+  - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+  - Active next scope is `M5.1` Prompt A (design preview only).
   - No fragmap control panel rows, no per-map toggle, no per-map iso controls in `src/components/`.
   - `visibleFragMapIds` exists in store but has no mutation/action workflow wired to UI.
   - No map component load/render/update logic exists yet for runtime toggles.
@@ -215,9 +218,11 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Applied second-pass camera stabilization after additional manual QA: removed mixed transform+direct-camera restore during switch/reset (transform-first deterministic path), enforced resize preservation by restoring prior snapshot when NGL perturbs camera on resize, and kept `validate:m4b` reset-after-switch assertion active. Sequential verification in this window: `validate:m1` PASS, `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS, `validate:m4b` PASS (unsandboxed run for local port bind).
 - 2026-02-15: Resolved follow-up M4B manual QA issues where `Reset view` could blank the scene and featured switching was inconsistent across ligands. Root cause was transform restore sign inversion (`viewerControls.center`) after `orient` in `src/viewer/nglStage.ts`; hotfix switched to orientation-only restore and live snapshot resync. Verification sequence in this window: `validate:m1` FAIL (intermittent snackbar click interception) then rerun `validate:m1` PASS, `validate:m2` PASS, `validate:m3` PASS, `validate:m4a` PASS, `validate:m4b` PASS.
 - 2026-02-15: Ran targeted Playwright runtime smoke script mirroring manual QA sequence (default reset, switch among `05_2e`/`06_2f`/`07_2g`, reset after each switch); camera snapshots remained stable and viewport stayed centered.
+- 2026-02-15: Updated planning/prompt/handoff docs to lock M5 sliced execution (`M5.1`..`M5.5`) with per-slice Prompt A + Prompt B and preview packet structure (front page + one page per slice) under `docs/screenshots/Design_previews/m5-fragmap-controls/`. No validator commands were run (docs-only alignment update).
+- 2026-02-16: Updated planning/prompt/handoff docs to split prior `M5.4` into separate slices (`M5.4` per-map iso controls only, `M5.5` bulk actions only) and renumber reliability/final gate to `M5.6`. No validator commands were run (docs-only renumber/scope update).
 
 ## Open Risks
-- Major feature milestones (M5/M6) remain unimplemented while M1-M4B are complete.
+- Major feature milestones remain incomplete: M5 slices (`M5.1`..`M5.6`) and M6 are not started while M1-M4B are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.

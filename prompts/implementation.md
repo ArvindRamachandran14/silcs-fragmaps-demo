@@ -554,20 +554,368 @@ Return format:
 ### Deferred note for M4C
 - `M4C` (full ligand list + searchable selector + deterministic ordering + `No ligands found`) is deferred stretch scope and not required for M5-M8 progression unless re-promoted.
 
-## M5 - FragMap Controls
+## M5 - FragMap Controls (Sliced: M5.1..M5.6)
 
-### Prompt to assign M5
+### M5 Preview Packet Contract (locked)
+- Packet path: `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Packet structure:
+  - One front page (`README.md` and/or index page).
+  - One preview page per slice (`M5.1`, `M5.2`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+- Per-slice Prompt A can use a single multi-panel SVG page as long as it covers default/loading/empty/error/success for that slice.
+- Prompt B for a slice cannot begin until that slice has explicit `APPROVED UI PREVIEW`.
+
+### Prompt A to assign M5.1 (Design Preview only)
 ```text
-TODO: Add M5 implementation prompt.
+Implement Prompt A only for M5.1 from docs/plans/execution-plan.md.
+
+Scope:
+- M5.1 design-preview only.
+- Produce/update only M5.1 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.1 page.
+- M5.1 scope: FragMap panel shell only (Primary/Advanced sections, canonical labels/colors, default all-hidden state).
+- Do not implement runtime map loading/toggling/iso behavior in Prompt A.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.1 page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.1 status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
 ```
 
-### Prompt to verify M5
+### Prompt B to assign M5.1 (Post-approval implementation only)
 ```text
-TODO: Add M5 verification prompt.
+Implement Prompt B only for M5.1 from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.1 Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.1 only: FragMap panel shell.
+- Include Primary/Advanced sections with canonical labels/colors and all-hidden defaults.
+- No runtime map load/toggle engine, no advanced behavior wiring, no iso controls, no reliability hardening in this slice.
+- Preserve M1-M4B behavior contracts.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.1 gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.1 section)
+
+Return format:
+- M5.1 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
+### Prompt A to assign M5.2 (Design Preview only)
+```text
+Implement Prompt A only for M5.2 from docs/plans/execution-plan.md.
+
+Scope:
+- M5.2 design-preview only.
+- Produce/update only M5.2 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.2 page.
+- M5.2 scope: Primary-3 visibility engine only (toggle, lazy first load, cache reuse, camera preserved).
+- Do not implement M5.3+ behavior in this slice preview.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.2 page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.2 status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M5.2 (Post-approval implementation only)
+```text
+Implement Prompt B only for M5.2 from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.2 Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.2 only: Primary-3 visibility engine.
+- Add in-place toggles, lazy first load, cache reuse, and camera preservation for Primary-3 rows.
+- Do not implement Advanced/Exclusion behavior, per-map iso controls, or reliability hardening in this slice.
+- Preserve M5.1 contracts and M1-M4B behavior.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.2 gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.2 section)
+
+Return format:
+- M5.2 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
+### Prompt A to assign M5.3 (Design Preview only)
+```text
+Implement Prompt A only for M5.3 from docs/plans/execution-plan.md.
+
+Scope:
+- M5.3 design-preview only.
+- Produce/update only M5.3 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.3 page.
+- M5.3 scope: Advanced rows + Exclusion map fixed behavior.
+- Show Exclusion map visibility-toggleable with fixed style and disabled iso.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.3 page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.3 status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M5.3 (Post-approval implementation only)
+```text
+Implement Prompt B only for M5.3 from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.3 Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.3 only: Advanced rows + Exclusion map behavior.
+- Implement Advanced row visibility flow and Exclusion map constraints (visibility-toggleable, fixed style, no editable iso).
+- Do not implement per-map iso controls for adjustable maps or reliability hardening in this slice.
+- Preserve M5.1-M5.2 contracts and M1-M4B behavior.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.3 gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.3 section)
+
+Return format:
+- M5.3 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
+### Prompt A to assign M5.4 (Design Preview only)
+```text
+Implement Prompt A only for M5.4 from docs/plans/execution-plan.md.
+
+Scope:
+- M5.4 design-preview only.
+- Produce/update only M5.4 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.4 page.
+- M5.4 scope: per-map iso controls only.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.4 page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.4 status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M5.4 (Post-approval implementation only)
+```text
+Implement Prompt B only for M5.4 from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.4 Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.4 only: per-map iso controls.
+- Implement iso numeric contract (`step`, `min`, `max`, precision, clamp/revert) for adjustable rows.
+- Preserve Exclusion map non-editable iso rule.
+- Preserve M5.1-M5.3 contracts and M1-M4B behavior.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.4 gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.4 section)
+
+Return format:
+- M5.4 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
+### Prompt A to assign M5.5 (Design Preview only)
+```text
+Implement Prompt A only for M5.5 from docs/plans/execution-plan.md.
+
+Scope:
+- M5.5 design-preview only.
+- Produce/update only M5.5 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.5 page.
+- M5.5 scope: bulk actions only (`Hide all`, `Reset defaults`, `Reset view`).
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.5 page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.5 status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M5.5 (Post-approval implementation only)
+```text
+Implement Prompt B only for M5.5 from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.5 Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.5 only: bulk actions.
+- Implement `Hide all`, `Reset defaults`, and `Reset view` to match spec behavior.
+- Preserve M5.1-M5.4 contracts and M1-M4B behavior.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.5 gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.5 section)
+
+Return format:
+- M5.5 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
+### Prompt A to assign M5.6 (Design Preview only)
+```text
+Implement Prompt A only for M5.6 from docs/plans/execution-plan.md.
+
+Scope:
+- M5.6 design-preview only.
+- Produce/update only M5.6 preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.6 page.
+- M5.6 scope: reliability hardening UX (row-level failure isolation, retry affordance, async guard outcomes) and final M5 gate evidence views.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.6 page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.6 status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M5.6 (Post-approval implementation only)
+```text
+Implement Prompt B only for M5.6 from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.6 Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.6 only: reliability hardening and final M5 gate closure.
+- Implement row-level failure isolation, retry path, and async race guards.
+- Keep unaffected rows stable on failures.
+- Preserve M5.1-M5.5 contracts and M1-M4B behavior.
+- Add/enable `validate:m5` and run sequential regression through M5.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.6/final M5 gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.6 and M5 tracker)
+
+Return format:
+- M5.6 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Final M5 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
+### Prompt to verify M5 slice (use for M5.1..M5.6)
+```text
+Use this only after Prompt B implementation starts for the target M5 slice.
+
+If work is still in Prompt A (DESIGN PREVIEW ONLY), do not run validation scripts.
+Return:
+- <slice> status: BLOCKED-DESIGN
+- preview checklist coverage
+- missing approval token (`APPROVED UI PREVIEW`)
+
+If Prompt B implementation has started, run gate verification and return a PASS/FAIL table with evidence.
+
+Sequential regression commands:
+- `npm run validate:m1`
+- `npm run validate:m2`
+- `npm run validate:m3`
+- `npm run validate:m4a`
+- `npm run validate:m4b`
+- `<slice-specific validator command if added>`
+- `npm run validate:m5` (required at M5.6/final gate)
+
+Return format:
+- <slice> status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist table
+- Files changed
+- Commands run
+- Risks/blockers and fixes
 ```
 
 ### Manual verification for M5
-- TODO
+- Execute one slice at a time (`M5.1` then `M5.2` ... `M5.6`).
+- For each slice:
+  - Finish Prompt A preview and collect explicit `APPROVED UI PREVIEW`.
+  - Run Prompt B implementation only for that slice scope.
+  - Run sequential regression through the highest available validator.
+  - Update `docs/plans/milestone-inventory.md` for that slice before starting the next slice.
 
 ## M6 - Overview Page Narrative + CTA + External Links
 

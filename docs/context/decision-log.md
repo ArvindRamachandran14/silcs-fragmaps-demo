@@ -1,9 +1,32 @@
 # Decision Log
 
-Last updated: 2026-02-15
+Last updated: 2026-02-16
 Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
+
+### 2026-02-16 - Split previous M5.4 into ISO-only and bulk-actions-only, renumber reliability to M5.6
+- Decision: split old `M5.4` into two slices: `M5.4` (per-map ISO controls only) and `M5.5` (bulk actions only), then renumber prior reliability/final-gate slice from `M5.5` to `M5.6`.
+- Why: isolate ISO numeric-contract risk from camera/state-reset bulk-action risk, so review, debugging, and rollback remain slice-scoped.
+- Alternatives considered: keep five-slice M5 plan where ISO and bulk actions are merged.
+- Evidence:
+  - `docs/plans/execution-plan.md` (dependency graph and slice table updated to `M5.1`..`M5.6`)
+  - `docs/plans/milestone-inventory.md` (M5 tracker + per-slice sections updated to include `M5.6`)
+  - `prompts/implementation.md` (Prompt A/B templates updated for `M5.1`..`M5.6`)
+  - `docs/context/next-agent-brief.md` (stop/go and priority tasks updated to `M5.6`)
+- Validation/risk impact: smaller blast radius for each implementation gate; tradeoff is one additional Prompt A/B cycle.
+
+### 2026-02-15 - Split M5 into five numbered slices with per-slice Prompt A/B and a fixed preview packet layout
+- Status: superseded by the 2026-02-16 renumber decision (`M5.1`..`M5.6`).
+- Decision: execute FragMap controls as `M5.1`..`M5.5`, each with its own Prompt A (design preview only) and Prompt B (post-approval implementation), and lock preview artifacts to `docs/screenshots/Design_previews/m5-fragmap-controls/` as one front page plus one page per slice.
+- Why: reduce review and integration risk by keeping each design/implementation step small and independently gateable after M4 lessons.
+- Alternatives considered: one combined M5 Prompt A for all slices followed by implementation prompts; one monolithic M5 implementation flow.
+- Evidence:
+  - `docs/plans/execution-plan.md` (M5 sliced plan + preview packet exception + dependency flow)
+  - `docs/plans/milestone-inventory.md` (M5 slice tracker + per-slice inventory sections)
+  - `prompts/implementation.md` (Prompt A/B templates for `M5.1`..`M5.5`)
+  - `docs/context/next-agent-brief.md` (active target set to `M5.1`)
+- Validation/risk impact: stronger scope control and easier approvals; tradeoff is more checkpoint overhead across five slices.
 
 ### 2026-02-15 - Restore switch camera with orientation-only transform replay to avoid scene inversion
 - Decision: in M4B `switchLigand`, replay preserved `viewerControls` orientation only (no extra `center`/`distance` rewrite), then resync `currentCamera` from the live stage snapshot; keep `resetView` on `stage.autoView(0)` with live snapshot reads.

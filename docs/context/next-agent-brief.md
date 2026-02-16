@@ -1,9 +1,9 @@
 # Next Agent Brief
 
-Last updated: 2026-02-15 (post-M4B reset/switch hotfix verification)
+Last updated: 2026-02-16 (M5 slice renumber update to M5.6)
 
 ## Current Milestone Target
-- Active target: `M5 FragMap Controls` (M1-M4B validated complete; M5 is the first incomplete dependency for downstream milestones).
+- Active target: `M5.1 FragMap Panel Shell` (M1-M4B validated complete; M5 now runs as slices `M5.1`..`M5.6`).
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -18,12 +18,18 @@ Last updated: 2026-02-15 (post-M4B reset/switch hotfix verification)
   - `M4C`: full ligand list + searchable selector + deterministic ordering + `No ligands found`.
 - Progression rule:
   - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
+- M5 slicing rule:
+  - Execute M5 as `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+  - Run Prompt A and Prompt B per slice.
+  - Prompt B for a slice cannot start without that slice's `APPROVED UI PREVIEW`.
+  - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Run M5 `Prompt A` design-preview gate and obtain explicit `APPROVED UI PREVIEW` token.
-2. Deliver M5 FragMap controls per `docs/specs/fragmap-controls-spec.md` without changing M4 behavior.
-3. Add `validate:m5` gate script and run sequential regression through `validate:m5`.
-4. Keep `M4C` documented as deferred stretch scope.
+1. Run `M5.1` Prompt A and obtain explicit `APPROVED UI PREVIEW`.
+2. Implement `M5.1` Prompt B only (panel shell; no runtime map engine yet), then run sequential regression.
+3. Repeat Prompt A/B loop for `M5.2` through `M5.6`, one slice at a time.
+4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
+5. Keep `M4C` documented as deferred stretch scope.
 
 ## Exact Commands To Run Next
 - `npm run build`
@@ -40,9 +46,10 @@ Last updated: 2026-02-15 (post-M4B reset/switch hotfix verification)
   - Current signal: PASS.
 
 ## Stop/Go Criteria For M5
-- Stop if Design Preview Gate is not approved (`BLOCKED-DESIGN`).
+- Stop if the active slice Design Preview Gate is not approved (`BLOCKED-DESIGN`).
 - Stop if any M1-M4B validator regresses.
-- Go from `M5` to `M6` only after map controls are stable and `validate:m5` is green.
+- Stop if implementation crosses active slice scope boundaries.
+- Go from `M5.6` to `M6` only after map controls are stable and `validate:m5` is green.
 
 ## Recent Hotfix Note
 - Post-M4B manual QA camera drift issues (featured-switch and reset behavior) were addressed in `src/viewer/nglStage.ts`; current regression sequence (`validate:m1`..`validate:m4b`) is green after the second-pass camera fix.
@@ -69,7 +76,7 @@ Last updated: 2026-02-15 (post-M4B reset/switch hotfix verification)
 ## Session Exit Requirements
 1. Append command outcomes and evidence paths to `docs/context/current-state.md` validation ledger.
 2. Log any architecture or behavior decision in `docs/context/decision-log.md`.
-3. Refresh this brief with the exact next unresolved `M4A`/`M4B` (or `M5`) task.
+3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Start M5 Prompt-A design preview packet (default/loading/empty/error/success, desktop + mobile as needed) and obtain explicit `APPROVED UI PREVIEW` before any M5 implementation edits.
+- Start `M5.1` Prompt-A design preview page (default/loading/empty/error/success) and update the M5 packet front page under `docs/screenshots/Design_previews/m5-fragmap-controls/` before any `M5.1` implementation edits.

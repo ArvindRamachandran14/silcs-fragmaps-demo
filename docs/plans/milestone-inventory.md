@@ -24,6 +24,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Design preview gate rule:
   - For milestones that introduce/change user-facing UI, include artifact paths under `docs/design-previews/<milestone-or-feature>/` and an explicit in-thread approval reference (`APPROVED UI PREVIEW`) before implementation evidence.
   - If approval is missing, mark milestone as `BLOCKED-DESIGN` for that scope.
+  - Locked M5 exception: track previews under `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one preview page per slice (`M5.1`..`M5.6`).
 
 ## M1 - Project Scaffold + Routing Foundation
 
@@ -294,24 +295,152 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 ---
 
-## M5 - FragMap Controls
+## M5 - FragMap Controls (Sliced Delivery)
 
 ### Summary
+- M5 is executed as six gated slices (`M5.1`..`M5.6`) with Prompt A + Prompt B per slice.
+- Preview packet path is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Packet structure is locked to one front page plus one preview page per slice.
+
+### Slice Tracker
+| Slice | Scope | Design Gate | Implementation Gate | Status |
+|---|---|---|---|---|
+| `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) | Pending | Pending | Not started |
+| `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | Pending | Pending | Not started |
+| `M5.3` | Advanced rows + Exclusion map fixed behavior | Pending | Pending | Not started |
+| `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
+| `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
+| `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | Pending | Pending | Not started |
+
+### M5.1 - FragMap Panel Shell
+
+#### Summary
 - Pending.
 
-### Files Created/Updated
+#### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5 and why.` |
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.1 and why.` |
 
-### Commands Run
+#### Commands Run
 - Pending.
 
-### Gate Checklist
-- Design Preview Gate approved (for UI scope): Pending.
+#### Gate Checklist
+- Prompt A preview for `M5.1` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt B implementation stayed within `M5.1` scope boundary: Pending.
+- No M1-M4B regressions after `M5.1` checks: Pending.
+
+#### Residual Risks/Blockers
 - Pending.
 
-### Residual Risks/Blockers
+### M5.2 - Primary-3 Visibility Engine
+
+#### Summary
+- Pending.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.2 and why.` |
+
+#### Commands Run
+- Pending.
+
+#### Gate Checklist
+- Prompt A preview for `M5.2` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt B implementation stayed within `M5.2` scope boundary: Pending.
+- Primary-3 toggles are in-place with lazy-first-load + cache reuse + camera preserved: Pending.
+- No regressions against completed slices (`M5.1`) and M1-M4B baseline: Pending.
+
+#### Residual Risks/Blockers
+- Pending.
+
+### M5.3 - Advanced Rows + Exclusion Map
+
+#### Summary
+- Pending.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.3 and why.` |
+
+#### Commands Run
+- Pending.
+
+#### Gate Checklist
+- Prompt A preview for `M5.3` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt B implementation stayed within `M5.3` scope boundary: Pending.
+- Advanced rows and Exclusion behavior match spec (toggleable visibility, fixed style, iso disabled): Pending.
+- No regressions against completed slices (`M5.1`-`M5.2`) and M1-M4B baseline: Pending.
+
+#### Residual Risks/Blockers
+- Pending.
+
+### M5.4 - Per-Map Iso Controls
+
+#### Summary
+- Pending.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.4 and why.` |
+
+#### Commands Run
+- Pending.
+
+#### Gate Checklist
+- Prompt A preview for `M5.4` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt B implementation stayed within `M5.4` scope boundary: Pending.
+- Per-map iso numeric contract matches spec in-place behavior: Pending.
+- No regressions against completed slices (`M5.1`-`M5.3`) and M1-M4B baseline: Pending.
+
+#### Residual Risks/Blockers
+- Pending.
+
+### M5.5 - Bulk Actions
+
+#### Summary
+- Pending.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.5 and why.` |
+
+#### Commands Run
+- Pending.
+
+#### Gate Checklist
+- Prompt A preview for `M5.5` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt B implementation stayed within `M5.5` scope boundary: Pending.
+- Bulk actions (`Hide all`, `Reset defaults`, `Reset view`) match spec in-place behavior: Pending.
+- No regressions against completed slices (`M5.1`-`M5.4`) and M1-M4B baseline: Pending.
+
+#### Residual Risks/Blockers
+- Pending.
+
+### M5.6 - Reliability Hardening + Final M5 Gate
+
+#### Summary
+- Pending.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.6 and why.` |
+
+#### Commands Run
+- Pending.
+
+#### Gate Checklist
+- Prompt A preview for `M5.6` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt B implementation stayed within `M5.6` scope boundary: Pending.
+- Row-level failure isolation + retry + async race guards are validated: Pending.
+- `validate:m5` and required sequential regression (`m1` through `m5`) are green: Pending.
+
+#### Residual Risks/Blockers
 - Pending.
 
 ---
