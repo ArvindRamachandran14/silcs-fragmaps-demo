@@ -176,7 +176,7 @@ interface FragMapShellRow {
   defaultIso?: number;
 }
 
-interface FragMapPrimaryRuntimeState {
+interface FragMapRuntimeState {
   loaded: boolean;
   loading: boolean;
   disabled: boolean;
@@ -269,7 +269,7 @@ export default Vue.extend({
       showToast: false,
       toastMessage: "",
       proteinVisibilityLoading: false,
-      fragMapPrimaryRuntime: {} as Record<string, FragMapPrimaryRuntimeState>,
+      fragMapRuntime: {} as Record<string, FragMapRuntimeState>,
       fragMapLoadingRowId: null as string | null,
     };
   },
@@ -306,16 +306,13 @@ export default Vue.extend({
       );
       return M5_FRAGMAP_SHELL_ROWS.map((entry) => rowsById.get(entry.id) || entry);
     },
-    primaryFragMapRows(): FragMapShellRow[] {
-      return this.fragMapShellRows.filter((entry) => entry.section === "primary");
-    },
     fragMapDisabledRowIds(): string[] {
-      return Object.entries(this.fragMapPrimaryRuntime)
+      return Object.entries(this.fragMapRuntime)
         .filter(([, runtime]) => runtime.disabled)
         .map(([rowId]) => rowId);
     },
     fragMapStatusById(): Record<string, string> {
-      return Object.entries(this.fragMapPrimaryRuntime).reduce((accumulator, [rowId, runtime]) => {
+      return Object.entries(this.fragMapRuntime).reduce((accumulator, [rowId, runtime]) => {
         if (runtime.statusText) {
           accumulator[rowId] = runtime.statusText;
         }
@@ -323,7 +320,7 @@ export default Vue.extend({
       }, {} as Record<string, string>);
     },
     fragMapErrorById(): Record<string, string> {
-      return Object.entries(this.fragMapPrimaryRuntime).reduce((accumulator, [rowId, runtime]) => {
+      return Object.entries(this.fragMapRuntime).reduce((accumulator, [rowId, runtime]) => {
         if (runtime.error) {
           accumulator[rowId] = runtime.error;
         }
@@ -345,9 +342,9 @@ export default Vue.extend({
 
       return loadAssetManifest();
     },
-    resetFragMapPrimaryRuntime() {
-      const nextState: Record<string, FragMapPrimaryRuntimeState> = {};
-      for (const row of this.primaryFragMapRows) {
+    resetFragMapRuntime() {
+      const nextState: Record<string, FragMapRuntimeState> = {};
+      for (const row of this.fragMapShellRows) {
         nextState[row.id] = {
           loaded: false,
           loading: false,
@@ -356,12 +353,12 @@ export default Vue.extend({
           error: null,
         };
       }
-      this.fragMapPrimaryRuntime = nextState;
+      this.fragMapRuntime = nextState;
       this.fragMapLoadingRowId = null;
       this.$store.commit("viewer/setVisibleFragMapIds", []);
     },
-    getPrimaryFragMapRowById(rowId: string): FragMapShellRow | null {
-      return this.primaryFragMapRows.find((entry) => entry.id === rowId) || null;
+    getFragMapRowById(rowId: string): FragMapShellRow | null {
+      return this.fragMapShellRows.find((entry) => entry.id === rowId) || null;
     },
     getDefaultLigand(manifest: AssetManifest): LigandAsset {
       const ligand = manifest.ligands.find((entry) => entry.id === DEFAULT_LIGAND_ID);
@@ -460,14 +457,14 @@ export default Vue.extend({
       this.manifest = null;
       this.featuredLigands = [];
       this.proteinVisibilityLoading = false;
-      this.resetFragMapPrimaryRuntime();
+      this.resetFragMapRuntime();
       this.$store.commit("viewer/setLoading");
 
       try {
         const manifest = await this.getManifest();
         this.manifest = manifest;
         this.featuredLigands = this.buildFeaturedLigands(manifest);
-        this.resetFragMapPrimaryRuntime();
+        this.resetFragMapRuntime();
         const defaultLigand = this.getDefaultLigand(manifest);
         const viewport = this.$refs.viewport as Vue & {
           getHostElement?: () => HTMLElement | null;
@@ -591,12 +588,12 @@ export default Vue.extend({
         return;
       }
 
-      const row = this.getPrimaryFragMapRowById(payload.id);
+      const row = this.getFragMapRowById(payload.id);
       if (!row) {
         return;
       }
 
-      const runtimeState = this.fragMapPrimaryRuntime[payload.id];
+      const runtimeState = this.fragMapRuntime[payload.id];
       if (!runtimeState) {
         return;
       }

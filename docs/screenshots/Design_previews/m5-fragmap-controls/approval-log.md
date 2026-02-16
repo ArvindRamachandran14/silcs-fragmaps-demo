@@ -31,10 +31,10 @@
 - Decision: `APPROVED UI PREVIEW`
 
 ## Review Record (M5.3)
-- Date: Pending
-- Reviewer: Pending
-- Thread/message reference: Pending
-- Decision: `BLOCKED-DESIGN`
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
+- Decision: `APPROVED UI PREVIEW`
 
 ## Comments (M5.1)
 - Reviewer approved the M5.1 Prompt-A preview packet and confirmed progression to Prompt B.
@@ -72,8 +72,9 @@
 - Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now unblocked for `M5.2c`.
 
 ## Comments (M5.3)
-- `M5.3` is the active required next slice and is currently `BLOCKED-DESIGN` pending explicit `APPROVED UI PREVIEW`.
-- `M5.2c` remains optional exploratory/deferred and does not block progression to `M5.3`.
+- `M5.3` Prompt-A preview is approved via explicit in-thread `APPROVED UI PREVIEW`.
+- Prompt-B runtime implementation is complete for Advanced rows + Exclusion behavior.
+- `M5.2c` remains optional exploratory/deferred and does not block progression to required slices.
 
 ## Revision Notes
 - 2026-02-16: Created initial M5 packet front page and M5.1 Prompt-A preview page with one multi-panel desktop SVG covering default/loading/empty/error/success.
@@ -105,3 +106,6 @@
 - 2026-02-16: Added docs-only `M5.2c` parity-tuning slice between `M5.2b` and `M5.3`; updated packet front page and added `m5.2c-preview-index.md` as the new active Prompt-A planning page.
 - 2026-02-16: Executed `M5.2c` Prompt A (design-preview only): added `desktop/m5.2c-wireframe-parity-states.svg`, updated `m5.2c-preview-index.md`, and refreshed packet front-page scope/reviewer action in `README.md`.
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2c` Prompt A.
+- 2026-02-16: Executed `M5.3` Prompt A (design-preview only): added `desktop/m5.3-advanced-exclusion-wireframe-states.svg`, updated `m5.3-preview-index.md`, and refreshed packet front page (`README.md`) to reflect produced artifacts.
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.3` Prompt A.
+- 2026-02-16: Completed `M5.3` Prompt B runtime implementation and advanced packet active gate to `M5.4` Prompt A.

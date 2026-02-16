@@ -5,7 +5,7 @@ const { chromium } = require("playwright");
 
 const DIST_DIR = path.resolve(__dirname, "..", "dist");
 const INDEX_HTML_PATH = path.join(DIST_DIR, "index.html");
-const PORT = 4177;
+const PORT = 4180;
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 const DESKTOP_PANEL = ".viewer-page__controls-col";
 
@@ -23,12 +23,6 @@ const MIME_TYPES = {
   ".woff2": "font/woff2",
 };
 
-const PRIMARY_IDS = [
-  "3fly.hbdon.gfe.dx",
-  "3fly.hbacc.gfe.dx",
-  "3fly.apolar.gfe.dx",
-];
-
 const ADVANCED_IDS = [
   "3fly.mamn.gfe.dx",
   "3fly.acec.gfe.dx",
@@ -36,6 +30,10 @@ const ADVANCED_IDS = [
   "3fly.tipo.gfe.dx",
   "3fly.excl.dx",
 ];
+const EXCLUSION_ID = "3fly.excl.dx";
+const EXCLUSION_COLOR = "#9e9e9e";
+const EXCLUSION_ISOLEVEL = 0.5;
+const ADVANCED_SAMPLE_ID = "3fly.mamn.gfe.dx";
 
 function assert(condition, message) {
   if (!condition) {
@@ -144,123 +142,135 @@ async function assertVisible(page, selector, message, timeout = 15000) {
 async function assertTextIncludes(page, selector, expectedText, message) {
   await page.waitForSelector(selector, { timeout: 15000 });
   const text = ((await page.textContent(selector)) || "").trim();
-  assert(text.includes(expectedText), `${message} (expected to include "${expectedText}", got "${text}")`);
+  assert(text.includes(expectedText), `${message} (expected "${expectedText}", got "${text}")`);
 }
 
-async function runPrimaryFlow(page) {
+async function waitForStatusIncludes(page, selector, expectedText) {
+  await page.waitForFunction(
+    ({ rowSelector, expected }) => {
+      const element = document.querySelector(rowSelector);
+      return Boolean(element) && element.textContent && element.textContent.includes(expected);
+    },
+    { rowSelector: selector, expected: expectedText },
+  );
+}
+
+async function expandAdvancedSection(page) {
+  await assertVisible(page, panelSelector("fragmap-advanced-toggle"), "Advanced toggle button is missing.");
+  const expanded = await page.getAttribute(panelSelector("fragmap-advanced-toggle"), "aria-expanded");
+  if (expanded !== "true") {
+    await page.click(panelSelector("fragmap-advanced-toggle"));
+  }
+  await assertVisible(page, panelSelector("fragmap-advanced-content"), "Advanced content did not expand.");
+}
+
+async function getFragMapRenderDebug(page, mapId) {
+  return page.evaluate((id) => {
+    return (window.__viewerM5Debug && window.__viewerM5Debug.fragMapRenderById[id]) || null;
+  }, mapId);
+}
+
+function normalizeColor(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+async function runAdvancedFlow(page) {
   const viewerUrl = appUrl("/viewer?m3LoadMs=1200&m5MapLoadMs=1200");
   await page.goto(viewerUrl, { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer did not reach ready state.");
 
   const marker = await page.evaluate(() => {
-    window.__m52Marker = `m52-${Date.now()}`;
-    return window.__m52Marker;
+    window.__m53Marker = `m53-${Date.now()}`;
+    return window.__m53Marker;
   });
 
   await assertVisible(page, panelSelector("controls-tab-fragmap"), "FragMap tab button is missing.");
   const fragMapTabSelected = await page.getAttribute(panelSelector("controls-tab-fragmap"), "aria-selected");
   assert(fragMapTabSelected === "true", "FragMap tab must be active by default.");
 
-  for (const rowId of PRIMARY_IDS) {
-    await assertVisible(page, toggleSelector(rowId), `Primary row toggle missing: ${rowId}`);
-    const disabled = await page.isDisabled(toggleSelector(rowId));
-    assert(!disabled, `Primary row toggle should be enabled by default: ${rowId}`);
-    const checked = await page.isChecked(toggleSelector(rowId));
-    assert(!checked, `Primary row toggle should be unchecked by default: ${rowId}`);
-  }
-
-  await assertVisible(page, panelSelector("fragmap-advanced-toggle"), "Advanced toggle button is missing.");
   const advancedExpandedByDefault = await page.getAttribute(panelSelector("fragmap-advanced-toggle"), "aria-expanded");
   assert(advancedExpandedByDefault === "false", "Advanced section should be collapsed by default.");
-  await page.click(panelSelector("fragmap-advanced-toggle"));
-  await assertVisible(page, panelSelector("fragmap-advanced-content"), "Advanced rows did not expand.");
 
+  await expandAdvancedSection(page);
   for (const rowId of ADVANCED_IDS) {
-    const selector = toggleSelector(rowId);
-    await assertVisible(page, selector, `Advanced row toggle missing: ${rowId}`);
-    const checked = await page.isChecked(selector);
+    await assertVisible(page, toggleSelector(rowId), `Advanced row toggle missing: ${rowId}`);
+    const disabled = await page.isDisabled(toggleSelector(rowId));
+    assert(!disabled, `Advanced row toggle should be enabled in M5.3: ${rowId}`);
+    const checked = await page.isChecked(toggleSelector(rowId));
     assert(!checked, `Advanced row toggle should be unchecked by default: ${rowId}`);
   }
 
+  await assertVisible(
+    page,
+    panelSelector(`fragmap-row-iso-note-${EXCLUSION_ID}`),
+    "Exclusion row should display fixed/disabled iso note.",
+  );
+
+  const exclusionEditableIsoCount = await page.locator(`${panelSelector(`fragmap-row-${EXCLUSION_ID}`)} input[type="number"]`).count();
+  assert(exclusionEditableIsoCount === 0, "Exclusion row should not expose editable iso numeric controls in M5.3.");
+
   const cameraBefore = ((await page.textContent(panelSelector("camera-snapshot"))) || "").trim();
-  await page.click(toggleSelector("3fly.hbdon.gfe.dx"));
+
+  await page.click(toggleSelector(ADVANCED_SAMPLE_ID));
+  await waitForStatusIncludes(page, statusSelector(ADVANCED_SAMPLE_ID), "Loaded");
   await assertTextIncludes(
     page,
-    statusSelector("3fly.hbdon.gfe.dx"),
-    "Loading",
-    "Donor row did not enter loading state on first toggle.",
+    statusSelector(ADVANCED_SAMPLE_ID),
+    "Loaded",
+    "Advanced sample row did not reach loaded status.",
   );
+  const visibleAfterAdvancedOn = ((await page.textContent(panelSelector("visible-fragmaps-state"))) || "").trim();
+  assert(visibleAfterAdvancedOn === "1", "Expected one visible map after advanced toggle-on.");
 
-  const acceptorDisabledDuringLoad = await page.isDisabled(toggleSelector("3fly.hbacc.gfe.dx"));
-  const apolarDisabledDuringLoad = await page.isDisabled(toggleSelector("3fly.apolar.gfe.dx"));
-  assert(
-    acceptorDisabledDuringLoad && apolarDisabledDuringLoad,
-    "Non-loading Primary rows should be temporarily disabled during first-load lock.",
-  );
+  const cameraAfterAdvancedOn = ((await page.textContent(panelSelector("camera-snapshot"))) || "").trim();
+  assert(cameraAfterAdvancedOn === cameraBefore, "Camera changed after advanced toggle-on.");
 
-  await page.waitForFunction(
-    ({ selector }) => {
-      const element = document.querySelector(selector);
-      return Boolean(element) && element.textContent && element.textContent.includes("Loaded");
-    },
-    { selector: statusSelector("3fly.hbdon.gfe.dx") },
-  );
-  await page.waitForFunction(
-    ({ selector }) => {
-      const input = document.querySelector(selector);
-      return Boolean(input) && !input.disabled;
-    },
-    { selector: toggleSelector("3fly.hbacc.gfe.dx") },
-  );
-
-  const visibleCountAfterOn = ((await page.textContent(panelSelector("visible-fragmaps-state"))) || "").trim();
-  assert(visibleCountAfterOn === "1", `Visible FragMap count mismatch after toggle-on (got ${visibleCountAfterOn}).`);
-
-  const cameraAfterOn = ((await page.textContent(panelSelector("camera-snapshot"))) || "").trim();
-  assert(cameraAfterOn === cameraBefore, "Camera changed after Primary first-load toggle.");
-
-  await page.click(toggleSelector("3fly.hbdon.gfe.dx"));
-  const visibleCountAfterOff = ((await page.textContent(panelSelector("visible-fragmaps-state"))) || "").trim();
-  assert(visibleCountAfterOff === "0", `Visible FragMap count mismatch after toggle-off (got ${visibleCountAfterOff}).`);
+  await page.click(toggleSelector(ADVANCED_SAMPLE_ID));
   await assertTextIncludes(
     page,
-    statusSelector("3fly.hbdon.gfe.dx"),
+    statusSelector(ADVANCED_SAMPLE_ID),
     "Cached",
-    "Donor row should show cached state after hiding.",
+    "Advanced sample row should show cached state after toggle-off.",
   );
 
-  await page.click(toggleSelector("3fly.hbdon.gfe.dx"));
-  await assertTextIncludes(
-    page,
-    statusSelector("3fly.hbdon.gfe.dx"),
-    "Loaded from cache",
-    "Donor row should show inline cache-hit text on cached toggle-on.",
+  await page.click(toggleSelector(EXCLUSION_ID));
+  await waitForStatusIncludes(page, statusSelector(EXCLUSION_ID), "Loaded");
+  await assertTextIncludes(page, statusSelector(EXCLUSION_ID), "Loaded", "Exclusion row did not load.");
+  const exclusionDebug = await getFragMapRenderDebug(page, EXCLUSION_ID);
+  assert(exclusionDebug, "Missing render debug entry for exclusion map.");
+  assert(exclusionDebug.representationType === "surface", "Exclusion map rep must be surface.");
+  assert(exclusionDebug.wireframe === true, "Exclusion map must render in wireframe mode.");
+  assert(
+    normalizeColor(exclusionDebug.color) === EXCLUSION_COLOR,
+    `Exclusion map color must be fixed ${EXCLUSION_COLOR} (got ${exclusionDebug.color}).`,
+  );
+  assert(
+    Number(exclusionDebug.isolevel) === EXCLUSION_ISOLEVEL,
+    `Exclusion map isolevel must be fixed at ${EXCLUSION_ISOLEVEL} (got ${exclusionDebug.isolevel}).`,
   );
 
-  const cameraAfterCacheHit = ((await page.textContent(panelSelector("camera-snapshot"))) || "").trim();
-  assert(cameraAfterCacheHit === cameraBefore, "Camera changed after cached toggle-on.");
-
-  const markerAfter = await page.evaluate(() => window.__m52Marker);
-  assert(markerAfter === marker, "Primary toggle flow triggered a page reload.");
-  assert(page.url() === viewerUrl, "Primary toggle flow changed route URL.");
+  const markerAfter = await page.evaluate(() => window.__m53Marker);
+  assert(markerAfter === marker, "M5.3 advanced flow triggered a page reload.");
+  assert(page.url() === viewerUrl, "M5.3 advanced flow changed route URL.");
 }
 
-async function runFailureFlow(page) {
-  const viewerUrl = appUrl("/viewer?m3LoadMs=1200&m5FailMap=3fly.hbacc.gfe.dx");
+async function runFailureIsolationFlow(page) {
+  const viewerUrl = appUrl("/viewer?m3LoadMs=1200&m5FailMap=3fly.excl.dx");
   await page.goto(viewerUrl, { waitUntil: "domcontentloaded" });
   await assertVisible(page, '[data-test-id="viewer-ready-state"]', "Viewer did not reach ready state for failure flow.");
 
-  await page.click(toggleSelector("3fly.hbacc.gfe.dx"));
-  await assertVisible(page, '[data-test-id="viewer-toast"]', "Failure toast missing for failed Primary row.");
+  await expandAdvancedSection(page);
+  await page.click(toggleSelector(EXCLUSION_ID));
+  await assertVisible(page, '[data-test-id="viewer-toast"]', "Failure toast missing for exclusion row.");
   const toastText = ((await page.textContent('[data-test-id="viewer-toast"]')) || "").trim();
   assert(toastText.includes("failed to load"), "Failure toast should include map load failure context.");
 
-  const failedRowDisabled = await page.isDisabled(toggleSelector("3fly.hbacc.gfe.dx"));
-  const unaffectedRowDisabled = await page.isDisabled(toggleSelector("3fly.hbdon.gfe.dx"));
-  assert(failedRowDisabled, "Failed Primary row should be disabled after load failure.");
-  assert(!unaffectedRowDisabled, "Unaffected Primary rows should remain enabled after row-level failure.");
+  const exclusionDisabled = await page.isDisabled(toggleSelector(EXCLUSION_ID));
+  const unaffectedAdvancedDisabled = await page.isDisabled(toggleSelector(ADVANCED_SAMPLE_ID));
+  assert(exclusionDisabled, "Failed exclusion row should be disabled after load failure.");
+  assert(!unaffectedAdvancedDisabled, "Unaffected advanced rows should remain enabled after exclusion failure.");
 
-  await page.click(toggleSelector("3fly.hbdon.gfe.dx"));
+  await page.click(toggleSelector(ADVANCED_SAMPLE_ID));
   await page.waitForFunction(
     ({ selector }) => {
       const element = document.querySelector(selector);
@@ -269,7 +279,7 @@ async function runFailureFlow(page) {
     { selector: panelSelector("visible-fragmaps-state") },
   );
   const visibleCount = ((await page.textContent(panelSelector("visible-fragmaps-state"))) || "").trim();
-  assert(visibleCount === "1", `Unaffected row should still toggle on after failure (got ${visibleCount}).`);
+  assert(visibleCount === "1", `Unaffected advanced row should still toggle on after exclusion failure (got ${visibleCount}).`);
   assert(page.url() === viewerUrl, "Failure isolation flow changed route URL.");
 }
 
@@ -291,16 +301,15 @@ async function run() {
   const page = await browser.newPage({ viewport: { width: 1366, height: 768 } });
 
   try {
-    await runPrimaryFlow(page);
-    await runFailureFlow(page);
+    await runAdvancedFlow(page);
+    await runFailureIsolationFlow(page);
 
-    console.log("M5.2 validation passed:");
-    console.log("- Primary-3 rows are interactive and Advanced rows remain hidden until expanded");
-    console.log("- First toggle performs lazy load and temporarily locks non-loading Primary rows");
-    console.log("- Toggle-off preserves cache and cached toggle-on shows inline 'Loaded from cache' text");
-    console.log("- Camera snapshot remains unchanged during map toggle flow");
-    console.log("- Row-level failure isolation disables only failed row and keeps unaffected rows usable");
-    console.log("- Primary map interactions are in-place with no route reload/navigation");
+    console.log("M5.3 validation passed:");
+    console.log("- Advanced section is collapsed by default and expands in-place");
+    console.log("- Advanced rows are toggleable with lazy-load/cache behavior preserved");
+    console.log("- Exclusion row is toggleable, wireframe, fixed gray, and iso-editing remains disabled");
+    console.log("- Exclusion row failure is isolated and does not disable unaffected rows");
+    console.log("- Advanced/exclusion interactions are in-place with no route reload/navigation");
   } finally {
     await browser.close();
     await new Promise((resolve, reject) => {
@@ -317,6 +326,6 @@ async function run() {
 
 run().catch((error) => {
   const message = error instanceof Error ? error.message : String(error);
-  console.error(`M5.2 validation failed: ${message}`);
+  console.error(`M5.3 validation failed: ${message}`);
   process.exit(1);
 });

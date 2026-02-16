@@ -116,6 +116,7 @@ const DEFAULT_MIN_LOADING_MS = 180;
 const DEFAULT_MIN_MAP_LOADING_MS = 0;
 const EXCLUSION_MAP_ID = "3fly.excl.dx";
 const EXCLUSION_MAP_COLOR = "#9e9e9e";
+const EXCLUSION_MAP_ISOLEVEL = 0.5;
 
 export const CAMERA_BASELINE_SNAPSHOT: CameraSnapshot = {
   position: [25.4, -2.8, 18.6],
@@ -453,7 +454,12 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     }
 
     const renderColor = options.id === EXCLUSION_MAP_ID ? EXCLUSION_MAP_COLOR : options.color;
-    const renderIso = typeof options.defaultIso === "number" ? options.defaultIso : -0.8;
+    const renderIso =
+      options.id === EXCLUSION_MAP_ID
+        ? EXCLUSION_MAP_ISOLEVEL
+        : typeof options.defaultIso === "number"
+          ? options.defaultIso
+          : -0.8;
     const component = await stage.loadFile(resolveRuntimeUrl(options.dxUrl), { defaultRepresentation: false });
     const representation = component.addRepresentation("surface", {
       color: renderColor,

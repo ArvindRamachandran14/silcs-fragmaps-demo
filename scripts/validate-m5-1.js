@@ -33,7 +33,7 @@ const FRAGMAP_ROW_IDS = [
   "3fly.tipo.gfe.dx",
   "3fly.excl.dx",
 ];
-const PRIMARY_ROW_IDS = FRAGMAP_ROW_IDS.slice(0, 3);
+const ADVANCED_ROW_IDS = FRAGMAP_ROW_IDS.slice(3);
 
 function assert(condition, message) {
   if (!condition) {
@@ -175,6 +175,13 @@ async function run() {
 
     await assertVisible(page, panelSelector("fragmap-primary-section"), "Primary section is missing.");
     await assertVisible(page, panelSelector("fragmap-advanced-section"), "Advanced section is missing.");
+    await assertVisible(page, panelSelector("fragmap-advanced-toggle"), "Advanced toggle button is missing.");
+
+    const advancedExpandedByDefault = await page.getAttribute(panelSelector("fragmap-advanced-toggle"), "aria-expanded");
+    assert(advancedExpandedByDefault === "false", "Advanced section should be collapsed by default.");
+
+    await page.click(panelSelector("fragmap-advanced-toggle"));
+    await assertVisible(page, panelSelector("fragmap-advanced-content"), "Advanced content did not expand.");
 
     for (const rowId of FRAGMAP_ROW_IDS) {
       const rowSelector = panelSelector(`fragmap-row-${rowId}`);
@@ -183,11 +190,12 @@ async function run() {
 
       const checked = await page.isChecked(checkboxSelector);
       assert(!checked, `FragMap row ${rowId} checkbox must be unchecked by default.`);
+    }
 
-      if (!PRIMARY_ROW_IDS.includes(rowId)) {
-        const disabled = await page.isDisabled(checkboxSelector);
-        assert(disabled, `Advanced FragMap row ${rowId} should remain disabled by default.`);
-      }
+    for (const rowId of ADVANCED_ROW_IDS) {
+      const checkboxSelector = panelSelector(`fragmap-toggle-${rowId}`);
+      const disabled = await page.isDisabled(checkboxSelector);
+      assert(!disabled, `Advanced FragMap row ${rowId} should be enabled in M5.3+ runtime.`);
     }
 
     await page.click(panelSelector("controls-tab-ligand"));
@@ -205,7 +213,7 @@ async function run() {
     console.log("- FragMap tab is default active and Ligand tab is inactive by default");
     console.log("- FragMap shell action row is present and disabled by design in M5.1");
     console.log("- Primary and Advanced canonical rows are present and unchecked by default");
-    console.log("- Advanced canonical rows remain disabled by default");
+    console.log("- Advanced section is collapsed by default and can be expanded in-place");
     console.log("- Ligand tab remains reachable and exposes existing ligand controls");
     console.log("- Tab switching is in-place (no route reload/navigation)");
   } finally {

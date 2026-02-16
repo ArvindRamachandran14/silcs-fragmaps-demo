@@ -100,26 +100,73 @@
       </div>
 
       <div class="controls-panel__fragmap-section mb-3" data-test-id="fragmap-advanced-section">
-        <h3 class="text-subtitle-2 mb-2">Advanced</h3>
-        <label
-          v-for="row in advancedFragMapRows"
-          :key="row.id"
-          class="controls-panel__map-row"
-          :data-test-id="`fragmap-row-${row.id}`"
-        >
-          <input
-            :data-test-id="`fragmap-toggle-${row.id}`"
-            type="checkbox"
-            :checked="isFragMapRowChecked(row.id)"
-            disabled
+        <div class="controls-panel__section-header mb-2">
+          <h3 class="text-subtitle-2 mb-0">Advanced</h3>
+          <button
+            type="button"
+            class="controls-panel__section-toggle"
+            :aria-expanded="advancedExpanded ? 'true' : 'false'"
+            data-test-id="fragmap-advanced-toggle"
+            @click="advancedExpanded = !advancedExpanded"
           >
-          <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
-          <span>{{ row.label }}</span>
-        </label>
+            {{ advancedExpanded ? "Collapse" : "Expand" }}
+          </button>
+        </div>
+        <div
+          v-show="advancedExpanded"
+          data-test-id="fragmap-advanced-content"
+        >
+          <div
+            v-for="row in advancedFragMapRows"
+            :key="row.id"
+            class="controls-panel__map-row-group"
+            :data-test-id="`fragmap-row-${row.id}`"
+          >
+            <label class="controls-panel__map-row">
+              <input
+                :data-test-id="`fragmap-toggle-${row.id}`"
+                type="checkbox"
+                :checked="isFragMapRowChecked(row.id)"
+                :disabled="isFragMapRowDisabled(row)"
+                @change="onFragMapToggle(row.id, $event)"
+              >
+              <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
+              <span>{{ row.label }}</span>
+            </label>
+            <p
+              v-if="isExclusionRow(row.id)"
+              class="controls-panel__map-meta"
+              :data-test-id="`fragmap-row-iso-note-${row.id}`"
+            >
+              Iso is fixed; editable controls are disabled in this slice.
+            </p>
+            <p
+              v-if="fragMapStatusText(row.id)"
+              class="controls-panel__map-status"
+              :data-test-id="`fragmap-row-status-${row.id}`"
+            >
+              {{ fragMapStatusText(row.id) }}
+            </p>
+            <p
+              v-if="fragMapErrorText(row.id)"
+              class="controls-panel__error"
+              :data-test-id="`fragmap-row-error-${row.id}`"
+            >
+              {{ fragMapErrorText(row.id) }}
+            </p>
+          </div>
+        </div>
+        <p
+          v-show="!advancedExpanded"
+          class="controls-panel__muted mb-0"
+          data-test-id="fragmap-advanced-collapsed-note"
+        >
+          Expand to view Advanced FragMap rows.
+        </p>
       </div>
 
       <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
-        M5.2b scope: Protein visibility toggle and Primary-3 toggles are active. Advanced/exclusion runtime behavior, iso controls, bulk actions, and reliability handling remain deferred.
+        M5.3 scope: Advanced and Exclusion visibility flows are active. Iso controls, bulk actions, and reliability handling remain deferred.
       </p>
     </section>
 
@@ -359,6 +406,7 @@ export default Vue.extend({
   data() {
     return {
       activeTab: "fragmap" as "fragmap" | "ligand",
+      advancedExpanded: false,
     };
   },
   computed: {
@@ -404,10 +452,6 @@ export default Vue.extend({
       return (this.visibleFragMapIds as string[]).includes(rowId);
     },
     isFragMapRowDisabled(row: FragMapShellRow): boolean {
-      if (row.section !== "primary") {
-        return true;
-      }
-
       if (this.fragMapLoadingRowId) {
         return true;
       }
@@ -421,6 +465,9 @@ export default Vue.extend({
     fragMapErrorText(rowId: string): string | null {
       const errorById = this.fragMapErrorById as Record<string, string>;
       return errorById[rowId] || null;
+    },
+    isExclusionRow(rowId: string): boolean {
+      return rowId === "3fly.excl.dx";
     },
   },
 });
@@ -514,6 +561,24 @@ export default Vue.extend({
   padding: 10px;
 }
 
+.controls-panel__section-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.controls-panel__section-toggle {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  color: #334155;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  min-height: 26px;
+  padding: 4px 8px;
+}
+
 .controls-panel__map-row {
   align-items: center;
   display: grid;
@@ -535,6 +600,12 @@ export default Vue.extend({
 
 .controls-panel__map-status {
   color: #64748b;
+  font-size: 11px;
+  margin: 4px 0 0 24px;
+}
+
+.controls-panel__map-meta {
+  color: #6b7280;
   font-size: 11px;
   margin: 4px 0 0 24px;
 }

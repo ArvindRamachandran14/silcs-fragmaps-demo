@@ -5,6 +5,46 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Fix Exclusion-map visibility by using a dedicated positive fixed isolevel
+- Decision: keep Exclusion map iso controls disabled in UI, but set an internal fixed Exclusion render isolevel to `0.5` in `src/viewer/nglStage.ts` instead of inheriting the generic fallback `-0.8`.
+- Why: `3fly.excl.dx` is non-negative (`min=0`), so contouring at `-0.8` produces no visible mesh despite checked/loaded state.
+- Alternatives considered:
+  - keep `-0.8` fallback and treat no visible Exclusion mesh as acceptable;
+  - make Exclusion iso editable in M5.3 (out of slice scope).
+- Evidence:
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m5-3.js`
+  - `docs/screenshots/Bugs/Exclusion_Map_bug.png`
+- Validation/risk impact: targeted Exclusion visibility bug is fixed; `npm run validate:m5.3` passes on unsandboxed host run; M5.3 scope boundaries remain intact (Exclusion iso still non-editable).
+
+### 2026-02-16 - Accept M5.3 Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.3` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.3` Prompt-B implementation scope.
+- Why: reviewer approval satisfies the UI-first design gate for `M5.3`, allowing runtime implementation of Advanced rows + Exclusion behavior.
+- Alternatives considered:
+  - keep `M5.3` in `BLOCKED-DESIGN` and request additional Prompt-A revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.3-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: no runtime behavior changed in this approval-record update; Prompt-B implementation is now permitted for `M5.3` only.
+
+### 2026-02-16 - Implement M5.3 as Advanced-row runtime flow plus Exclusion fixed-behavior constraints
+- Decision: complete `M5.3` Prompt B by enabling in-place Advanced row visibility toggles (with default-collapsed Advanced section) and Exclusion-row constraints (toggleable visibility, fixed gray wireframe rendering, iso-editing disabled cue), while preserving M5.1-M5.2b contracts and deferring per-map iso controls/reliability hardening.
+- Why: this is the approved M5.3 slice scope and unblocks progress to `M5.4` without coupling in later-slice behavior.
+- Alternatives considered:
+  - keep Advanced rows disabled until `M5.4`;
+  - bundle per-map iso controls into `M5.3` instead of preserving slice boundaries.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `scripts/validate-m5-3.js`
+  - `scripts/validate-m5-1.js`
+  - `scripts/validate-m5-2.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: full sequential regression through `validate:m5.3` is green after a validator wait fix; next required slice is `M5.4`.
+
 ### 2026-02-16 - Reclassify M5.2c as optional exploratory investigation; required flow resumes at M5.3 after M5.2b
 - Decision: make `M5.2c` non-blocking exploratory scope and set required milestone progression to `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 - Why: parity tuning remains unresolved and should not block delivery of required M5 behavior slices.

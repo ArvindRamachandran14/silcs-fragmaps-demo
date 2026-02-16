@@ -311,7 +311,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.2a` | Wireframe rendering pass (triangulated wireframe style for all FragMaps including fixed gray Exclusion) | PASS | PASS | Completed |
 | `M5.2b` | Protein visibility toggle only (`Protein cartoon` show/hide in FragMap tab; default on) | PASS | PASS | Completed |
 | `M5.2c` | Optional/deferred wireframe parity investigation (docs + exploratory packet only; non-blocking) | N/A | N/A | Deferred exploratory |
-| `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | Pending | Pending | Not started |
+| `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | PASS | PASS | Completed |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
 | `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | Pending | Pending | Not started |
@@ -472,7 +472,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 #### Residual Risks/Blockers
 - M5.2b validator still depends on hidden diagnostics probes (`camera-snapshot`, pose/map state text) that should be retired once milestone validators migrate to explicit runtime APIs.
-- Advanced/Exclusion behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
+- Per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
 
 ### M5.2c - Wireframe Parity Tuning Pass
 
@@ -497,29 +497,57 @@ Use this file to track implementation and gate evidence for each milestone in `d
 
 #### Residual Risks/Blockers
 - Deferred parity investigation: remaining visual mismatch versus official screenshot references is tracked for later resume in `docs/investigations/m5.2c-wireframe-parity-investigation.md`.
-- Advanced/Exclusion behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
+- Per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
 
 ### M5.3 - Advanced Rows + Exclusion Map
 
 #### Summary
-- Pending.
+- Prompt A is approved; Prompt B implementation is complete.
+- Added in-place Advanced row visibility flow with default-collapsed Advanced section and toggleable Advanced map rows.
+- Added Exclusion-row fixed-behavior cues (visibility-toggleable, fixed gray wireframe, iso-editing disabled in this slice).
+- Added dedicated `validate:m5.3` milestone validator and extended sequential gate runner through `validate:m5.3`.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.3 and why.` |
+| `src/components/ControlsPanel.vue` | Updated | Right controls panel UI shell and ligand/FragMap controls. | Enabled Advanced row runtime toggles, added default-collapsed Advanced section toggle, surfaced Exclusion iso-disabled helper note, and updated slice scope note to M5.3 behavior. |
+| `src/pages/ViewerPage.vue` | Updated | Viewer route orchestration and controls-panel wiring. | Expanded FragMap runtime orchestration from Primary-only to all map rows (including Advanced and Exclusion) while preserving existing camera-preserving lazy-load/cache semantics. |
+| `src/viewer/nglStage.ts` | Updated | NGL stage lifecycle and FragMap rendering orchestration. | Fixed Exclusion-map visibility by using fixed internal Exclusion isolevel `0.5` (instead of generic fallback `-0.8`) while keeping Exclusion iso controls disabled in UI. |
+| `scripts/validate-m5-1.js` | Updated | M5.1 shell regression validator. | Updated shell assertions for post-M5.3 behavior: Advanced section now defaults collapsed and rows become visible when expanded; no longer expects Advanced rows to remain disabled. |
+| `scripts/validate-m5-2.js` | Updated | M5.2 regression validator. | Updated expectations for post-M5.3 UI shape by expanding Advanced section before row assertions and removing obsolete Advanced-disabled expectation. |
+| `scripts/validate-m5-3.js` | Created | Automated M5.3 milestone validator. | Added checks for default-collapsed Advanced section, Advanced row toggle behavior, Exclusion fixed-style/iso-disabled constraints, row-level failure isolation, and no-route-reload interactions. |
+| `package.json` | Updated | Project script command contract. | Added `validate:m5.3` and `prevalidate:m5.3` script wiring. |
+| `scripts/run_checks.sh` | Updated | Local sequential gate runner. | Extended sequential command list through `validate:m5.3`. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/README.md` | Updated | M5 preview packet front page. | Recorded M5.3 approval/completion and advanced active design gate to `M5.4` Prompt A. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` | Updated | M5 preview packet approval ledger. | Recorded explicit `APPROVED UI PREVIEW` for M5.3 and Prompt-B completion note. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/m5.3-preview-index.md` | Updated | M5.3 Prompt-A preview index. | Updated approval state to pass after explicit in-thread approval token. |
 
 #### Commands Run
-- Pending.
+- `bash scripts/run_checks.sh` -> FAIL (first pass only at `validate:m5.3`; validator asserted before row status transitioned from `Loading...`).
+- `bash scripts/run_checks.sh` -> PASS (after `validate-m5-3.js` wait fix).
+- `npm run validate:m5.3` -> first sandboxed attempt `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4180`), unsandboxed rerun -> PASS after Exclusion isolevel hotfix.
+  - Includes sequential checks:
+    - `npm run build` -> PASS
+    - `npm run validate:m1` -> PASS
+    - `npm run validate:m2` -> PASS
+    - `npm run validate:m3` -> PASS
+    - `npm run validate:m4a` -> PASS
+    - `npm run validate:m4b` -> PASS
+    - `npm run validate:m5.1` -> PASS
+    - `npm run validate:m5.2` -> PASS
+    - `npm run validate:m5.2a` -> PASS
+    - `npm run validate:m5.2b` -> PASS
+    - `npm run validate:m5.3` -> PASS
 
 #### Gate Checklist
-- Prompt A preview for `M5.3` approved (`APPROVED UI PREVIEW`): Pending.
-- Prompt B implementation stayed within `M5.3` scope boundary: Pending.
-- Advanced rows and Exclusion behavior match spec (toggleable visibility, fixed gray triangulated wireframe style, iso disabled): Pending.
-- No regressions against completed required slices (`M5.1`-`M5.2b`) and M1-M4B baseline: Pending.
+- Prompt A preview for `M5.3` approved (`APPROVED UI PREVIEW`): PASS (explicit in-thread approval on 2026-02-16).
+- Prompt B implementation stayed within `M5.3` scope boundary: PASS.
+- Advanced rows and Exclusion behavior match spec (toggleable visibility, fixed gray triangulated wireframe style, iso disabled): PASS.
+- No regressions against completed required slices (`M5.1`-`M5.2b`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- M5 validators still depend partly on hidden diagnostics probes (`camera-snapshot`, map/pose visibility text); migrating to explicit runtime APIs will reduce selector fragility.
+- Per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
 
 ### M5.4 - Per-Map Iso Controls
 

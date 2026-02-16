@@ -3,14 +3,15 @@
 This packet tracks the M5 sliced design gates under `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 
 ## Gate Status
-- Active slice: `M5.3 Advanced Rows + Exclusion Map`
-- Gate state: `BLOCKED-DESIGN` (awaiting explicit `APPROVED UI PREVIEW` for `M5.3` Prompt A)
-- Required token to unblock Prompt B: pending (`APPROVED UI PREVIEW` for `M5.3`)
+- Active slice: `M5.4 Per-Map Iso Controls`
+- Gate state: `BLOCKED-DESIGN` (awaiting explicit `APPROVED UI PREVIEW` for `M5.4` Prompt A)
+- Required token to unblock Prompt B: pending (`APPROVED UI PREVIEW` for `M5.4`)
 
 ## Scope for This Packet Revision
 In scope:
 - Historical record: completed `M5.2a` and `M5.2b` Prompt-A artifacts and approval evidence.
-- Current execution scope: `M5.3` Prompt A preview artifacts (design-only gate for Advanced rows + Exclusion behavior).
+- Historical record: `M5.3` Prompt A preview was approved and Prompt B runtime behavior is implemented.
+- Current execution scope: `M5.4` Prompt A preview artifacts are pending (design-only gate for per-map iso controls).
 - Deferred exploratory scope: `M5.2c` parity artifacts retained for optional later investigation; non-blocking for required M5 flow.
 
 Out of scope in this revision:
@@ -32,8 +33,9 @@ Out of scope in this revision:
 - `desktop/m5.2b-protein-visibility-states.svg`: single multi-panel `M5.2b` page covering default/loading/empty/error/success for protein visibility toggle behavior.
 - `m5.2c-preview-index.md`: `M5.2c` state checklist, artifact matrix, open UI questions, and traceability.
 - `desktop/m5.2c-wireframe-parity-states.svg`: single multi-panel `M5.2c` page covering default/loading/empty/error/success for wireframe parity tuning scope.
-- `m5.3-preview-index.md`: `M5.3` planned state checklist for the current active required slice.
+- `m5.3-preview-index.md`: `M5.3` state checklist and traceability for the current active required slice.
+- `desktop/m5.3-advanced-exclusion-wireframe-states.svg`: single multi-panel `M5.3` page covering default/loading/empty/error/success for Advanced rows + Exclusion fixed behavior.
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Review `M5.3` Prompt A artifacts and provide explicit `APPROVED UI PREVIEW` (or revision feedback).
+- Review `M5.4` Prompt A artifacts and provide explicit `APPROVED UI PREVIEW` (or revision feedback).

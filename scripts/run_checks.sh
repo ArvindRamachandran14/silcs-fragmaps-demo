@@ -13,6 +13,7 @@ COMMANDS=(
   "npm run validate:m5.2"
   "npm run validate:m5.2a"
   "npm run validate:m5.2b"
+  "npm run validate:m5.3"
 )
 
 # Pretty printing helpers
