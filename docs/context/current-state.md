@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (pre-handoff checkpoint refresh)
+Last updated: 2026-02-16 (takeover checkpoint refresh)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -221,6 +221,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-15: Updated planning/prompt/handoff docs to lock M5 sliced execution (`M5.1`..`M5.5`) with per-slice Prompt A + Prompt B and preview packet structure (front page + one page per slice) under `docs/screenshots/Design_previews/m5-fragmap-controls/`. No validator commands were run (docs-only alignment update).
 - 2026-02-16: Updated planning/prompt/handoff docs to split prior `M5.4` into separate slices (`M5.4` per-map iso controls only, `M5.5` bulk actions only) and renumber reliability/final gate to `M5.6`. No validator commands were run (docs-only renumber/scope update).
 - 2026-02-16: Executed pre-handoff context refresh (`current-state.md`, `decision-log.md`, `next-agent-brief.md`) with clean working tree baseline on `dev`. Validation commands were not run in this window (`not run`; docs/context-only handoff update).
+- 2026-02-16: Executed startup takeover checkpoint in required order (`AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`). Confirmed active milestone alignment remains `M5.1 FragMap Panel Shell` with Prompt-A design-preview gate first and locked sequence `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`. Command evidence: `git status -sb` -> PASS (`## dev...origin/dev`), `git log --oneline -n 3` -> PASS, `git rev-list --left-right --count origin/dev...dev` -> PASS (`0 0`). Milestone validators (`npm run validate:m*`) were not run in this window (docs/context-only takeover update).
 
 ## Open Risks
 - Major feature milestones remain incomplete: M5 slices (`M5.1`..`M5.6`) and M6 are not started while M1-M4B are complete.

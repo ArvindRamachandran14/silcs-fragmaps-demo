@@ -5,6 +5,17 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Record startup takeover checkpoint with no milestone scope change
+- Decision: run a docs/context-only takeover checkpoint and keep the active execution scope unchanged at `M5.1 Prompt A` (design-preview gate first, no implementation in this window).
+- Why: satisfy AGENTS startup-order compliance and provide fresh, explicit handoff memory without introducing runtime behavior changes.
+- Alternatives considered: skip context updates because prior pre-handoff refresh already existed.
+- Evidence:
+  - `docs/context/current-state.md`
+  - `docs/context/next-agent-brief.md`
+  - `docs/context/decision-log.md`
+  - startup command evidence (`git status -sb`, `git log --oneline -n 3`, `git rev-list --left-right --count origin/dev...dev`)
+- Validation/risk impact: no application behavior or validator state changes; preserves the active next action as `M5.1` Prompt A preview work.
+
 ### 2026-02-16 - Pre-handoff context refresh as docs-only checkpoint (no feature/test scope change)
 - Decision: run a docs/context-only pre-handoff refresh and keep active scope unchanged at `M5.1 Prompt A` (design preview only).
 - Why: establish a clean, explicit handoff boundary after the M5 slice renumber push without introducing non-doc changes.

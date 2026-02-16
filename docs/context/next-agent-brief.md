@@ -1,10 +1,14 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (pre-handoff checkpoint refresh)
+Last updated: 2026-02-16 (takeover checkpoint refresh)
 
 ## Current Milestone Target
 - Active target: `M5.1 FragMap Panel Shell` (M1-M4B validated complete; M5 now runs as slices `M5.1`..`M5.6`).
-- Baseline branch state at handoff prep: `dev` with last pushed plan/docs commit `f4f519f`.
+- Baseline branch state at takeover: `dev` is synced with `origin/dev` (`0` ahead / `0` behind), latest commit `3cc4129`.
+
+## Takeover Checkpoint
+- Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
+- Milestone alignment confirmed against execution plan Section 3.1: active scope remains `M5.1` Prompt A (design preview only), and slice ordering is `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
