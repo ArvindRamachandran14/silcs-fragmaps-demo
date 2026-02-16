@@ -5,6 +5,50 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Simplify M5.1 state-sheet tabs to match two-tab context framework
+- Decision: finalize the M5.1 state-sheet preview with the same simplified tab strip as the context image: `FragMap` (active) and `Ligand` (inactive placeholder) only.
+- Why: reviewer requested removal of extra tab complexity to prevent confusion before implementation and to keep packet artifacts internally consistent.
+- Alternatives considered: keep four-tab state-sheet (`FragMap`, `Protein`, `Ligand`, `Components`) while only the context image stayed simplified.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: removes packet-level tab-model mismatch and reduces review ambiguity; residual risk remains pending explicit `APPROVED UI PREVIEW` token.
+
+### 2026-02-16 - Simplify M5.1 context-placement tabs to FragMap + Ligand
+- Status: superseded by later same-day decision that also simplified the M5.1 state-sheet tabs.
+- Decision: keep the M5.1 state-sheet artifact unchanged for now, but simplify the tab strip in the full-viewer context artifact to show only `FragMap` and `Ligand`.
+- Why: reviewer confirmed these two are sufficient for planned usage and requested a cleaner context visualization.
+- Alternatives considered: keep four tabs (`FragMap`, `Protein`, `Ligand`, `Components`) in the context-placement artifact.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: reduces visual complexity in context review; residual risk is mismatch with the current state-sheet tab set until that artifact is optionally simplified in a follow-up revision.
+
+### 2026-02-16 - Align M5.1 preview shell to tabbed right-panel framework from GUI layout reference
+- Decision: keep M5.1 scope focused on FragMap shell content, but represent the right controls area as a tabbed framework (`FragMap`, `Protein`, `Ligand`, `Components`) with `FragMap` active in Prompt-A artifacts.
+- Why: reviewer requested explicit alignment with `docs/screenshots/GUI/GUI_Layout.png` so M5 implementation direction is consistent with expected overall viewer structure.
+- Alternatives considered: keep M5.1 artifacts as standalone FragMap-only panel without tabs.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+- Validation/risk impact: reduces ambiguity for downstream implementation architecture; residual risk is that tab switching behavior remains out of scope until explicitly scheduled in later slices.
+
+### 2026-02-16 - Add M5.1 full-viewer placement preview as supplemental artifact
+- Decision: keep the existing `M5.1` multi-state shell preview intact and add one supplemental context-placement image showing where the panel appears within the full viewer layout.
+- Why: reviewer requested clearer page-level context without replacing the existing state-page artifact.
+- Alternatives considered: replace the existing M5.1 state page with a single default-only panel image.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: improves reviewer orientation for Prompt-A sign-off; residual risk is pending confirmation on whether to collapse final approval surface to default-only before `APPROVED UI PREVIEW`.
+
 ### 2026-02-16 - Record startup takeover checkpoint with no milestone scope change
 - Decision: run a docs/context-only takeover checkpoint and keep the active execution scope unchanged at `M5.1 Prompt A` (design-preview gate first, no implementation in this window).
 - Why: satisfy AGENTS startup-order compliance and provide fresh, explicit handoff memory without introducing runtime behavior changes.

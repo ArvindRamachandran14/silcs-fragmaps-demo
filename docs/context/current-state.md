@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (takeover checkpoint refresh)
+Last updated: 2026-02-16 (M5.1 two-tab artifact alignment)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -106,6 +106,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - M5 execution is now locked to six slices (`M5.1` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
   - Active next scope is `M5.1` Prompt A (design preview only).
+  - Prompt-A packet artifacts now exist for `M5.1`:
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg` (multi-state shell page with simplified two-tab right-panel framework: `FragMap` + `Ligand`).
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg` (full-viewer placement context page aligned to the same simplified `FragMap` + `Ligand` tabs).
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md` and `README.md` updated for traceability.
   - No fragmap control panel rows, no per-map toggle, no per-map iso controls in `src/components/`.
   - `visibleFragMapIds` exists in store but has no mutation/action workflow wired to UI.
   - No map component load/render/update logic exists yet for runtime toggles.
@@ -222,6 +226,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Updated planning/prompt/handoff docs to split prior `M5.4` into separate slices (`M5.4` per-map iso controls only, `M5.5` bulk actions only) and renumber reliability/final gate to `M5.6`. No validator commands were run (docs-only renumber/scope update).
 - 2026-02-16: Executed pre-handoff context refresh (`current-state.md`, `decision-log.md`, `next-agent-brief.md`) with clean working tree baseline on `dev`. Validation commands were not run in this window (`not run`; docs/context-only handoff update).
 - 2026-02-16: Executed startup takeover checkpoint in required order (`AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`). Confirmed active milestone alignment remains `M5.1 FragMap Panel Shell` with Prompt-A design-preview gate first and locked sequence `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`. Command evidence: `git status -sb` -> PASS (`## dev...origin/dev`), `git log --oneline -n 3` -> PASS, `git rev-list --left-right --count origin/dev...dev` -> PASS (`0 0`). Milestone validators (`npm run validate:m*`) were not run in this window (docs/context-only takeover update).
+- 2026-02-16: Incorporated reviewer feedback for M5.1 Prompt A by adding a supplemental placement artifact that shows where the FragMap shell panel sits in the full viewer (`desktop/m5.1-viewer-context-placement.svg`) while keeping the existing state artifact unchanged. Updated packet docs (`README.md`, `m5.1-preview-index.md`, `approval-log.md`). Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Incorporated reviewer feedback requiring `GUI_Layout.png`-style tabbed right-panel framework for M5.1 previews. Updated both M5.1 artifacts (`m5.1-fragmap-panel-shell-states.svg`, `m5.1-viewer-context-placement.svg`) to show `FragMap` active with `Protein` / `Ligand` / `Components` inactive placeholders, and updated packet docs (`README.md`, `m5.1-preview-index.md`, `approval-log.md`). Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Clarified reviewer intent that A/B/C/D/E in the M5.1 state sheet are mutually exclusive view states (not simultaneous UI), and simplified only the context-placement tab strip to `FragMap` + `Ligand` per feedback. Updated `desktop/m5.1-viewer-context-placement.svg`, `m5.1-preview-index.md`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Completed M5.1 artifact consistency pass so both state and context images use the same simplified two-tab framework (`FragMap` + `Ligand`). Updated `desktop/m5.1-fragmap-panel-shell-states.svg`, `desktop/m5.1-viewer-context-placement.svg`, packet docs (`README.md`, `m5.1-preview-index.md`, `approval-log.md`), and context records. Validation command evidence for this pass: `git status --short` -> PASS; `rg -n ">Protein</text>|>Components</text>" docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md docs/screenshots/Design_previews/m5-fragmap-controls/README.md` -> PASS (`no matches`).
 
 ## Open Risks
 - Major feature milestones remain incomplete: M5 slices (`M5.1`..`M5.6`) and M6 are not started while M1-M4B are complete.

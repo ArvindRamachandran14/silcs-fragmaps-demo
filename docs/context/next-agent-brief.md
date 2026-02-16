@@ -1,10 +1,10 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (takeover checkpoint refresh)
+Last updated: 2026-02-16 (M5.1 two-tab artifact alignment)
 
 ## Current Milestone Target
 - Active target: `M5.1 FragMap Panel Shell` (M1-M4B validated complete; M5 now runs as slices `M5.1`..`M5.6`).
-- Baseline branch state at takeover: `dev` is synced with `origin/dev` (`0` ahead / `0` behind), latest commit `3cc4129`.
+- Baseline branch state at takeover: `dev` is synced with `origin/dev` (`0` ahead / `0` behind), latest pushed commit `5f45c74`.
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
@@ -30,11 +30,17 @@ Last updated: 2026-02-16 (takeover checkpoint refresh)
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Run `M5.1` Prompt A and obtain explicit `APPROVED UI PREVIEW`.
+1. Finalize `M5.1` Prompt-A review with the current packet artifacts and obtain explicit `APPROVED UI PREVIEW`.
 2. Implement `M5.1` Prompt B only (panel shell; no runtime map engine yet), then run sequential regression.
 3. Repeat Prompt A/B loop for `M5.2` through `M5.6`, one slice at a time.
 4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
 5. Keep `M4C` documented as deferred stretch scope.
+
+## M5.1 Prompt-A Artifact Status
+- State artifact now simplified to `FragMap` + `Ligand` tabs: `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg`.
+- Context-placement artifact uses the same `FragMap` + `Ligand` tabs: `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg`.
+- Packet docs updated: `README.md`, `m5.1-preview-index.md`, `approval-log.md`.
+- Approval token remains pending: `APPROVED UI PREVIEW`.
 
 ## Exact Commands To Run Next
 - `npm run build`
@@ -84,4 +90,4 @@ Last updated: 2026-02-16 (takeover checkpoint refresh)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Start `M5.1` Prompt-A design preview page (default/loading/empty/error/success) and update the M5 packet front page under `docs/screenshots/Design_previews/m5-fragmap-controls/` before any `M5.1` implementation edits.
+- Review the now-consistent M5.1 packet (state page + context page both on `FragMap` + `Ligand`), then obtain explicit `APPROVED UI PREVIEW` before starting Prompt-B implementation.

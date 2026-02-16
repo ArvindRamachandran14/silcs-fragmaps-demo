@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1080" viewBox="0 0 1800 1080" role="img" aria-labelledby="title desc">
+  <title id="title">M5.1 FragMap panel placement in viewer context</title>
+  <desc id="desc">Preview showing where the M5.1 FragMap panel shell appears within the full viewer layout.</desc>
+  <defs>
+    <style>
+      .bg { fill: #eef2f6; }
+      .frame { fill: #ffffff; stroke: #cfd8dc; stroke-width: 2; }
+      .topbar { fill: #263238; }
+      .toptext { font: 600 17px Arial, sans-serif; fill: #eceff1; }
+      .label { font: 700 24px Arial, sans-serif; fill: #102027; }
+      .body { font: 14px Arial, sans-serif; fill: #37474f; }
+      .muted { font: 12px Arial, sans-serif; fill: #607d8b; }
+      .viewport { fill: #d9e8f2; stroke: #90a4ae; stroke-width: 1.5; }
+      .panel { fill: #ffffff; stroke: #90a4ae; stroke-width: 1.5; }
+      .subhead { font: 700 15px Arial, sans-serif; fill: #263238; }
+      .btn { fill: #eceff1; stroke: #b0bec5; stroke-width: 1; }
+      .checkbox { fill: #fff; stroke: #607d8b; stroke-width: 1.2; }
+      .divider { stroke: #e0e0e0; stroke-width: 1; }
+      .callout { fill: #fff8e1; stroke: #ffb74d; stroke-width: 2; }
+      .arrow { stroke: #ef6c00; stroke-width: 3; fill: none; marker-end: url(#arrowHead); }
+      .legend { stroke: #455a64; stroke-width: 0.7; }
+      .hotspot { fill: none; stroke: #ff6f00; stroke-width: 4; stroke-dasharray: 10 7; }
+      .tab-active { fill: #3f51b5; stroke: #2c3a8c; stroke-width: 1; }
+      .tab-inactive { fill: #eceff1; stroke: #c7d0d6; stroke-width: 1; }
+      .tab-text-active { font: 700 12px Arial, sans-serif; fill: #ffffff; }
+      .tab-text { font: 700 12px Arial, sans-serif; fill: #5f6b73; }
+    </style>
+    <marker id="arrowHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef6c00"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1800" height="1080"/>
+  <text class="label" x="50" y="52">M5.1 Prompt A Context View: Where the FragMap Panel Lives in Viewer</text>
+  <text class="muted" x="50" y="78">This figure adds page-level placement context and now matches the same simplified two-tab model used in the state preview.</text>
+
+  <rect class="frame" x="50" y="110" width="1700" height="920" rx="12"/>
+  <rect class="topbar" x="50" y="110" width="1700" height="58" rx="12"/>
+  <text class="toptext" x="76" y="147">SILCS FragMaps Viewer</text>
+  <text class="toptext" x="1410" y="147">Home</text>
+  <text class="toptext" x="1495" y="147">Reset view</text>
+  <text class="toptext" x="1620" y="147">Help</text>
+
+  <rect class="viewport" x="80" y="190" width="1220" height="810" rx="10"/>
+  <text class="subhead" x="106" y="225">Main 3D Viewport (NGL Stage)</text>
+  <text class="body" x="106" y="248">Protein + ligand visualization area remains dominant.</text>
+  <ellipse cx="650" cy="560" rx="340" ry="205" fill="#b9d4e5" opacity="0.8"/>
+  <ellipse cx="650" cy="560" rx="250" ry="145" fill="#8fb8cf" opacity="0.75"/>
+  <text class="muted" x="560" y="565">Protein / ligand scene placeholder</text>
+
+  <rect class="panel" x="1325" y="190" width="395" height="810" rx="10"/>
+  <text class="subhead" x="1350" y="224">Right Controls Panel</text>
+  <line class="divider" x1="1345" y1="240" x2="1700" y2="240"/>
+
+  <rect class="tab-active" x="1350" y="258" width="92" height="26" rx="5"/>
+  <text class="tab-text-active" x="1373" y="275">FragMap</text>
+  <rect class="tab-inactive" x="1448" y="258" width="80" height="26" rx="5"/>
+  <text class="tab-text" x="1473" y="275">Ligand</text>
+
+  <text class="subhead" x="1350" y="312">FragMap Controls (M5.1 shell)</text>
+  <rect class="btn" x="1350" y="328" width="92" height="28" rx="5"/>
+  <text class="body" x="1370" y="347">Hide all</text>
+  <rect class="btn" x="1450" y="328" width="118" height="28" rx="5"/>
+  <text class="body" x="1471" y="347">Reset defaults</text>
+  <rect class="btn" x="1578" y="328" width="92" height="28" rx="5"/>
+  <text class="body" x="1600" y="347">Reset view</text>
+
+  <line class="divider" x1="1350" y1="368" x2="1695" y2="368"/>
+  <text class="subhead" x="1350" y="392">Primary 3</text>
+
+  <rect class="checkbox" x="1350" y="404" width="15" height="15"/>
+  <circle class="legend" cx="1384" cy="412" r="6" fill="#1976d2"/>
+  <text class="body" x="1398" y="416">Generic Donor</text>
+
+  <rect class="checkbox" x="1350" y="434" width="15" height="15"/>
+  <circle class="legend" cx="1384" cy="442" r="6" fill="#d32f2f"/>
+  <text class="body" x="1398" y="446">Generic Acceptor</text>
+
+  <rect class="checkbox" x="1350" y="464" width="15" height="15"/>
+  <circle class="legend" cx="1384" cy="472" r="6" fill="#2e7d32"/>
+  <text class="body" x="1398" y="476">Generic Apolar</text>
+
+  <line class="divider" x1="1350" y1="494" x2="1695" y2="494"/>
+  <text class="subhead" x="1350" y="518">Advanced</text>
+  <text class="muted" x="1690" y="518" text-anchor="end">Collapsed in default</text>
+
+  <rect x="1350" y="538" width="345" height="84" rx="6" fill="#f8fbff" stroke="#bbdefb"/>
+  <text class="body" x="1364" y="564">No FragMaps visible.</text>
+  <text class="muted" x="1364" y="586">M5.1 = placement + shell only (no runtime wiring yet).</text>
+  <text class="muted" x="1364" y="606">Simplified context tabs: FragMap + Ligand.</text>
+
+  <rect class="hotspot" x="1338" y="246" width="362" height="390" rx="10"/>
+
+  <rect class="callout" x="1060" y="740" width="460" height="190" rx="12"/>
+  <text class="subhead" x="1082" y="774">Context Answer</text>
+  <text class="body" x="1082" y="803">The M5.1 preview window is the top section of the right controls panel,</text>
+  <text class="body" x="1082" y="826">adjacent to the main 3D viewport.</text>
+  <text class="body" x="1082" y="849">It does not replace the full viewer page; it is one panel within it.</text>
+  <text class="muted" x="1082" y="878">This image is supplemental context, not a replacement for the existing M5.1 state artifact.</text>
+
+  <path class="arrow" d="M 1510 736 C 1580 680, 1630 630, 1665 590"/>
+</svg>
