@@ -53,6 +53,8 @@
 ## Comments (M5.2b)
 - `M5.2b` is inserted as an isolated behavior slice between `M5.2a` and `M5.3` for protein-cartoon visibility toggle only.
 - Slice intent: improve FragMap/ligand overlap inspection by allowing temporary protein hide/show without changing map or ligand state contracts.
+- Prompt-A artifact set now includes one multi-panel state sheet (`default/loading/empty/error/success`) and an updated slice index for traceability.
+- Open UI questions: none currently.
 
 ## Comments (M5.3)
 - `M5.3` remains pending and starts only after `M5.2b` design/implementation gates close.
@@ -79,3 +81,7 @@
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2a` Prompt A.
 - 2026-02-16: `M5.2a` Prompt B runtime implementation completed and validated; active design gate advanced to `M5.3`.
 - 2026-02-16: Inserted `M5.2b` mini-slice between `M5.2a` and `M5.3` for protein visibility toggle; active gate set to `M5.2b` (`BLOCKED-DESIGN` pending Prompt-A preview artifacts/approval).
+- 2026-02-16: Added `M5.2b` Prompt-A artifact `desktop/m5.2b-protein-visibility-states.svg` and updated `m5.2b-preview-index.md` with checklist coverage, artifact matrix, traceability, and open UI-question status.
+- 2026-02-16: Revised `M5.2b` Prompt-A layout per reviewer feedback so protein visibility uses a tab-row `Show Protein` checkbox to the right of `FragMap`/`Ligand` in all states (replacing in-panel protein row placement).
+- 2026-02-16: Applied minor alignment refinement in `M5.2b` Prompt-A so `Show Protein` text+checkbox are centered as a single cluster within the tab-row pill in all states.
+- 2026-02-16: Applied style consistency refinement in `M5.2b` Prompt-A so `Show Protein` uses the same tab-label font as `FragMap`/`Ligand` and the same checkbox style family as existing row checkboxes (including loading-state disabled variant).

@@ -1,0 +1,237 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1540" viewBox="0 0 1900 1540" role="img" aria-labelledby="title desc">
+  <title id="title">M5.2b protein visibility toggle states</title>
+  <desc id="desc">M5.2b Prompt A preview showing default, loading, empty, error, and success states for the FragMap-tab protein cartoon visibility toggle.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f5f7; }
+      .card { fill: #ffffff; stroke: #cfd8dc; stroke-width: 1.5; }
+      .heading { font: 700 22px Arial, sans-serif; fill: #102027; }
+      .subhead { font: 700 15px Arial, sans-serif; fill: #263238; }
+      .body { font: 13px Arial, sans-serif; fill: #37474f; }
+      .muted { font: 12px Arial, sans-serif; fill: #607d8b; }
+      .button { fill: #eceff1; stroke: #b0bec5; stroke-width: 1; }
+      .button-disabled { fill: #f5f5f5; stroke: #d7d7d7; stroke-width: 1; }
+      .checkbox { fill: #ffffff; stroke: #607d8b; stroke-width: 1.2; }
+      .checkbox-on { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 1.2; }
+      .checkbox-disabled { fill: #f5f5f5; stroke: #b0bec5; stroke-width: 1.2; }
+      .divider { stroke: #e0e0e0; stroke-width: 1; }
+      .helper { fill: #f8fbff; stroke: #bbdefb; stroke-width: 1; }
+      .warn { fill: #fff8e1; stroke: #ffcc80; stroke-width: 1; }
+      .error { fill: #ffebee; stroke: #ef9a9a; stroke-width: 1; }
+      .chip { fill: #eceff1; stroke: #b0bec5; stroke-width: 1; }
+      .legend { stroke: #455a64; stroke-width: 0.6; }
+      .tab-active { fill: #3f51b5; stroke: #2c3a8c; stroke-width: 1; }
+      .tab-inactive { fill: #eceff1; stroke: #c7d0d6; stroke-width: 1; }
+      .tab-text-active { font: 700 12px Arial, sans-serif; fill: #ffffff; }
+      .tab-text { font: 700 12px Arial, sans-serif; fill: #5f6b73; }
+      .tab-text-disabled { font: 700 12px Arial, sans-serif; fill: #90a4ae; }
+      .good { fill: #e8f5e9; stroke: #a5d6a7; stroke-width: 1; }
+      .viewer { fill: #f6f8fa; stroke: #c5d0d9; stroke-width: 1; }
+      .protein { fill: none; stroke: #273b96; stroke-width: 3; stroke-linecap: round; opacity: 0.95; }
+      .mesh { fill: none; stroke: #1976d2; stroke-width: 1.2; }
+      .mesh2 { fill: none; stroke: #d32f2f; stroke-width: 1.2; }
+      .mesh3 { fill: none; stroke: #2e7d32; stroke-width: 1.2; }
+      .ghost { fill: none; stroke: #b0bec5; stroke-width: 1.2; stroke-dasharray: 4 3; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1900" height="1540"/>
+  <text class="heading" x="48" y="44">M5.2b Prompt A: Protein Visibility Toggle (FragMap Tab)</text>
+  <text class="muted" x="48" y="68">Scope: protein cartoon show/hide only. Map toggle/iso behavior remains unchanged from M5.2/M5.2a.</text>
+
+  <!-- Panel A: Default -->
+  <g transform="translate(40,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">A. Default</text>
+    <text class="muted" x="20" y="54">Protein toggle defaults to ON</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+    <rect class="chip" x="208" y="70" width="154" height="26" rx="13"/>
+    <text class="tab-text" x="236" y="87">Show Protein</text>
+    <rect class="checkbox" x="320" y="75" width="16" height="16"/>
+    <text class="body" x="324" y="88">✓</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="39" y="128">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="body" x="146" y="128">Reset defaults</text>
+    <rect class="button" x="255" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="276" y="128">Reset view</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="180">FragMap Rows</text>
+
+    <rect class="checkbox" x="20" y="196" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="204" r="6" fill="#1976d2"/>
+    <text class="body" x="68" y="208">Generic Donor</text>
+
+    <rect class="checkbox" x="20" y="228" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="236" r="6" fill="#d32f2f"/>
+    <text class="body" x="68" y="240">Generic Acceptor</text>
+
+    <rect class="checkbox" x="20" y="260" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="268" r="6" fill="#2e7d32"/>
+    <text class="body" x="68" y="272">Generic Apolar</text>
+
+    <rect class="viewer" x="20" y="296" width="520" height="210" rx="6"/>
+    <path class="protein" d="M40 468 C120 350, 170 478, 235 356 C282 318, 350 456, 512 336"/>
+    <text class="muted" x="32" y="316">Protein cartoon is visible. No maps are visible.</text>
+  </g>
+
+  <!-- Panel B: Loading -->
+  <g transform="translate(670,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">B. Loading</text>
+    <text class="muted" x="20" y="54">Viewer startup/loading state; toggle disabled until ready</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+    <rect class="button-disabled" x="208" y="70" width="154" height="26" rx="13"/>
+    <text class="tab-text-disabled" x="236" y="87">Show Protein</text>
+    <rect class="checkbox-disabled" x="320" y="75" width="16" height="16"/>
+
+    <rect class="button-disabled" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="muted" x="39" y="128">Hide all</text>
+    <rect class="button-disabled" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="muted" x="146" y="128">Reset defaults</text>
+    <rect class="button-disabled" x="255" y="108" width="95" height="30" rx="5"/>
+    <text class="muted" x="276" y="128">Reset view</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="180">FragMap Rows</text>
+
+    <rect class="warn" x="20" y="196" width="520" height="136" rx="6"/>
+    <text class="body" x="36" y="222">Loading viewer assets...</text>
+    <text class="muted" x="36" y="244">Show Protein remains non-interactive until startup reaches ready state.</text>
+    <text class="muted" x="36" y="266">No map or ligand behavior changes are introduced in this slice.</text>
+
+    <rect class="viewer" x="20" y="348" width="520" height="158" rx="6"/>
+    <text class="muted" x="32" y="378">Viewport placeholder shown during loading.</text>
+  </g>
+
+  <!-- Panel C: Empty -->
+  <g transform="translate(1300,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">C. Empty</text>
+    <text class="muted" x="20" y="54">Protein OFF and no visible FragMaps</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+    <rect class="chip" x="208" y="70" width="154" height="26" rx="13"/>
+    <text class="tab-text" x="236" y="87">Show Protein</text>
+    <rect class="checkbox" x="320" y="75" width="16" height="16"/>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="39" y="128">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="body" x="146" y="128">Reset defaults</text>
+    <rect class="button" x="255" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="276" y="128">Reset view</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="180">FragMap Rows</text>
+
+    <rect class="helper" x="20" y="196" width="520" height="112" rx="6"/>
+    <text class="body" x="36" y="222">No protein and no visible FragMaps.</text>
+    <text class="muted" x="36" y="244">Use map checkboxes to show FragMaps while keeping protein hidden for overlap inspection.</text>
+    <text class="muted" x="36" y="266">Camera remains unchanged when protein visibility toggles.</text>
+
+    <rect class="viewer" x="20" y="324" width="520" height="182" rx="6"/>
+    <text class="muted" x="32" y="352">Viewport mock: ligand-focused view without protein noise.</text>
+  </g>
+
+  <!-- Panel D: Error -->
+  <g transform="translate(40,820)">
+    <rect class="card" x="0" y="0" width="905" height="680" rx="8"/>
+    <text class="subhead" x="20" y="34">D. Error</text>
+    <text class="muted" x="20" y="54">Protein visibility update fails; non-blocking and map rows stay available</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+    <rect class="chip" x="210" y="70" width="168" height="26" rx="13"/>
+    <text class="tab-text" x="244" y="87">Show Protein</text>
+    <rect class="checkbox" x="328" y="75" width="16" height="16"/>
+    <text class="body" x="332" y="88">✓</text>
+
+    <rect class="error" x="20" y="108" width="865" height="58" rx="6"/>
+    <text class="body" x="36" y="132">Protein visibility update failed. Try again; map and ligand controls remain usable.</text>
+    <text class="muted" x="36" y="152">Failure is local to protein toggle; no route reload and no map-state reset.</text>
+
+    <rect class="viewer" x="20" y="184" width="470" height="300" rx="6"/>
+    <path class="protein" d="M50 430 C110 260, 170 440, 230 280 C280 210, 330 390, 450 250"/>
+    <polyline class="mesh" points="120,350 160,318 218,348 184,404 128,392 120,350"/>
+    <line class="mesh" x1="160" y1="318" x2="184" y2="404"/>
+    <line class="mesh" x1="128" y1="392" x2="218" y2="348"/>
+    <text class="muted" x="32" y="204">Viewer mock: one map remains visible and unaffected.</text>
+
+    <line class="divider" x1="510" y1="184" x2="885" y2="184"/>
+    <text class="subhead" x="510" y="210">Rows</text>
+    <rect class="checkbox-on" x="510" y="226" width="16" height="16"/>
+    <text class="body" x="514" y="239">✓</text>
+    <circle class="legend" cx="544" cy="234" r="6" fill="#1976d2"/>
+    <text class="body" x="558" y="238">Generic Donor</text>
+    <text class="muted" x="870" y="238" text-anchor="end">still visible</text>
+
+    <rect class="chip" x="510" y="272" width="375" height="28" rx="14"/>
+    <text class="muted" x="522" y="291">Retry UX styling can be finalized in M5.6 reliability slice.</text>
+  </g>
+
+  <!-- Panel E: Success -->
+  <g transform="translate(985,820)">
+    <rect class="card" x="0" y="0" width="875" height="680" rx="8"/>
+    <text class="subhead" x="20" y="34">E. Success</text>
+    <text class="muted" x="20" y="54">Protein hidden in-place; FragMaps/ligand remain for overlap inspection</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+    <rect class="chip" x="210" y="70" width="168" height="26" rx="13"/>
+    <text class="tab-text" x="244" y="87">Show Protein</text>
+    <rect class="checkbox" x="328" y="75" width="16" height="16"/>
+
+    <rect class="viewer" x="20" y="108" width="510" height="340" rx="6"/>
+    <path class="ghost" d="M40 392 C95 222, 170 430, 236 264 C292 196, 360 360, 504 226"/>
+
+    <polyline class="mesh" points="140,325 182,294 242,326 206,387 146,375 140,325"/>
+    <line class="mesh" x1="182" y1="294" x2="206" y2="387"/>
+    <line class="mesh" x1="146" y1="375" x2="242" y2="326"/>
+
+    <polyline class="mesh2" points="250,282 282,262 326,286 300,334 254,324 250,282"/>
+    <line class="mesh2" x1="282" y1="262" x2="300" y2="334"/>
+    <line class="mesh2" x1="254" y1="324" x2="326" y2="286"/>
+
+    <polyline class="mesh3" points="320,350 356,330 404,356 372,410 324,398 320,350"/>
+    <line class="mesh3" x1="356" y1="330" x2="372" y2="410"/>
+    <line class="mesh3" x1="324" y1="398" x2="404" y2="356"/>
+
+    <text class="muted" x="34" y="130">Dashed protein path indicates hidden state in preview; wireframes remain visible.</text>
+
+    <line class="divider" x1="550" y1="108" x2="855" y2="108"/>
+    <text class="subhead" x="550" y="136">Rows</text>
+
+    <rect class="checkbox-on" x="550" y="156" width="16" height="16"/>
+    <text class="body" x="554" y="169">✓</text>
+    <circle class="legend" cx="584" cy="164" r="6" fill="#1976d2"/>
+    <text class="body" x="598" y="168">Generic Donor</text>
+
+    <rect class="checkbox-on" x="550" y="188" width="16" height="16"/>
+    <text class="body" x="554" y="201">✓</text>
+    <circle class="legend" cx="584" cy="196" r="6" fill="#d32f2f"/>
+    <text class="body" x="598" y="200">Generic Acceptor</text>
+
+    <rect class="good" x="550" y="228" width="305" height="80" rx="6"/>
+    <text class="body" x="566" y="254">Inspection mode success:</text>
+    <text class="muted" x="566" y="276">Protein OFF helps evaluate ligand/FragMap overlap.</text>
+    <text class="muted" x="566" y="296">Map visibility, iso values, and camera are unchanged.</text>
+  </g>
+</svg>

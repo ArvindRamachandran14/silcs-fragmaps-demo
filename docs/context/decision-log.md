@@ -5,6 +5,52 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Enforce tab-label font and checkbox-style parity for M5.2b `Show Protein`
+- Decision: update the `M5.2b` Prompt-A artifact so `Show Protein` uses the same tab-label font class as `FragMap` and `Ligand`, and render the `Show Protein` control with the same checkbox style family used for existing map/ligand rows (including a disabled variant during loading).
+- Why: reviewer requested visual consistency and explicit reuse of established UI control styling.
+- Alternatives considered:
+  - keep prior `body`/`muted` text classes for `Show Protein`;
+  - keep prior green-highlight `checkbox-on` style for `Show Protein` checked state.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: docs-only visual refinement; no runtime behavior impact; design gate remains `BLOCKED-DESIGN` pending explicit `APPROVED UI PREVIEW`.
+
+### 2026-02-16 - Center `Show Protein` text+checkbox cluster inside M5.2b tab-row pill
+- Decision: keep the `Show Protein` control in the tab row, and center the text plus checkbox as one grouped cluster within the pill (with small fixed spacing between label and checkbox) across all M5.2b state panels.
+- Why: reviewer requested visual parity with centered `FragMap`/`Ligand` tab labels and clearer alignment consistency.
+- Alternatives considered:
+  - keep left-aligned label with right-anchored checkbox;
+  - center text only while keeping checkbox pinned to pill edge.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`
+- Validation/risk impact: docs-only visual refinement; no runtime behavior impact; design gate remains `BLOCKED-DESIGN` pending explicit `APPROVED UI PREVIEW`.
+
+### 2026-02-16 - Place M5.2b protein toggle in tab row as `Show Protein` control
+- Decision: revise `M5.2b` Prompt-A preview so protein visibility is controlled by a tab-row `Show Protein` checkbox positioned to the right of `FragMap` and `Ligand`, instead of a separate in-panel row.
+- Why: reviewer clarified the intended control placement and requested explicit alignment before approving the design gate.
+- Alternatives considered:
+  - keep protein visibility as a top row within FragMap rows;
+  - keep both tab-row and in-panel controls (duplicate affordance).
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`
+- Validation/risk impact: docs-only Prompt-A revision; design gate remains `BLOCKED-DESIGN` pending explicit `APPROVED UI PREVIEW`.
+
+### 2026-02-16 - Execute M5.2b Prompt A as one multi-panel state sheet with no open UI questions
+- Decision: represent `M5.2b` Prompt-A coverage in one desktop multi-panel SVG (`default/loading/empty/error/success`) and keep open UI questions explicitly empty for this slice.
+- Why: this satisfies the per-slice design-gate requirement while keeping the protein-visibility change isolated and reviewable before runtime implementation.
+- Alternatives considered:
+  - split `M5.2b` previews into separate per-state images;
+  - defer explicit loading/error panel treatment and provide only default/success.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: design gate remains `BLOCKED-DESIGN` until explicit `APPROVED UI PREVIEW`; no runtime behavior changed in this step.
+
 ### 2026-02-16 - Insert `M5.2b` mini-slice for protein visibility toggle before `M5.3`
 - Decision: add a dedicated `M5.2b` slice between `M5.2a` and `M5.3` for one behavior only: in-place `Protein cartoon` show/hide in the FragMap tab (default `ON`), with no map/ligand behavior expansion in the same slice.
 - Why: reviewer feedback prioritized overlap inspection between ligand and FragMaps; isolating this behavior keeps risk and gate evidence separate from upcoming Advanced/Exclusion behavior work.

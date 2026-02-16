@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.2b docs insertion complete; next is M5.2b Prompt A)
+Last updated: 2026-02-16 (M5.2b Prompt-A preview revised for tab-label font parity and checkbox-style parity; awaiting approval)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -101,7 +101,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Add implementation and validation only if stretch scope is reactivated.
 
 ### M5 FragMap Controls (Sliced: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6)
-- Status: `in progress (M5.1, M5.2, and M5.2a Prompt B complete; next slice is M5.2b Prompt A)`
+- Status: `in progress (M5.1, M5.2, and M5.2a Prompt B complete; M5.2b Prompt A complete and pending approval)`
 - Evidence:
   - M5 execution is now locked to eight slices (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
@@ -112,7 +112,18 @@ Audit type: one-time reconstruction audit after local thread-history loss
     - Added M5 wireframe render debug telemetry (`window.__viewerM5Debug.fragMapRenderById`) for deterministic validator evidence.
     - Added M5.2a validator script `scripts/validate-m5-2a.js` and command wiring in `package.json` (`validate:m5.2a`, `prevalidate:m5.2a`).
     - Extended `scripts/run_checks.sh` to include `validate:m5.2a`.
-  - Active next scope is `M5.2b` Prompt A (design preview only).
+  - `M5.2b` Prompt-A preview artifacts are now created:
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg` (multi-panel default/loading/empty/error/success page).
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md` updated with checklist/artifact matrix/traceability.
+    - Packet front-page/log updates in `README.md` and `approval-log.md`.
+  - `M5.2b` Prompt-A artifact revision applied from reviewer feedback:
+    - moved protein control from in-panel rows to a tab-row `Show Protein` checkbox control positioned to the right of `FragMap`/`Ligand` across all states.
+    - synchronized wording in `m5.2b-preview-index.md` to the same placement contract.
+    - centered the `Show Protein` label+checkbox group within its pill in all state panels, with explicit spacing between label and checkbox.
+    - matched `Show Protein` text to the same tab-label font class used by `FragMap`/`Ligand`.
+    - switched `Show Protein` checkbox rendering to the same checkbox style family used by map/ligand rows (plus loading-disabled variant).
+  - Open UI questions for `M5.2b` Prompt A: none currently.
+  - Active next scope is explicit review and `APPROVED UI PREVIEW` token for `M5.2b` before Prompt B.
   - `M5.2` Prompt-A artifacts were added (`README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`) and now reflect the reviewer-locked behavior set: loading row lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
   - `M5.2` Prompt-B runtime implementation is now in place:
     - Primary-3 rows are interactive in `src/components/ControlsPanel.vue`, with loading-lock disable behavior, inline row status text, and row-level error display hooks.
@@ -265,6 +276,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2a` Prompt A; updated packet gate state and approval records (`README.md`, `m5.2a-preview-index.md`, `approval-log.md`). Validation commands were not run in this update (`not run`; approval-record/docs update only).
 - 2026-02-16: Implemented `M5.2a` Prompt B (wireframe rendering runtime pass only). Updated `src/viewer/nglStage.ts` to create wireframe surface reps for FragMaps and enforce fixed gray Exclusion-map rendering; added `scripts/validate-m5-2a.js`, `package.json` script wiring (`validate:m5.2a`, `prevalidate:m5.2a`), and extended `scripts/run_checks.sh`. Validation evidence: `npm run build` -> PASS; `bash scripts/run_checks.sh` -> PASS (through `validate:m5.2a`).
 - 2026-02-16: Inserted `M5.2b` (`Protein visibility toggle`) between `M5.2a` and `M5.3` in plans/prompts/specs/preview docs so the new behavior is design-gated as an isolated slice. Updated `docs/plans/execution-plan.md`, `docs/plans/milestone-inventory.md`, `prompts/implementation.md`, `docs/specs/viewer-core-spec.md`, `docs/specs/fragmap-controls-spec.md`, and M5 preview packet metadata (`README.md`, `approval-log.md`, `m5.2b-preview-index.md`, `m5.3-preview-index.md`). Validation commands were not run (`not run`; docs-only planning/spec alignment update).
+- 2026-02-16: Executed `M5.2b` Prompt A (design-preview only). Added `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg` and updated packet docs (`m5.2b-preview-index.md`, `README.md`, `approval-log.md`) with full checklist coverage and traceability. Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Revised `M5.2b` Prompt-A preview layout per reviewer feedback: moved protein control to a tab-row `Show Protein` checkbox to the right of `FragMap`/`Ligand` in `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`, and synchronized wording in `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`. Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Applied minor `M5.2b` Prompt-A visual refinement: centered the tab-row `Show Protein` text+checkbox cluster within the pill across all five state panels (including checked-glyph alignment). Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Applied `M5.2b` Prompt-A visual consistency refinements: changed `Show Protein` text to use the same tab-label font class as `FragMap`/`Ligand`, and changed `Show Protein` checkbox visuals to the same checkbox style family used by existing map/ligand rows (with disabled variant during loading). Updated `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`, `m5.2b-preview-index.md`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
 
 ## Open Risks
 - Major feature milestones remain incomplete: M5 implementation slices (`M5.2b` through `M5.6`) and M6 are not started while M1-M4B and M5.1-M5.2a are complete.

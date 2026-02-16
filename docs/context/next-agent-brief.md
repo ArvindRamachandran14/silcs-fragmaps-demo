@@ -1,9 +1,9 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2b inserted in docs; next is M5.2b Prompt A)
+Last updated: 2026-02-16 (M5.2b Prompt-A artifacts revised for tab-label font/checkbox-style parity; awaiting approval)
 
 ## Current Milestone Target
-- Active target: `M5.2b Protein Visibility Toggle` Prompt A (M1-M4B and M5.1-M5.2a validated complete; M5 continues as slices `M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+- Active target: `M5.2b Protein Visibility Toggle` design gate review/approval (Prompt A complete; waiting for explicit `APPROVED UI PREVIEW` before Prompt B).
 - Baseline branch state at takeover: `M5.2a` Prompt-B implementation and validator wiring are complete in the working tree with green sequential regression evidence through `validate:m5.2a`.
 - M5.2 Prompt-A packet is approved, and M5.2 Prompt-B runtime implementation is complete with reviewer-locked behavior set (B/A/B).
 
@@ -31,11 +31,24 @@ Last updated: 2026-02-16 (M5.2b inserted in docs; next is M5.2b Prompt A)
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.2b` Prompt A (design preview only) and update the M5 packet for protein visibility toggle behavior.
-2. Obtain explicit `APPROVED UI PREVIEW` for `M5.2b`, then implement `M5.2b` Prompt B only within slice scope.
+1. Obtain explicit `APPROVED UI PREVIEW` for `M5.2b`.
+2. Implement `M5.2b` Prompt B only within slice scope after approval.
 3. Execute `M5.3` Prompt A (design preview only) after M5.2b gates close.
 4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
 5. Keep `M4C` documented as deferred stretch scope.
+
+## M5.2b Design Preview Status
+- Prompt-A artifacts now exist:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`
+- Reviewer feedback revision has been applied in the active Prompt-A artifact:
+  - protein control is now a tab-row `Show Protein` checkbox to the right of `FragMap` and `Ligand` in all five state panels.
+  - `Show Protein` label+checkbox is centered as a single cluster within the pill across all five state panels.
+  - `Show Protein` now uses the same tab-label font as `FragMap`/`Ligand`, and the checkbox matches the existing map/ligand row checkbox style family.
+- Packet docs are updated for active gate tracking:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Approval state remains `BLOCKED-DESIGN` until explicit in-thread `APPROVED UI PREVIEW`.
 
 ## M5.1 Implementation Status
 - `M5.1` Prompt B is implemented in code:
@@ -125,4 +138,4 @@ Last updated: 2026-02-16 (M5.2b inserted in docs; next is M5.2b Prompt A)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.2b` Prompt A (design preview only) and produce/update the M5.2b preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/`, then request explicit `APPROVED UI PREVIEW`.
+- Review the `M5.2b` Prompt-A artifacts and provide explicit `APPROVED UI PREVIEW`; once approved, start `M5.2b` Prompt B implementation only.

@@ -10,7 +10,7 @@ This packet tracks the M5 sliced design gates under `docs/screenshots/Design_pre
 ## Scope for This Packet Revision
 In scope:
 - Historical record: completed `M5.2a` Prompt-A wireframe preview artifacts and approval evidence.
-- Next required design-gate scope: `M5.2b` Prompt-A previews only.
+- Current design-gate scope: `M5.2b` Prompt-A previews and review handoff.
 
 Out of scope in this revision:
 - `M5.4+` behavior:
@@ -26,7 +26,8 @@ Out of scope in this revision:
 - `desktop/m5.2-primary3-visibility-states.svg`: single multi-panel `M5.2` page covering default/loading/empty/error/success for Primary-3 visibility engine behavior.
 - `m5.2a-preview-index.md`: `M5.2a` state checklist, artifact matrix, open questions, and traceability (wireframe rendering contract).
 - `desktop/m5.2a-wireframe-rendering-states.svg`: single multi-panel `M5.2a` page covering default/loading/empty/error/success for wireframe rendering conversion (including fixed gray `Exclusion Map` style).
-- `m5.2b-preview-index.md`: `M5.2b` planned state checklist for protein visibility toggle previews.
+- `m5.2b-preview-index.md`: `M5.2b` state checklist, artifact matrix, open UI questions, and traceability.
+- `desktop/m5.2b-protein-visibility-states.svg`: single multi-panel `M5.2b` page covering default/loading/empty/error/success for protein visibility toggle behavior.
 - `m5.3-preview-index.md`: `M5.3` planned state checklist for the slice after `M5.2b` closure.
 - `approval-log.md`: gate decisions and review notes.
 
