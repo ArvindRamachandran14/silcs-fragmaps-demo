@@ -1,15 +1,15 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2b Prompt-A artifacts revised for tab-label font/checkbox-style parity; awaiting approval)
+Last updated: 2026-02-16 (M5.2b Prompt-B complete; start M5.3 Prompt A)
 
 ## Current Milestone Target
-- Active target: `M5.2b Protein Visibility Toggle` design gate review/approval (Prompt A complete; waiting for explicit `APPROVED UI PREVIEW` before Prompt B).
-- Baseline branch state at takeover: `M5.2a` Prompt-B implementation and validator wiring are complete in the working tree with green sequential regression evidence through `validate:m5.2a`.
-- M5.2 Prompt-A packet is approved, and M5.2 Prompt-B runtime implementation is complete with reviewer-locked behavior set (B/A/B).
+- Active target: `M5.3 Advanced Rows + Exclusion Map` Prompt A design-preview generation only.
+- Baseline branch state at takeover: `M5.2b` Prompt-B implementation and validator wiring are complete in the working tree with green sequential regression evidence through `validate:m5.2b`.
+- M5.2 and M5.2a runtime slices are complete and green; M5.2b protein visibility runtime slice is now complete and green.
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, and `M5.2a` Prompt B are complete, and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, `M5.2a`, and `M5.2b` Prompt B are complete, and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -31,9 +31,9 @@ Last updated: 2026-02-16 (M5.2b Prompt-A artifacts revised for tab-label font/ch
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Obtain explicit `APPROVED UI PREVIEW` for `M5.2b`.
-2. Implement `M5.2b` Prompt B only within slice scope after approval.
-3. Execute `M5.3` Prompt A (design preview only) after M5.2b gates close.
+1. Execute `M5.3` Prompt A only (design-preview packet update for Advanced rows + Exclusion behavior).
+2. Obtain explicit `APPROVED UI PREVIEW` for `M5.3`.
+3. Execute `M5.3` Prompt B only after approval and run sequential regression through the active gate.
 4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
 5. Keep `M4C` documented as deferred stretch scope.
 
@@ -48,7 +48,18 @@ Last updated: 2026-02-16 (M5.2b Prompt-A artifacts revised for tab-label font/ch
 - Packet docs are updated for active gate tracking:
   - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
   - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
-- Approval state remains `BLOCKED-DESIGN` until explicit in-thread `APPROVED UI PREVIEW`.
+- Approval state: `APPROVED UI PREVIEW` (Prompt B completed).
+
+## M5.2b Implementation Status
+- `M5.2b` Prompt B is implemented in code:
+  - `src/components/ControlsPanel.vue`: tab-row `Show Protein` control added with dedicated emit path (`toggle-protein`) and diagnostics probe.
+  - `src/pages/ViewerPage.vue`: protein toggle wiring for desktop/mobile panels with in-place update guards and snapshot sync.
+  - `src/store/modules/viewer.ts`: canonical `proteinVisible` state + `setProteinVisible` mutation, default ON via loading reset.
+  - `src/viewer/nglStage.ts`: `setProteinVisibility` API with camera/transform preservation and debug visibility telemetry.
+  - `scripts/validate-m5-2b.js`, `package.json`, `scripts/run_checks.sh`: new validator/commands and sequential runner coverage.
+- Gate evidence:
+  - First `bash scripts/run_checks.sh` attempt -> FAIL at `validate:m5.2b` only (validator hidden-selector visibility expectation bug).
+  - After validator selector-state fix (`state: "attached"`), `bash scripts/run_checks.sh` -> PASS through `validate:m5.2b`.
 
 ## M5.1 Implementation Status
 - `M5.1` Prompt B is implemented in code:
@@ -101,6 +112,8 @@ Last updated: 2026-02-16 (M5.2b Prompt-A artifacts revised for tab-label font/ch
   - Current signal: PASS (first sandboxed attempt `ENV-BLOCKED` on localhost bind; unsandboxed rerun passed after validator timing wait fix).
 - `npm run validate:m5.2a`
   - Current signal: PASS.
+- `npm run validate:m5.2b`
+  - Current signal: PASS (initial validator-only failure corrected via hidden-selector wait-state fix; final sequential run PASS).
 
 ## Stop/Go Criteria For M5
 - Stop if the active slice Design Preview Gate is not approved (`BLOCKED-DESIGN`).
@@ -114,7 +127,7 @@ Last updated: 2026-02-16 (M5.2b Prompt-A artifacts revised for tab-label font/ch
 
 ## Known Divergences To Resolve Before M5
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
-- FragMap runtime behavior beyond M5.2a remains unimplemented (`M5.2b` protein visibility toggle, `M5.3` Advanced/Exclusion behavior, `M5.4` per-map iso controls, `M5.5` bulk actions, `M5.6` reliability hardening).
+- FragMap runtime behavior beyond M5.2b remains unimplemented (`M5.3` Advanced/Exclusion behavior, `M5.4` per-map iso controls, `M5.5` bulk actions, `M5.6` reliability hardening).
 - Performance evidence framework (`docs/specs/performance-and-validation-spec.md`) is unimplemented.
 - Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
 
@@ -138,4 +151,4 @@ Last updated: 2026-02-16 (M5.2b Prompt-A artifacts revised for tab-label font/ch
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Review the `M5.2b` Prompt-A artifacts and provide explicit `APPROVED UI PREVIEW`; once approved, start `M5.2b` Prompt B implementation only.
+- Execute `M5.3` Prompt A only: produce/update the `M5.3` design-preview page (default/loading/empty/error/success) and packet docs under `docs/screenshots/Design_previews/m5-fragmap-controls/`, then wait for explicit `APPROVED UI PREVIEW`.

@@ -13,6 +13,7 @@ export interface ViewerState {
   selectedLigandId: string;
   selectedLigandLabel: string;
   ligandSwitchLoading: boolean;
+  proteinVisible: boolean;
   baselinePoseVisible: boolean;
   refinedPoseVisible: boolean;
   baselinePoseDisabled: boolean;
@@ -41,6 +42,7 @@ function applyDefaultViewerState(targetState: ViewerState): void {
   targetState.selectedLigandId = DEFAULT_LIGAND_ID;
   targetState.selectedLigandLabel = DEFAULT_LIGAND_LABEL;
   targetState.ligandSwitchLoading = false;
+  targetState.proteinVisible = true;
   targetState.baselinePoseVisible = true;
   targetState.refinedPoseVisible = false;
   targetState.baselinePoseDisabled = false;
@@ -59,6 +61,7 @@ const state: ViewerState = {
   selectedLigandId: DEFAULT_LIGAND_ID,
   selectedLigandLabel: DEFAULT_LIGAND_LABEL,
   ligandSwitchLoading: false,
+  proteinVisible: true,
   baselinePoseVisible: true,
   refinedPoseVisible: false,
   baselinePoseDisabled: false,
@@ -116,6 +119,9 @@ const mutations: MutationTree<ViewerState> = {
   },
   setLigandSwitchLoading(currentState, loading: boolean) {
     currentState.ligandSwitchLoading = loading;
+  },
+  setProteinVisible(currentState, visible: boolean) {
+    currentState.proteinVisible = visible;
   },
   setError(currentState, message: string) {
     currentState.status = "error";

@@ -19,10 +19,10 @@
 - Decision: `APPROVED UI PREVIEW`
 
 ## Review Record (M5.2b)
-- Date: Pending
-- Reviewer: Pending
-- Thread/message reference: Pending
-- Decision: `BLOCKED-DESIGN`
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
+- Decision: `APPROVED UI PREVIEW`
 
 ## Review Record (M5.3)
 - Date: Pending
@@ -55,6 +55,7 @@
 - Slice intent: improve FragMap/ligand overlap inspection by allowing temporary protein hide/show without changing map or ligand state contracts.
 - Prompt-A artifact set now includes one multi-panel state sheet (`default/loading/empty/error/success`) and an updated slice index for traceability.
 - Open UI questions: none currently.
+- Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now unblocked for `M5.2b`.
 
 ## Comments (M5.3)
 - `M5.3` remains pending and starts only after `M5.2b` design/implementation gates close.
@@ -85,3 +86,4 @@
 - 2026-02-16: Revised `M5.2b` Prompt-A layout per reviewer feedback so protein visibility uses a tab-row `Show Protein` checkbox to the right of `FragMap`/`Ligand` in all states (replacing in-panel protein row placement).
 - 2026-02-16: Applied minor alignment refinement in `M5.2b` Prompt-A so `Show Protein` text+checkbox are centered as a single cluster within the tab-row pill in all states.
 - 2026-02-16: Applied style consistency refinement in `M5.2b` Prompt-A so `Show Protein` uses the same tab-label font as `FragMap`/`Ligand` and the same checkbox style family as existing row checkboxes (including loading-state disabled variant).
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2b` Prompt A.

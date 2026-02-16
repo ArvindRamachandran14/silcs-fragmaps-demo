@@ -4,13 +4,13 @@ This packet tracks the M5 sliced design gates under `docs/screenshots/Design_pre
 
 ## Gate Status
 - Active slice: `M5.2b Protein Visibility Toggle`
-- Gate state: `BLOCKED-DESIGN`
-- Required token to unblock Prompt B: `APPROVED UI PREVIEW` (pending for `M5.2b`)
+- Gate state: `APPROVED UI PREVIEW` (Prompt A approved; Prompt B unblocked)
+- Required token to unblock Prompt B: satisfied for `M5.2b`
 
 ## Scope for This Packet Revision
 In scope:
 - Historical record: completed `M5.2a` Prompt-A wireframe preview artifacts and approval evidence.
-- Current design-gate scope: `M5.2b` Prompt-A previews and review handoff.
+- Current execution scope: `M5.2b` Prompt B runtime implementation only (Prompt A approved).
 
 Out of scope in this revision:
 - `M5.4+` behavior:
@@ -32,4 +32,4 @@ Out of scope in this revision:
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Produce/review `M5.2b` Prompt-A artifacts and provide explicit `APPROVED UI PREVIEW` before `M5.2b` Prompt B implementation begins.
+- Execute `M5.2b` Prompt B implementation only (protein visibility toggle runtime behavior) within approved slice scope.

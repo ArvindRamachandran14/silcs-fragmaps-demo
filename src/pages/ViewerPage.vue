@@ -53,6 +53,8 @@
             :selected-ligand-id="viewerState.selectedLigandId"
             :selected-ligand-label="viewerState.selectedLigandLabel"
             :ligand-switch-loading="viewerState.ligandSwitchLoading"
+            :protein-visible="viewerState.proteinVisible"
+            :protein-toggle-disabled="viewerStatus !== 'ready' || proteinVisibilityLoading"
             :baseline-pose-visible="viewerState.baselinePoseVisible"
             :refined-pose-visible="viewerState.refinedPoseVisible"
             :baseline-pose-disabled="viewerState.baselinePoseDisabled"
@@ -68,6 +70,7 @@
             :frag-map-error-by-id="fragMapErrorById"
             :camera-baseline="viewerState.cameraBaseline"
             :camera-snapshot="viewerState.cameraSnapshot"
+            @toggle-protein="handleProteinToggle"
             @toggle-fragmap="handleFragMapToggle"
             @toggle-pose="handlePoseToggle"
             @select-featured-ligand="handleFeaturedLigandSwitch"
@@ -90,6 +93,8 @@
           :selected-ligand-id="viewerState.selectedLigandId"
           :selected-ligand-label="viewerState.selectedLigandLabel"
           :ligand-switch-loading="viewerState.ligandSwitchLoading"
+          :protein-visible="viewerState.proteinVisible"
+          :protein-toggle-disabled="viewerStatus !== 'ready' || proteinVisibilityLoading"
           :baseline-pose-visible="viewerState.baselinePoseVisible"
           :refined-pose-visible="viewerState.refinedPoseVisible"
           :baseline-pose-disabled="viewerState.baselinePoseDisabled"
@@ -105,6 +110,7 @@
           :frag-map-error-by-id="fragMapErrorById"
           :camera-baseline="viewerState.cameraBaseline"
           :camera-snapshot="viewerState.cameraSnapshot"
+          @toggle-protein="handleProteinToggle"
           @toggle-fragmap="handleFragMapToggle"
           @toggle-pose="handlePoseToggle"
           @select-featured-ligand="handleFeaturedLigandSwitch"
@@ -262,6 +268,7 @@ export default Vue.extend({
       featuredLigands: [] as FeaturedLigandChip[],
       showToast: false,
       toastMessage: "",
+      proteinVisibilityLoading: false,
       fragMapPrimaryRuntime: {} as Record<string, FragMapPrimaryRuntimeState>,
       fragMapLoadingRowId: null as string | null,
     };
@@ -452,6 +459,7 @@ export default Vue.extend({
       this.catastrophicError = null;
       this.manifest = null;
       this.featuredLigands = [];
+      this.proteinVisibilityLoading = false;
       this.resetFragMapPrimaryRuntime();
       this.$store.commit("viewer/setLoading");
 
@@ -555,6 +563,28 @@ export default Vue.extend({
     },
     async handlePoseToggle(payload: { kind: PoseKind; visible: boolean }) {
       await this.setPoseVisibility(payload.kind, payload.visible);
+    },
+    async handleProteinToggle(payload: { visible: boolean }) {
+      if (!this.stageController || this.viewerStatus !== "ready" || this.proteinVisibilityLoading) {
+        return;
+      }
+
+      if (this.viewerState.proteinVisible === payload.visible) {
+        return;
+      }
+
+      this.proteinVisibilityLoading = true;
+      try {
+        this.stageController.setProteinVisibility(payload.visible);
+        this.$store.commit("viewer/setProteinVisible", payload.visible);
+        this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.toastMessage = `Protein visibility update failed: ${message}`;
+        this.showToast = true;
+      } finally {
+        this.proteinVisibilityLoading = false;
+      }
     },
     async handleFragMapToggle(payload: { id: string; visible: boolean }) {
       if (!this.stageController || !this.manifest || this.viewerStatus !== "ready") {

@@ -1,30 +1,42 @@
 <template>
   <aside class="controls-panel" data-test-id="controls-panel">
-    <div class="controls-panel__tabs" role="tablist" aria-label="Right controls tabs">
-      <button
-        type="button"
-        role="tab"
-        class="controls-panel__tab"
-        :class="{ 'controls-panel__tab--active': activeTab === 'fragmap' }"
-        :aria-selected="activeTab === 'fragmap' ? 'true' : 'false'"
-        aria-controls="controls-tab-panel-fragmap"
-        data-test-id="controls-tab-fragmap"
-        @click="activeTab = 'fragmap'"
-      >
-        FragMap
-      </button>
-      <button
-        type="button"
-        role="tab"
-        class="controls-panel__tab"
-        :class="{ 'controls-panel__tab--active': activeTab === 'ligand' }"
-        :aria-selected="activeTab === 'ligand' ? 'true' : 'false'"
-        aria-controls="controls-tab-panel-ligand"
-        data-test-id="controls-tab-ligand"
-        @click="activeTab = 'ligand'"
-      >
-        Ligand
-      </button>
+    <div class="controls-panel__tabs-row">
+      <div class="controls-panel__tabs" role="tablist" aria-label="Right controls tabs">
+        <button
+          type="button"
+          role="tab"
+          class="controls-panel__tab"
+          :class="{ 'controls-panel__tab--active': activeTab === 'fragmap' }"
+          :aria-selected="activeTab === 'fragmap' ? 'true' : 'false'"
+          aria-controls="controls-tab-panel-fragmap"
+          data-test-id="controls-tab-fragmap"
+          @click="activeTab = 'fragmap'"
+        >
+          FragMap
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="controls-panel__tab"
+          :class="{ 'controls-panel__tab--active': activeTab === 'ligand' }"
+          :aria-selected="activeTab === 'ligand' ? 'true' : 'false'"
+          aria-controls="controls-tab-panel-ligand"
+          data-test-id="controls-tab-ligand"
+          @click="activeTab = 'ligand'"
+        >
+          Ligand
+        </button>
+      </div>
+      <label class="controls-panel__protein-toggle" data-test-id="fragmap-show-protein-control">
+        <span class="controls-panel__tab-label">Show Protein</span>
+        <input
+          data-test-id="fragmap-protein-toggle"
+          type="checkbox"
+          :checked="proteinVisible"
+          :disabled="proteinToggleDisabled"
+          @change="onProteinToggle"
+        >
+      </label>
     </div>
 
     <section
@@ -107,7 +119,7 @@
       </div>
 
       <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
-        M5.2 scope: Primary-3 toggles are active. Advanced/exclusion runtime behavior, iso controls, bulk actions, and reliability handling remain deferred.
+        M5.2b scope: Protein visibility toggle and Primary-3 toggles are active. Advanced/exclusion runtime behavior, iso controls, bulk actions, and reliability handling remain deferred.
       </p>
     </section>
 
@@ -222,6 +234,7 @@
       <span data-test-id="baseline-pose-state">{{ baselinePoseVisible ? "ON" : "OFF" }}</span>
       <span data-test-id="refined-pose-state">{{ refinedPoseVisible ? "ON" : "OFF" }}</span>
       <span data-test-id="visible-fragmaps-state">{{ visibleFragMapIds.length }}</span>
+      <span data-test-id="protein-visibility-state">{{ proteinVisible ? "ON" : "OFF" }}</span>
       <pre data-test-id="camera-baseline-contract">{{ baselineText }}</pre>
       <pre data-test-id="camera-snapshot">{{ currentCameraText }}</pre>
     </div>
@@ -265,6 +278,14 @@ export default Vue.extend({
       required: true,
     },
     ligandSwitchLoading: {
+      type: Boolean,
+      required: true,
+    },
+    proteinVisible: {
+      type: Boolean,
+      required: true,
+    },
+    proteinToggleDisabled: {
       type: Boolean,
       required: true,
     },
@@ -371,6 +392,10 @@ export default Vue.extend({
       const target = event.target as HTMLInputElement;
       this.$emit("toggle-pose", { kind, visible: target.checked });
     },
+    onProteinToggle(event: Event) {
+      const target = event.target as HTMLInputElement;
+      this.$emit("toggle-protein", { visible: target.checked });
+    },
     onFragMapToggle(rowId: string, event: Event) {
       const target = event.target as HTMLInputElement;
       this.$emit("toggle-fragmap", { id: rowId, visible: target.checked });
@@ -411,12 +436,19 @@ export default Vue.extend({
   padding: 16px;
 }
 
-.controls-panel__tabs {
+.controls-panel__tabs-row {
+  align-items: center;
   border-bottom: 1px solid #d8dfeb;
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 12px;
   padding-bottom: 8px;
+}
+
+.controls-panel__tabs {
+  display: flex;
+  gap: 6px;
 }
 
 .controls-panel__tab {
@@ -434,6 +466,24 @@ export default Vue.extend({
   background: #1f6fbf;
   border-color: #1f6fbf;
   color: #ffffff;
+}
+
+.controls-panel__tab-label {
+  color: #5f6b73;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.controls-panel__protein-toggle {
+  align-items: center;
+  background: #eceff1;
+  border: 1px solid #c7d0d6;
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 8px;
+  margin-left: auto;
+  min-height: 30px;
+  padding: 4px 10px;
 }
 
 .controls-panel__fragmap-actions {

@@ -5,6 +5,33 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Implement M5.2b as a tab-row `Show Protein` runtime toggle with camera-preserving stage updates
+- Decision: complete `M5.2b` Prompt B by wiring an in-place `Show Protein` checkbox in the right-panel tab row that toggles protein-cartoon visibility (`ON` by default) through a dedicated stage API, while preserving map/ligand contracts and camera state.
+- Why: this is the approved M5.2b slice scope and addresses the reviewer-prioritized need to reduce protein visual noise during FragMap/ligand overlap inspection without introducing broader M5.3+ behavior.
+- Alternatives considered:
+  - defer protein visibility to `M5.3`/`M5.6` and keep current always-on protein rendering;
+  - place protein toggle as an in-panel row instead of the approved tab-row control.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `src/store/modules/viewer.ts`
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m5-2b.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+- Validation/risk impact: sequential regression through `validate:m5.2b` is green after a validator-only fix for hidden diagnostics selector waiting semantics; remaining M5 work is now `M5.3`..`M5.6`.
+
+### 2026-02-16 - Accept M5.2b Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.2b` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.2b` Prompt B implementation scope.
+- Why: reviewer confirmed the final tab-row `Show Protein` design adjustments are approved, satisfying the UI-first gate requirement for this slice.
+- Alternatives considered:
+  - keep `M5.2b` in `BLOCKED-DESIGN` and request additional Prompt-A revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: runtime implementation is now permitted for `M5.2b` only; no runtime behavior changed in this approval-record update.
+
 ### 2026-02-16 - Enforce tab-label font and checkbox-style parity for M5.2b `Show Protein`
 - Decision: update the `M5.2b` Prompt-A artifact so `Show Protein` uses the same tab-label font class as `FragMap` and `Ligand`, and render the `Show Protein` control with the same checkbox style family used for existing map/ligand rows (including a disabled variant during loading).
 - Why: reviewer requested visual consistency and explicit reuse of established UI control styling.

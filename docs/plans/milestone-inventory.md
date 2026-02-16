@@ -308,7 +308,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | PASS | Completed |
 | `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | PASS | PASS | Completed |
 | `M5.2a` | Wireframe rendering pass (triangulated wireframe style for all FragMaps including fixed gray Exclusion) | PASS | PASS | Completed |
-| `M5.2b` | Protein visibility toggle only (`Protein cartoon` show/hide in FragMap tab; default on) | Pending | Pending | Not started |
+| `M5.2b` | Protein visibility toggle only (`Protein cartoon` show/hide in FragMap tab; default on) | PASS | PASS | Completed |
 | `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
@@ -432,24 +432,45 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### M5.2b - Protein Visibility Toggle
 
 #### Summary
-- Pending.
+- Prompt A is approved; Prompt B implementation is complete.
+- Added a tab-row `Show Protein` toggle (default ON) that controls protein cartoon visibility in-place without affecting map visibility, ligand pose state, or camera.
+- Added dedicated `M5.2b` validator and extended sequential check runner through `validate:m5.2b`.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.2b and why.` |
+| `src/components/ControlsPanel.vue` | Updated | Right controls panel UI shell and ligand/FragMap controls. | Added tab-row `Show Protein` checkbox control (`fragmap-show-protein-control` / `fragmap-protein-toggle`), new `toggle-protein` emit path, and hidden diagnostics probe for protein visibility state. |
+| `src/pages/ViewerPage.vue` | Updated | Viewer route orchestration and controls-panel wiring. | Wired protein visibility props/events into desktop/mobile controls panels; added `handleProteinToggle` with ready/loading guards, in-place stage update, and camera snapshot refresh. |
+| `src/store/modules/viewer.ts` | Updated | Vuex viewer state for route-level viewer behavior. | Added canonical `proteinVisible` state (default `true`) and `setProteinVisible` mutation, including reset-on-loading behavior. |
+| `src/viewer/nglStage.ts` | Updated | NGL stage lifecycle and camera orchestration. | Added `setProteinVisibility(visible)` API with camera/transform preservation; retained protein component handle; exposed `proteinVisible` in M5 debug state. |
+| `scripts/validate-m5-2b.js` | Created | Automated M5.2b milestone validator. | Added checks for default-on protein toggle, loading-phase disable behavior, in-place ON/OFF toggles, no-route-reload, and no regression to map/ligand/camera state contracts. |
+| `package.json` | Updated | Project script command contract. | Added `validate:m5.2b` and `prevalidate:m5.2b` script wiring. |
+| `scripts/run_checks.sh` | Updated | Local sequential gate runner. | Extended sequential command list through `validate:m5.2b`. |
 
 #### Commands Run
-- Pending.
+- `bash scripts/run_checks.sh` -> FAIL (first pass only at `validate:m5.2b`; validator expected hidden diagnostics selector visibility).
+- `bash scripts/run_checks.sh` -> PASS (after validator fix to use selector `state: "attached"` for hidden diagnostics probes).
+  - Includes sequential checks:
+    - `npm run build` -> PASS
+    - `npm run validate:m1` -> PASS
+    - `npm run validate:m2` -> PASS
+    - `npm run validate:m3` -> PASS
+    - `npm run validate:m4a` -> PASS
+    - `npm run validate:m4b` -> PASS
+    - `npm run validate:m5.1` -> PASS
+    - `npm run validate:m5.2` -> PASS
+    - `npm run validate:m5.2a` -> PASS
+    - `npm run validate:m5.2b` -> PASS
 
 #### Gate Checklist
-- Prompt A preview for `M5.2b` approved (`APPROVED UI PREVIEW`): Pending.
-- Prompt B implementation stayed within `M5.2b` scope boundary: Pending.
-- Protein visibility toggle is in-place (`on` by default) and does not regress M5.1-M5.2a map/ligand behavior: Pending.
-- No regressions against completed slices (`M5.1`-`M5.2a`) and M1-M4B baseline: Pending.
+- Prompt A preview for `M5.2b` approved (`APPROVED UI PREVIEW`): PASS (explicit in-thread approval on 2026-02-16).
+- Prompt B implementation stayed within `M5.2b` scope boundary: PASS.
+- Protein visibility toggle is in-place (`on` by default) and does not regress M5.1-M5.2a map/ligand behavior: PASS.
+- No regressions against completed slices (`M5.1`-`M5.2a`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- M5.2b validator still depends on hidden diagnostics probes (`camera-snapshot`, pose/map state text) that should be retired once milestone validators migrate to explicit runtime APIs.
+- Advanced/Exclusion behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
 
 ### M5.3 - Advanced Rows + Exclusion Map
 

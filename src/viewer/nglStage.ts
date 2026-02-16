@@ -29,6 +29,7 @@ interface FragMapRenderDebugEntry {
 
 interface ViewerM5DebugState {
   fragMapRenderById: Record<string, FragMapRenderDebugEntry>;
+  proteinVisible: boolean;
 }
 
 export interface StageInitOptions {
@@ -75,6 +76,7 @@ export interface NglStageController {
   getCameraBaseline(): CameraSnapshot;
   getCameraSnapshot(): CameraSnapshot;
   setCameraSnapshot(snapshot: CameraSnapshot): void;
+  setProteinVisibility(visible: boolean): void;
   setPoseVisibility(kind: PoseKind, visible: boolean): Promise<void>;
   setFragMapVisibility(options: FragMapVisibilityOptions, visible: boolean): Promise<FragMapVisibilityResult>;
   switchLigand(options: LigandSwitchOptions): Promise<LigandSwitchResult>;
@@ -171,6 +173,7 @@ function getM5DebugState(): ViewerM5DebugState {
   if (!window.__viewerM5Debug) {
     window.__viewerM5Debug = {
       fragMapRenderById: {},
+      proteinVisible: true,
     };
   }
 
@@ -306,6 +309,7 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
   const debugState = getDebugState();
   const m5DebugState = getM5DebugState();
   m5DebugState.fragMapRenderById = {};
+  m5DebugState.proteinVisible = true;
   debugState.stageInitAttempts += 1;
   debugState.cameraBaselineDefined = true;
   debugState.startupRenderEngine = "none";
@@ -348,6 +352,7 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
   options.container.setAttribute("aria-label", "3FLY protein and Crystal Ligand stage");
 
   let stage: any = null;
+  let proteinComponent: any = null;
   let baselineLigandComponent: any = null;
   let refinedLigandComponent: any = null;
   let baselineLigandRepresentation: any = null;
@@ -483,8 +488,10 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     });
     debugState.startupRenderEngine = "ngl";
 
-    const proteinComponent = await stage.loadFile(proteinRuntimeUrl, { defaultRepresentation: false });
+    proteinComponent = await stage.loadFile(proteinRuntimeUrl, { defaultRepresentation: false });
     proteinComponent.addRepresentation("cartoon", { colorScheme: "chainname" });
+    proteinComponent.setVisibility(true);
+    m5DebugState.proteinVisible = true;
     debugState.startupProteinLoaded = true;
     debugState.startupProteinRepresentation = "cartoon";
 
@@ -531,6 +538,23 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     setCameraSnapshot(snapshot: CameraSnapshot) {
       currentCamera = cloneCameraSnapshot(snapshot);
       applyStageCameraSnapshot(stage, currentCamera);
+      debugState.currentCamera = cloneCameraSnapshot(currentCamera);
+    },
+    setProteinVisibility(visible: boolean) {
+      const preservedCamera = readStageCameraSnapshot(stage, currentCamera);
+      const preservedTransform = readSceneTransformSnapshot(stage);
+
+      proteinComponent?.setVisibility(visible);
+      m5DebugState.proteinVisible = visible;
+
+      if (preservedTransform) {
+        applySceneTransformSnapshot(stage, preservedTransform);
+      } else {
+        applyStageCameraSnapshot(stage, preservedCamera);
+      }
+
+      stage?.viewer?.requestRender?.();
+      currentCamera = readStageCameraSnapshot(stage, preservedCamera);
       debugState.currentCamera = cloneCameraSnapshot(currentCamera);
     },
     async setPoseVisibility(kind: PoseKind, visible: boolean) {
@@ -692,6 +716,7 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
       }
 
       isDestroyed = true;
+      proteinComponent = null;
       stage?.dispose?.();
       options.container.innerHTML = "";
       debugState.stageDestroyCount += 1;

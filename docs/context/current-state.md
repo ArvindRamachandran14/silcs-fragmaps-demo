@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.2b Prompt-A preview revised for tab-label font parity and checkbox-style parity; awaiting approval)
+Last updated: 2026-02-16 (M5.2b Prompt-B complete; M5.3 Prompt-A next)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -101,7 +101,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Add implementation and validation only if stretch scope is reactivated.
 
 ### M5 FragMap Controls (Sliced: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6)
-- Status: `in progress (M5.1, M5.2, and M5.2a Prompt B complete; M5.2b Prompt A complete and pending approval)`
+- Status: `in progress (M5.1, M5.2, M5.2a, and M5.2b Prompt B complete; M5.3 Prompt A next)`
 - Evidence:
   - M5 execution is now locked to eight slices (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
@@ -122,8 +122,15 @@ Audit type: one-time reconstruction audit after local thread-history loss
     - centered the `Show Protein` label+checkbox group within its pill in all state panels, with explicit spacing between label and checkbox.
     - matched `Show Protein` text to the same tab-label font class used by `FragMap`/`Ligand`.
     - switched `Show Protein` checkbox rendering to the same checkbox style family used by map/ligand rows (plus loading-disabled variant).
+  - Explicit `APPROVED UI PREVIEW` token for `M5.2b` is now recorded in the approval log.
   - Open UI questions for `M5.2b` Prompt A: none currently.
-  - Active next scope is explicit review and `APPROVED UI PREVIEW` token for `M5.2b` before Prompt B.
+  - `M5.2b` Prompt-B runtime implementation is now in place:
+    - `src/components/ControlsPanel.vue` adds tab-row `Show Protein` checkbox control and `toggle-protein` event wiring.
+    - `src/pages/ViewerPage.vue` wires protein toggle props/events (desktop + mobile) with in-place update guards and camera snapshot sync.
+    - `src/store/modules/viewer.ts` adds canonical `proteinVisible` state (default `true`) and `setProteinVisible` mutation.
+    - `src/viewer/nglStage.ts` adds `setProteinVisibility` API with camera/transform preservation and M5 debug visibility state.
+    - Added M5.2b validator `scripts/validate-m5-2b.js` and command wiring in `package.json` (`validate:m5.2b`, `prevalidate:m5.2b`), plus sequential inclusion in `scripts/run_checks.sh`.
+  - Active next scope is `M5.3` Prompt A design-preview generation only.
   - `M5.2` Prompt-A artifacts were added (`README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`) and now reflect the reviewer-locked behavior set: loading row lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
   - `M5.2` Prompt-B runtime implementation is now in place:
     - Primary-3 rows are interactive in `src/components/ControlsPanel.vue`, with loading-lock disable behavior, inline row status text, and row-level error display hooks.
@@ -139,7 +146,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Visible right-panel debug/context blocks were removed from the user UI (`Viewer Context`, lower `Reset view`, and camera contract/snapshot pre blocks); required validator selectors remain in a hidden diagnostics container for compatibility.
   - `src/pages/ViewerPage.vue` now passes canonical FragMap shell rows (manifest-mapped with fallback constants) into the controls panel.
   - Existing ligand behavior is preserved under the `Ligand` tab; M4 validators were updated to select that tab explicitly.
-  - Runtime logic for protein visibility toggle (`M5.2b`), Advanced/Exclusion behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability handling (`M5.6`) remains pending.
+  - Runtime logic for Advanced/Exclusion behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability handling (`M5.6`) remains pending.
 - Validation signal:
   - `npm run build` -> PASS (2026-02-16).
   - `npm run validate:m1` -> FAIL then PASS on rerun (known intermittent snackbar click interception).
@@ -149,9 +156,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - `npm run validate:m4b` -> PASS (2026-02-16).
   - `npm run validate:m5.1` -> PASS (2026-02-16; first sandboxed attempt `ENV-BLOCKED` due localhost bind restriction, unsandboxed rerun passed).
   - `npm run validate:m5.2` -> first attempt `ENV-BLOCKED` in sandbox (`listen EPERM 127.0.0.1:4177`), unsandboxed rerun initially FAIL (validator timing), final rerun PASS after validator wait fix (2026-02-16).
-  - Sequential regression run after M5.2a implementation: `bash scripts/run_checks.sh` -> PASS, including `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1`, `validate:m5.2`, and new `validate:m5.2a` (2026-02-16).
+  - `bash scripts/run_checks.sh` -> first run FAIL at `validate:m5.2b` due hidden-diagnostics visibility assertion in the new validator, then PASS after validator selector-state fix (2026-02-16).
+  - Final sequential regression run after M5.2b implementation: `bash scripts/run_checks.sh` -> PASS, including `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1`, `validate:m5.2`, `validate:m5.2a`, and `validate:m5.2b` (2026-02-16).
 - Gaps to exit criteria:
-  - Implement remaining FragMap-side UI/state/runtime behavior from `docs/specs/fragmap-controls-spec.md` Sections 8-11 across `M5.2b`..`M5.6`.
+  - Implement remaining FragMap-side UI/state/runtime behavior from `docs/specs/fragmap-controls-spec.md` Sections 8-11 across `M5.3`..`M5.6`.
 
 ### M6 Overview Page
 - Status: `not started`
@@ -191,8 +199,8 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - M4A and M4B are implemented: baseline/refined pose controls with in-place switching plus featured-ligand quick picks (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`) and camera-preserving ligand switches.
   - M4C full-list searchable ligand selector remains deferred.
 - FragMap controls:
-  - M5.1 shell, M5.2 Primary-3 runtime toggles, and M5.2a wireframe rendering pass are implemented (lazy-load + cache reuse + camera preservation + wireframe style conversion including fixed gray exclusion style).
-  - Protein visibility toggle (`M5.2b`), Advanced/Exclusion runtime behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
+  - M5.1 shell, M5.2 Primary-3 runtime toggles, M5.2a wireframe rendering pass, and M5.2b protein visibility toggle are implemented (lazy-load + cache reuse + camera preservation + wireframe style conversion including fixed gray exclusion style + in-place protein show/hide).
+  - Advanced/Exclusion runtime behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
 - Overview page:
   - Route and CTA scaffold exist; required narrative and links are not implemented.
 - Performance/validation instrumentation:
@@ -203,7 +211,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Observed: searchable full-ligand selector and ordering behavior are not implemented.
   - Impact: deferred by plan; non-blocking for M5-M8 progression.
 - `high` - `docs/specs/fragmap-controls-spec.md`:
-  - Observed: M5.1 shell, M5.2 Primary-3 runtime, and M5.2a wireframe rendering pass are implemented, but protein visibility toggle (`M5.2b`), Advanced/Exclusion runtime behavior (`M5.3`), per-map iso behavior (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) are still pending in later slices.
+  - Observed: M5.1 shell, M5.2 Primary-3 runtime, M5.2a wireframe rendering, and M5.2b protein visibility toggle are implemented, but Advanced/Exclusion runtime behavior (`M5.3`), per-map iso behavior (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) are still pending in later slices.
   - Impact: AC-2 and AC-5 cannot be met.
 - `high` - `docs/specs/overview-page-spec.md`:
   - Observed: overview narrative and required external reference link are missing.
@@ -280,9 +288,11 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Revised `M5.2b` Prompt-A preview layout per reviewer feedback: moved protein control to a tab-row `Show Protein` checkbox to the right of `FragMap`/`Ligand` in `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`, and synchronized wording in `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2b-preview-index.md`. Validation commands were not run (`not run`; design-preview-doc update only).
 - 2026-02-16: Applied minor `M5.2b` Prompt-A visual refinement: centered the tab-row `Show Protein` text+checkbox cluster within the pill across all five state panels (including checked-glyph alignment). Validation commands were not run (`not run`; design-preview-doc update only).
 - 2026-02-16: Applied `M5.2b` Prompt-A visual consistency refinements: changed `Show Protein` text to use the same tab-label font class as `FragMap`/`Ligand`, and changed `Show Protein` checkbox visuals to the same checkbox style family used by existing map/ligand rows (with disabled variant during loading). Updated `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2b-protein-visibility-states.svg`, `m5.2b-preview-index.md`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2b` Prompt A. Updated M5 packet gate status/approval records (`docs/screenshots/Design_previews/m5-fragmap-controls/README.md`, `m5.2b-preview-index.md`, `approval-log.md`) and refreshed context handoff files to set `M5.2b` Prompt B as the active next step. Validation commands were not run (`not run`; approval-record/docs update only).
+- 2026-02-16: Implemented `M5.2b` Prompt B (protein visibility toggle only). Updated runtime wiring in `src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, `src/store/modules/viewer.ts`, and `src/viewer/nglStage.ts`; added validator `scripts/validate-m5-2b.js`; added command wiring in `package.json` (`validate:m5.2b`, `prevalidate:m5.2b`) and `scripts/run_checks.sh`. First sequential run failed only at `validate:m5.2b` due hidden-selector visibility assertion in the new validator; after selector-state fix (`state: "attached"`), full sequential `bash scripts/run_checks.sh` passed through `validate:m5.2b`.
 
 ## Open Risks
-- Major feature milestones remain incomplete: M5 implementation slices (`M5.2b` through `M5.6`) and M6 are not started while M1-M4B and M5.1-M5.2a are complete.
+- Major feature milestones remain incomplete: M5 implementation slices (`M5.3` through `M5.6`) and M6 are not started while M1-M4B and M5.1-M5.2b are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.
