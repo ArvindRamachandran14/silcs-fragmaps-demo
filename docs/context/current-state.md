@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (run_checks M1 auto-retry added; M5.3 Prompt-A next)
+Last updated: 2026-02-16 (required flow is M5.2b -> M5.3; M5.2c parity work deferred as exploratory)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -100,15 +100,16 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - Gaps to exit criteria:
   - Add implementation and validation only if stretch scope is reactivated.
 
-### M5 FragMap Controls (Sliced: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6)
-- Status: `in progress (M5.1, M5.2, M5.2a, and M5.2b Prompt B complete; M5.3 Prompt A next)`
+### M5 FragMap Controls (Required slices: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6; optional exploratory: M5.2c)
+- Status: `in progress (M5.1, M5.2, M5.2a, and M5.2b complete; M5.3 Prompt A is next)`
 - Evidence:
-  - M5 execution is now locked to eight slices (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`) with Prompt A + Prompt B per slice.
+  - Required M5 execution order is `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6` with Prompt A + Prompt B per required slice.
+  - `M5.2c` is retained as optional exploratory parity investigation only (non-blocking, not part of required gate flow).
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
   - `M5.2a` Prompt-A preview artifacts include full state coverage (`default/loading/empty/error/success`) via `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2a-wireframe-rendering-states.svg` plus index/front-page/log updates.
   - Explicit `APPROVED UI PREVIEW` token for `M5.2a` is now recorded in the approval log.
   - `M5.2a` Prompt-B runtime implementation is now in place:
-    - `src/viewer/nglStage.ts` now creates FragMap map representations as wireframe `surface` reps (`wireframe: true`, `opacity: 1`) and enforces fixed gray Exclusion map style for `3fly.excl.dx`.
+    - `src/viewer/nglStage.ts` now creates FragMap map representations as wireframe `surface` reps and enforces fixed gray Exclusion map style for `3fly.excl.dx`.
     - Added M5 wireframe render debug telemetry (`window.__viewerM5Debug.fragMapRenderById`) for deterministic validator evidence.
     - Added M5.2a validator script `scripts/validate-m5-2a.js` and command wiring in `package.json` (`validate:m5.2a`, `prevalidate:m5.2a`).
     - Extended `scripts/run_checks.sh` to include `validate:m5.2a`.
@@ -130,7 +131,11 @@ Audit type: one-time reconstruction audit after local thread-history loss
     - `src/store/modules/viewer.ts` adds canonical `proteinVisible` state (default `true`) and `setProteinVisible` mutation.
     - `src/viewer/nglStage.ts` adds `setProteinVisibility` API with camera/transform preservation and M5 debug visibility state.
     - Added M5.2b validator `scripts/validate-m5-2b.js` and command wiring in `package.json` (`validate:m5.2b`, `prevalidate:m5.2b`), plus sequential inclusion in `scripts/run_checks.sh`.
-  - Active next scope is `M5.3` Prompt A design-preview generation only.
+  - Exploratory parity artifacts for `M5.2c` are retained for optional later use:
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2c-wireframe-parity-states.svg`
+    - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md`
+    - `docs/investigations/m5.2c-wireframe-parity-investigation.md`
+  - Active next scope is `M5.3` Prompt-A design-preview gate.
   - `M5.2` Prompt-A artifacts were added (`README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`) and now reflect the reviewer-locked behavior set: loading row lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
   - `M5.2` Prompt-B runtime implementation is now in place:
     - Primary-3 rows are interactive in `src/components/ControlsPanel.vue`, with loading-lock disable behavior, inline row status text, and row-level error display hooks.
@@ -156,8 +161,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - `npm run validate:m4b` -> PASS (2026-02-16).
   - `npm run validate:m5.1` -> PASS (2026-02-16; first sandboxed attempt `ENV-BLOCKED` due localhost bind restriction, unsandboxed rerun passed).
   - `npm run validate:m5.2` -> first attempt `ENV-BLOCKED` in sandbox (`listen EPERM 127.0.0.1:4177`), unsandboxed rerun initially FAIL (validator timing), final rerun PASS after validator wait fix (2026-02-16).
+  - `npm run validate:m5.2c` -> PASS (2026-02-16; executed in sequential run via `bash scripts/run_checks.sh`).
   - `bash scripts/run_checks.sh` -> first run FAIL at `validate:m5.2b` due hidden-diagnostics visibility assertion in the new validator, then PASS after validator selector-state fix (2026-02-16).
   - Final sequential regression run after M5.2b implementation: `bash scripts/run_checks.sh` -> PASS, including `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1`, `validate:m5.2`, `validate:m5.2a`, and `validate:m5.2b` (2026-02-16).
+  - Final sequential regression run after M5.2c implementation: `bash scripts/run_checks.sh` -> PASS, including `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, `validate:m4b`, `validate:m5.1`, `validate:m5.2`, `validate:m5.2a`, `validate:m5.2b`, and `validate:m5.2c` (2026-02-16).
 - Gaps to exit criteria:
   - Implement remaining FragMap-side UI/state/runtime behavior from `docs/specs/fragmap-controls-spec.md` Sections 8-11 across `M5.3`..`M5.6`.
 
@@ -200,6 +207,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - M4C full-list searchable ligand selector remains deferred.
 - FragMap controls:
   - M5.1 shell, M5.2 Primary-3 runtime toggles, M5.2a wireframe rendering pass, and M5.2b protein visibility toggle are implemented (lazy-load + cache reuse + camera preservation + wireframe style conversion including fixed gray exclusion style + in-place protein show/hide).
+  - `M5.2c` parity investigation is documented as exploratory/deferred and not part of required milestone gating.
   - Advanced/Exclusion runtime behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
 - Overview page:
   - Route and CTA scaffold exist; required narrative and links are not implemented.
@@ -291,11 +299,17 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2b` Prompt A. Updated M5 packet gate status/approval records (`docs/screenshots/Design_previews/m5-fragmap-controls/README.md`, `m5.2b-preview-index.md`, `approval-log.md`) and refreshed context handoff files to set `M5.2b` Prompt B as the active next step. Validation commands were not run (`not run`; approval-record/docs update only).
 - 2026-02-16: Implemented `M5.2b` Prompt B (protein visibility toggle only). Updated runtime wiring in `src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, `src/store/modules/viewer.ts`, and `src/viewer/nglStage.ts`; added validator `scripts/validate-m5-2b.js`; added command wiring in `package.json` (`validate:m5.2b`, `prevalidate:m5.2b`) and `scripts/run_checks.sh`. First sequential run failed only at `validate:m5.2b` due hidden-selector visibility assertion in the new validator; after selector-state fix (`state: "attached"`), full sequential `bash scripts/run_checks.sh` passed through `validate:m5.2b`.
 - 2026-02-16: Added one-time auto-retry behavior for `npm run validate:m1` inside `scripts/run_checks.sh` to reduce false overall FAIL outcomes from the known intermittent M1 harness flake. Validation evidence: `bash -n scripts/run_checks.sh` -> PASS.
+- 2026-02-16: Added docs-only `M5.2c` parity-tuning slice and aligned plan/spec/prompt/preview/context docs to lock new order (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.2c` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`) and `M5.2c` scope boundaries. Command evidence: `rg -n "M5\\.2c|M5\\.2b.*M5\\.2c|M5\\.2c.*M5\\.3"` across updated docs -> PASS. Milestone validators were not run (`not run`; docs-only planning/spec alignment update).
+- 2026-02-16: Executed `M5.2c` Prompt A (design-preview only): created `desktop/m5.2c-wireframe-parity-states.svg`, updated `m5.2c-preview-index.md` (state checklist + open questions), and refreshed packet docs (`README.md`, `approval-log.md`). Command evidence: `rg -n "A\\. Default|B\\. Loading|C\\. Empty|D\\. Error|E\\. Success" docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2c-wireframe-parity-states.svg` -> PASS; `rg -n "m5\\.2c-wireframe-parity-states\\.svg|BLOCKED-DESIGN|APPROVED UI PREVIEW" docs/screenshots/Design_previews/m5-fragmap-controls/README.md docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` -> PASS. Milestone validators were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2c` Prompt A and unblocked `M5.2c` Prompt B. Updated packet approval records (`README.md`, `m5.2c-preview-index.md`, `approval-log.md`) and refreshed context handoff state. Command evidence: `rg -n "M5\\.2c|APPROVED UI PREVIEW|Prompt B unblocked" docs/screenshots/Design_previews/m5-fragmap-controls/README.md docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` -> PASS. Milestone validators were not run (`not run`; approval-record/docs update only).
+- 2026-02-16: Implemented `M5.2c` Prompt B (wireframe parity tuning only). Updated `src/viewer/nglStage.ts` to apply parity profile `m5.2c-v1` parameters (`opacity: 0.9`, `opaqueBack: true`) while preserving wireframe/exclusion/style contracts; added validator `scripts/validate-m5-2c.js`; added command wiring in `package.json` (`validate:m5.2c`, `prevalidate:m5.2c`) and `scripts/run_checks.sh`; updated `scripts/validate-m5-2a.js` opacity assertion to stay contract-compatible under parity tuning. Validation evidence: `bash scripts/run_checks.sh` -> PASS through `validate:m5.2c`.
+- 2026-02-16: Created deferred investigation packet for unresolved wireframe parity mismatch at `docs/investigations/m5.2c-wireframe-parity-investigation.md` and linked handoff/docs tracking for later resume after current milestone flow. Command evidence: `rg -n "stage.loadFile\\(resolveRuntimeUrl\\(options\\.dxUrl\\)|addRepresentation\\(\"surface\"" src/viewer/nglStage.ts` -> PASS, `git status --short` -> PASS. Milestone validators were not run (`not run`; docs-only investigation capture update).
 
 ## Open Risks
-- Major feature milestones remain incomplete: M5 implementation slices (`M5.3` through `M5.6`) and M6 are not started while M1-M4B and M5.1-M5.2b are complete.
+- Major feature milestones remain incomplete: M5 implementation slices (`M5.3` through `M5.6`) and M6 are not started while M1-M4B and required M5 slices through M5.2b are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.
 - AC evidence path (M7) and release readiness (M8) are currently absent.
 - Execution-plan automation contract is partially missing and will need alignment before M7/M8 sign-off.
+- Wireframe parity gap versus official screenshot references is still unresolved; see `docs/investigations/m5.2c-wireframe-parity-investigation.md` for symptoms, ruled-out causes, and resume commands.

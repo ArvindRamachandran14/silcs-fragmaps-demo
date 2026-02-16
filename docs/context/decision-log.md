@@ -5,6 +5,93 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Reclassify M5.2c as optional exploratory investigation; required flow resumes at M5.3 after M5.2b
+- Decision: make `M5.2c` non-blocking exploratory scope and set required milestone progression to `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Why: parity tuning remains unresolved and should not block delivery of required M5 behavior slices.
+- Alternatives considered:
+  - keep `M5.2c` as a required gated runtime slice before `M5.3`;
+  - drop all parity investigation artifacts completely.
+- Evidence:
+  - `docs/plans/execution-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `docs/plans/technical-plan.md`
+  - `docs/context/current-state.md`
+  - `docs/context/next-agent-brief.md`
+  - `docs/investigations/m5.2c-wireframe-parity-investigation.md`
+- Validation/risk impact: no functional runtime changes; planning/context docs now clearly route implementation from `M5.2b` to `M5.3`, with parity retained as deferred investigation only.
+
+### 2026-02-16 - Defer deeper M5.2c wireframe parity investigation until after active M5 slice flow
+- Decision: park the unresolved wireframe parity deep-dive as a documented investigation packet and continue milestone execution on `M5.3`..`M5.6` instead of continuing speculative code tuning now.
+- Why: current parity tuning did not close the screenshot gap with confidence, and further implementation changes are high-risk without clearer evidence (data provenance, iso convention parity, renderer parity).
+- Alternatives considered:
+  - continue immediate renderer tuning/code changes in `src/viewer/nglStage.ts`;
+  - revert M5.2c changes and abandon parity tracking.
+- Evidence:
+  - `docs/investigations/m5.2c-wireframe-parity-investigation.md`
+  - `docs/context/current-state.md`
+  - `docs/context/next-agent-brief.md`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: no runtime behavior changed in this decision update; preserves forward milestone momentum while retaining a reproducible resume path for parity work.
+
+### 2026-02-16 - Implement M5.2c parity profile `m5.2c-v1` as render-parameter tuning only
+- Decision: complete `M5.2c` Prompt B by tuning wireframe surface render parameters in `src/viewer/nglStage.ts` to parity profile `m5.2c-v1` (`opacity: 0.9`, `opaqueBack: true`) while preserving triangulated wireframe representation, map IDs/default iso values, and existing map/protein/ligand behavior contracts.
+- Why: approved Prompt-A artifacts require a focused visual parity pass without expanding runtime behavior scope.
+- Alternatives considered:
+  - keep M5.2a parameters unchanged and defer parity tuning to later slices;
+  - combine parity tuning with `M5.3` behavior changes (rejected to avoid coupling style and behavior risk).
+- Evidence:
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m5-2c.js`
+  - `scripts/validate-m5-2a.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: sequential regression through `validate:m5.2c` is green; remaining M5 runtime scope is now `M5.3`..`M5.6`.
+
+### 2026-02-16 - Accept `M5.2c` Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.2c` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.2c` Prompt B implementation scope.
+- Why: reviewer approval satisfies the UI-first gate for `M5.2c`, so runtime parity-tuning work can proceed without crossing slice boundaries.
+- Alternatives considered:
+  - keep `M5.2c` in `BLOCKED-DESIGN` and request additional preview revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+  - `docs/context/current-state.md`
+  - `docs/context/next-agent-brief.md`
+- Validation/risk impact: no runtime behavior changed in this approval-record update; next executable step is `M5.2c` Prompt B only.
+
+### 2026-02-16 - Execute `M5.2c` Prompt A as a single multi-panel parity-preview page
+- Decision: produce `M5.2c` Prompt-A artifacts as one multi-panel desktop SVG (`default/loading/empty/error/success`) plus updated packet metadata, while keeping approval state at `BLOCKED-DESIGN` until explicit `APPROVED UI PREVIEW`.
+- Why: this satisfies the UI-first gate for the new `M5.2c` slice and keeps parity tuning reviewable before any runtime changes.
+- Alternatives considered:
+  - split `M5.2c` preview into separate files per state;
+  - defer Prompt-A artifact creation and move directly to runtime tuning.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2c-wireframe-parity-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: docs-only design artifact update; no runtime behavior changes in this window; Prompt B remains blocked pending explicit approval.
+
+### 2026-02-16 - Insert `M5.2c` mini-slice for wireframe parity tuning before `M5.3`
+- Decision: add a dedicated `M5.2c` slice between `M5.2b` and `M5.3` for wireframe visual parity tuning only, with strict behavior lock (no map/protein/ligand control behavior changes, no map ID/label/default-iso changes).
+- Why: reviewer requested a focused parity pass to align wireframe appearance with reference SILCS screenshots before continuing to new behavior slices.
+- Alternatives considered:
+  - fold parity tuning into `M5.3` and couple style calibration with Advanced/Exclusion behavior changes;
+  - defer parity tuning until `M5.6`, risking repeated visual churn during later slices.
+- Evidence:
+  - `docs/plans/execution-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `docs/plans/technical-plan.md`
+  - `docs/specs/fragmap-controls-spec.md`
+  - `prompts/implementation.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.3-preview-index.md`
+- Validation/risk impact: docs-only planning/spec update with no runtime changes in this window; next execution target is `M5.2c` Prompt A and remains `BLOCKED-DESIGN` until explicit `APPROVED UI PREVIEW`.
+
 ### 2026-02-16 - Add one-time M1 retry in `run_checks.sh` to reduce false overall FAILs
 - Decision: update `scripts/run_checks.sh` so `npm run validate:m1` is retried once automatically before marking the command as failed.
 - Why: `validate:m1` has an intermittent harness flake; a single retry avoids frequent false negatives while preserving strict failure behavior for persistent regressions.

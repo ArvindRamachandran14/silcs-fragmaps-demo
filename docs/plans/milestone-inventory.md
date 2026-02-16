@@ -24,7 +24,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Design preview gate rule:
   - For milestones that introduce/change user-facing UI, include artifact paths under `docs/design-previews/<milestone-or-feature>/` and an explicit in-thread approval reference (`APPROVED UI PREVIEW`) before implementation evidence.
   - If approval is missing, mark milestone as `BLOCKED-DESIGN` for that scope.
-  - Locked M5 exception: track previews under `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one preview page per slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+  - Locked M5 exception: track previews under `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one preview page per required slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`); optional exploratory `M5.2c` preview artifacts may be retained for reference.
 
 ## M1 - Project Scaffold + Routing Foundation
 
@@ -298,7 +298,8 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ## M5 - FragMap Controls (Sliced Delivery)
 
 ### Summary
-- M5 is executed as eight gated slices (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`) with Prompt A + Prompt B per slice.
+- M5 is executed as eight required gated slices (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`) with Prompt A + Prompt B per slice.
+- `M5.2c` is tracked as optional exploratory parity investigation only (non-blocking, not part of required milestone flow).
 - Preview packet path is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 - Packet structure is locked to one front page plus one preview page per slice.
 
@@ -309,6 +310,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | PASS | PASS | Completed |
 | `M5.2a` | Wireframe rendering pass (triangulated wireframe style for all FragMaps including fixed gray Exclusion) | PASS | PASS | Completed |
 | `M5.2b` | Protein visibility toggle only (`Protein cartoon` show/hide in FragMap tab; default on) | PASS | PASS | Completed |
+| `M5.2c` | Optional/deferred wireframe parity investigation (docs + exploratory packet only; non-blocking) | N/A | N/A | Deferred exploratory |
 | `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
@@ -426,7 +428,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - No regressions against completed slices (`M5.1`-`M5.2`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Protein visibility toggle remains deferred to `M5.2b`; Advanced/Exclusion interactive behavior remains deferred to `M5.3`.
+- Protein visibility toggle (`M5.2b`) is complete; Advanced/Exclusion interactive behavior remains deferred to `M5.3`.
 - M5.2a style validation currently uses debug instrumentation and a direct test-path exclusion-map load call for deterministic enforcement checks.
 
 ### M5.2b - Protein Visibility Toggle
@@ -472,6 +474,31 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - M5.2b validator still depends on hidden diagnostics probes (`camera-snapshot`, pose/map state text) that should be retired once milestone validators migrate to explicit runtime APIs.
 - Advanced/Exclusion behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
 
+### M5.2c - Wireframe Parity Tuning Pass
+
+#### Summary
+- `M5.2c` is reclassified as optional exploratory investigation, not a required milestone gate.
+- Active implementation flow proceeds from `M5.2b` directly to `M5.3`.
+- Investigation artifacts are retained for future optional parity work.
+
+#### Files Created/Updated
+| File | Status | What it does | Milestone-specific delta |
+|---|---|---|---|
+| `docs/investigations/m5.2c-wireframe-parity-investigation.md` | Created | Investigation packet for parity mismatch learnings. | Captures symptoms, hypotheses, ruled-out causes, repro steps, and resume checklist for later optional parity work. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2c-wireframe-parity-states.svg` | Created | Exploratory preview artifact. | Stores exploratory parity concept states for future reference (not a required gate artifact). |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md` | Created | Exploratory preview index. | Tracks exploratory parity scope and review notes (non-blocking). |
+
+#### Commands Run
+- No required milestone validation commands are tied to exploratory `M5.2c` while it remains deferred.
+
+#### Gate Checklist
+- Required gate for active milestone flow: N/A (exploratory/deferred).
+- Investigation packet exists with clear resume path: PASS.
+
+#### Residual Risks/Blockers
+- Deferred parity investigation: remaining visual mismatch versus official screenshot references is tracked for later resume in `docs/investigations/m5.2c-wireframe-parity-investigation.md`.
+- Advanced/Exclusion behavior (`M5.3`), per-map iso controls (`M5.4`), bulk actions (`M5.5`), and reliability hardening (`M5.6`) remain pending.
+
 ### M5.3 - Advanced Rows + Exclusion Map
 
 #### Summary
@@ -489,7 +516,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Prompt A preview for `M5.3` approved (`APPROVED UI PREVIEW`): Pending.
 - Prompt B implementation stayed within `M5.3` scope boundary: Pending.
 - Advanced rows and Exclusion behavior match spec (toggleable visibility, fixed gray triangulated wireframe style, iso disabled): Pending.
-- No regressions against completed slices (`M5.1`-`M5.2b`) and M1-M4B baseline: Pending.
+- No regressions against completed required slices (`M5.1`-`M5.2b`) and M1-M4B baseline: Pending.
 
 #### Residual Risks/Blockers
 - Pending.

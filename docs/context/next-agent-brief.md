@@ -1,15 +1,15 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2b complete; run_checks M1 auto-retry added; start M5.3 Prompt A)
+Last updated: 2026-02-16 (`M5.2b` complete; `M5.3` Prompt A is next; `M5.2c` deferred exploratory)
 
 ## Current Milestone Target
-- Active target: `M5.3 Advanced Rows + Exclusion Map` Prompt A design-preview generation only.
-- Baseline branch state at takeover: `M5.2b` Prompt-B implementation and validator wiring are complete in the working tree with green sequential regression evidence through `validate:m5.2b`.
-- M5.2 and M5.2a runtime slices are complete and green; M5.2b protein visibility runtime slice is now complete and green.
+- Active target: `M5.3 Advanced + Exclusion` Prompt A design-preview gate.
+- Baseline branch state at takeover: required slices through `M5.2b` are complete and validated.
+- `M5.2c` is deferred exploratory work only and is not a required runtime milestone gate.
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, `M5.2a`, and `M5.2b` Prompt B are complete, and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: `M5.1`, `M5.2`, `M5.2a`, and `M5.2b` are complete, and required slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -25,17 +25,18 @@ Last updated: 2026-02-16 (M5.2b complete; run_checks M1 auto-retry added; start 
 - Progression rule:
   - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
 - M5 slicing rule:
-  - Execute M5 as `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+  - Execute required M5 flow as `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+  - Treat `M5.2c` as optional/deferred exploratory investigation unless explicitly promoted.
   - Run Prompt A and Prompt B per slice.
   - Prompt B for a slice cannot start without that slice's `APPROVED UI PREVIEW`.
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.3` Prompt A only (design-preview packet update for Advanced rows + Exclusion behavior).
-2. Obtain explicit `APPROVED UI PREVIEW` for `M5.3`.
-3. Execute `M5.3` Prompt B only after approval and run sequential regression through the active gate.
-4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
-5. Keep `M4C` documented as deferred stretch scope.
+1. Execute `M5.3` Prompt A (design preview only) and obtain explicit `APPROVED UI PREVIEW`.
+2. Execute `M5.3` Prompt B only after approval and run sequential regression through the active gate.
+3. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
+4. Keep `M4C` documented as deferred stretch scope.
+5. Optional/deferred: resume wireframe parity deep-dive using `docs/investigations/m5.2c-wireframe-parity-investigation.md` after required M5 flow is stable.
 
 ## M5.2b Design Preview Status
 - Prompt-A artifacts now exist:
@@ -93,6 +94,13 @@ Last updated: 2026-02-16 (M5.2b complete; run_checks M1 auto-retry added; start 
   - `scripts/validate-m5-2a.js`, `package.json`, and `scripts/run_checks.sh`: new M5.2a command contract and gate coverage.
 - Related docs were synchronized in this window: spec, technical plan, execution plan, milestone inventory, implementation prompts, and M5 preview packet docs.
 
+## M5.2c Exploratory Note (Deferred)
+- `M5.2c` is tracked as exploratory parity investigation only and is not part of the required milestone gate flow.
+- Investigation artifacts are retained for later optional use:
+  - `docs/investigations/m5.2c-wireframe-parity-investigation.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2c-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2c-wireframe-parity-states.svg`
+
 ## Exact Commands To Run Next
 - `npm run build`
   - Current signal: PASS.
@@ -114,7 +122,6 @@ Last updated: 2026-02-16 (M5.2b complete; run_checks M1 auto-retry added; start 
   - Current signal: PASS.
 - `npm run validate:m5.2b`
   - Current signal: PASS (initial validator-only failure corrected via hidden-selector wait-state fix; final sequential run PASS).
-
 ## Stop/Go Criteria For M5
 - Stop if the active slice Design Preview Gate is not approved (`BLOCKED-DESIGN`).
 - Stop if any M1-M4B validator regresses.
@@ -153,4 +160,4 @@ Last updated: 2026-02-16 (M5.2b complete; run_checks M1 auto-retry added; start 
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.3` Prompt A only: produce/update the `M5.3` design-preview page (default/loading/empty/error/success) and packet docs under `docs/screenshots/Design_previews/m5-fragmap-controls/`, then wait for explicit `APPROVED UI PREVIEW`.
+- Execute `M5.3` Prompt A design-preview artifacts only (default/loading/empty/error/success), then wait for explicit `APPROVED UI PREVIEW` before any `M5.3` runtime implementation.

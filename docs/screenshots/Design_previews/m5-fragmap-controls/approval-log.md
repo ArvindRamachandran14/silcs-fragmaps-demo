@@ -24,6 +24,12 @@
 - Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
 - Decision: `APPROVED UI PREVIEW`
 
+## Review Record (M5.2c)
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
+- Decision: `APPROVED UI PREVIEW`
+
 ## Review Record (M5.3)
 - Date: Pending
 - Reviewer: Pending
@@ -57,8 +63,17 @@
 - Open UI questions: none currently.
 - Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now unblocked for `M5.2b`.
 
+## Comments (M5.2c)
+- `M5.2c` was inserted between `M5.2b` and `M5.3` as a docs-gated visual parity tuning slice.
+- Scope is rendering-parameter calibration only (wireframe appearance parity against approved/reference snapshots), with no control-behavior changes.
+- Existing contracts from `M5.1`-`M5.2b` remain locked.
+- Prompt-A artifact set now includes one multi-panel state sheet (`default/loading/empty/error/success`) and updated slice index metadata.
+- Open UI questions are narrowed to parity-tuning target breadth and far-field edge emphasis.
+- Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now unblocked for `M5.2c`.
+
 ## Comments (M5.3)
-- `M5.3` remains pending and starts only after `M5.2b` design/implementation gates close.
+- `M5.3` is the active required next slice and is currently `BLOCKED-DESIGN` pending explicit `APPROVED UI PREVIEW`.
+- `M5.2c` remains optional exploratory/deferred and does not block progression to `M5.3`.
 
 ## Revision Notes
 - 2026-02-16: Created initial M5 packet front page and M5.1 Prompt-A preview page with one multi-panel desktop SVG covering default/loading/empty/error/success.
@@ -87,3 +102,6 @@
 - 2026-02-16: Applied minor alignment refinement in `M5.2b` Prompt-A so `Show Protein` text+checkbox are centered as a single cluster within the tab-row pill in all states.
 - 2026-02-16: Applied style consistency refinement in `M5.2b` Prompt-A so `Show Protein` uses the same tab-label font as `FragMap`/`Ligand` and the same checkbox style family as existing row checkboxes (including loading-state disabled variant).
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2b` Prompt A.
+- 2026-02-16: Added docs-only `M5.2c` parity-tuning slice between `M5.2b` and `M5.3`; updated packet front page and added `m5.2c-preview-index.md` as the new active Prompt-A planning page.
+- 2026-02-16: Executed `M5.2c` Prompt A (design-preview only): added `desktop/m5.2c-wireframe-parity-states.svg`, updated `m5.2c-preview-index.md`, and refreshed packet front-page scope/reviewer action in `README.md`.
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.2c` Prompt A.

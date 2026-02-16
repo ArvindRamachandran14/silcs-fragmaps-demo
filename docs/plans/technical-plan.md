@@ -9,6 +9,8 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
 - Use `NGL Viewer` for protein/ligand rendering and `.dx` FragMap wireframe-isosurface overlays.
 - Implement ligand workflow incrementally: `M4A` single-ligand core, then `M4B` curated featured subset (`3fly_cryst_lig` shown as `Crystal Ligand` + 3); defer full-list searchable access to `M4C` stretch scope.
+- Execute FragMap controls as required sliced milestones through `M5.6` (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+- Treat `M5.2c` wireframe parity work as optional exploratory/deferred investigation (non-blocking unless explicitly promoted).
 - Follow a Vue architecture with `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
 - Deploy to GitHub Pages with reproducible local validation checklist mapped to AC-1..AC-6.
@@ -57,6 +59,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Optional parity path: manage narrative slide progression as viewer-local state (not route changes).
 - FragMaps remain unloaded until toggled on.
 - On map toggle: load `.dx`, create wireframe isosurface representation, cache component+rep handle.
+- Optional exploratory parity path (`M5.2c` deferred): if explicitly reactivated, adjust wireframe rendering parameters in-place (for example line visibility/opacity and depth-cue choices) to match approved reference look without changing map IDs, default iso values, or toggle behavior.
 - On per-map iso change (GFE maps only): update only the targeted map representation via parameter update path.
 - On `Exclusion Map` toggle: render fixed gray triangulated wireframe isosurface; iso controls remain disabled/non-editable.
 - On ligand change: remove current ligand pose components and load selected ligand pose component(s) based on pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden).
@@ -124,10 +127,11 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Phase 3B (1.0h): M4B featured-ligand switching with no reload and camera preservation.
 - Phase 3C (deferred stretch): M4C searchable full-ligand selector + deterministic ordering + `No ligands found`.
 - Phase 4 (2.0h): FragMap overlays (toggle, color, visibility state, caching, and per-row failure isolation with retry action).
+- Phase 4B (optional, deferred): M5.2c wireframe parity investigation (render-parameter calibration against approved/reference snapshots, behavior-preserving, non-blocking).
 - Phase 5 (1.0h): per-map iso controls for GFE maps, exclusion-map fixed-style behavior, fast targeted-update path, and row-level retry/reset precondition handling.
 - Phase 6 (1.0h): Home page narrative, captions/sidebar explanations, and external-link failure handling that does not block viewer navigation CTA.
 - Phase 7 (1.5h): performance tuning, AC verification, runtime hardening, deploy.
-- Total: ~11.0h.
+- Total: ~11.5h.
 
 ## 7. Requirement-to-Implementation Mapping
 - PRD Requirement: Home / Overview + scientific narrative.
@@ -139,6 +143,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - UI Framework Requirement (approved M5.1 direction): right controls region supports in-place `FragMap` / `Ligand` tab navigation, with `Ligand` preserving existing M4B controls.
 - PRD Requirement: show/hide individual FragMap surfaces.
 - Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`, `Reset view`).
+- Visual parity note (deferred exploration): preserve triangulated wireframe rendering while optionally tuning rendering parameters in `M5.2c` to better match approved/reference SILCS wireframe appearance.
 - PRD Requirement: iso-value adjustment with fast response.
 - Implementation: per-map iso controls (`-`, value, `+`) on GFE rows + targeted parameter updates on the selected map representation; `Exclusion Map` uses fixed gray triangulated wireframe isosurface with disabled iso controls.
 - PRD Requirement: client-side only, open source, Chrome/Safari.

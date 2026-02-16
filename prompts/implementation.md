@@ -554,13 +554,13 @@ Return format:
 ### Deferred note for M4C
 - `M4C` (full ligand list + searchable selector + deterministic ordering + `No ligands found`) is deferred stretch scope and not required for M5-M8 progression unless re-promoted.
 
-## M5 - FragMap Controls (Sliced: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6)
+## M5 - FragMap Controls (Required slices: M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6; optional exploratory: M5.2c)
 
 ### M5 Preview Packet Contract (locked)
 - Packet path: `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 - Packet structure:
   - One front page (`README.md` and/or index page).
-  - One preview page per slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+  - One preview page per required slice (`M5.1`, `M5.2`, `M5.2a`, `M5.2b`, `M5.3`, `M5.4`, `M5.5`, `M5.6`); optional exploratory `M5.2c` page may be retained for reference.
 - Per-slice Prompt A can use a single multi-panel SVG page as long as it covers default/loading/empty/error/success for that slice.
 - Prompt B for a slice cannot begin until that slice has explicit `APPROVED UI PREVIEW`.
 
@@ -780,6 +780,60 @@ Return format:
 - Residual risks/blockers
 ```
 
+### Prompt A to assign M5.2c (Design Preview only)
+```text
+Implement Prompt A only for M5.2c from docs/plans/execution-plan.md.
+
+Scope:
+- M5.2c design-preview only.
+- Produce/update only M5.2c preview artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/`.
+- Include/update packet front page plus M5.2c page.
+- M5.2c scope: wireframe parity tuning pass only.
+- Show visual parity adjustments for wireframe FragMaps (including fixed-gray Exclusion Map wireframe) against approved/reference screenshots.
+- Do not change map IDs, default iso values, controls layout, or runtime behavior scope in this slice preview.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success on M5.2c page)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M5.2c status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M5.2c (Post-approval implementation only)
+```text
+Implement Prompt B only for M5.2c from docs/plans/execution-plan.md.
+
+Precondition:
+- M5.2c Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M5.2c only: wireframe parity tuning.
+- Tune wireframe rendering parameters for parity with approved/reference look while preserving triangulated wireframe representation.
+- Do not change map ID mapping, default iso values, map/ligand/protein control behavior, or add new controls.
+- Preserve M5.1-M5.2b contracts and M1-M4B behavior.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M5.2c gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M5.2c section)
+
+Return format:
+- M5.2c status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
+```
+
 ### Prompt A to assign M5.3 (Design Preview only)
 ```text
 Implement Prompt A only for M5.3 from docs/plans/execution-plan.md.
@@ -815,7 +869,7 @@ Scope:
 - M5.3 only: Advanced rows + Exclusion map behavior.
 - Implement Advanced row visibility flow and Exclusion map constraints (visibility-toggleable, fixed gray triangulated wireframe style, no editable iso).
 - Do not implement per-map iso controls for adjustable maps or reliability hardening in this slice.
-- Preserve M5.1-M5.2b contracts and M1-M4B behavior.
+- Preserve M5.1-M5.2b required contracts and M1-M4B behavior.
 
 Required deliverables:
 1) files created/updated
@@ -867,7 +921,7 @@ Scope:
 - M5.4 only: per-map iso controls.
 - Implement iso numeric contract (`step`, `min`, `max`, precision, clamp/revert) for adjustable rows.
 - Preserve Exclusion map non-editable iso rule.
-- Preserve M5.1-M5.3 contracts (including M5.2a rendering contract and M5.2b protein-toggle contract) and M1-M4B behavior.
+- Preserve M5.1-M5.3 required contracts (including M5.2a rendering contract and M5.2b protein-toggle contract) and M1-M4B behavior.
 
 Required deliverables:
 1) files created/updated
@@ -990,7 +1044,7 @@ Return format:
 - Residual risks/blockers
 ```
 
-### Prompt to verify M5 slice (use for M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6)
+### Prompt to verify M5 slice (use for required flow M5.1, M5.2, M5.2a, M5.2b, M5.3, M5.4, M5.5, M5.6; optional exploratory M5.2c as needed)
 ```text
 Use this only after Prompt B implementation starts for the target M5 slice.
 
@@ -1020,7 +1074,7 @@ Return format:
 ```
 
 ### Manual verification for M5
-- Execute one slice at a time (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`).
+- Execute required slices one at a time (`M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`).
 - For each slice:
   - Finish Prompt A preview and collect explicit `APPROVED UI PREVIEW`.
   - Run Prompt B implementation only for that slice scope.

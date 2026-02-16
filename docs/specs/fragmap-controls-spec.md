@@ -19,6 +19,7 @@ Resolution adopted across docs:
 ## 3. Scope / Out of Scope
 In scope:
 - Right-panel FragMap controls.
+- Required M5 runtime flow for this spec: `M5.1` -> `M5.2` -> `M5.2a` -> `M5.2b` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 - Placement within shared right-panel two-tab framework (`FragMap`, `Ligand`) for `M5.1+`, with FragMap behavior defined under the `FragMap` tab.
 - Protein cartoon visibility toggle (`M5.2b+`) for overlap inspection while using FragMap controls.
 - `Primary 3 + Advanced full list` organization.
@@ -28,6 +29,7 @@ In scope:
 - Bulk actions: `Hide all`, `Reset defaults`, `Reset view`.
 - Lazy-load/cache behavior and reliability guardrails.
 - Error handling for map load/update failures.
+- Optional exploratory wireframe parity investigation (`M5.2c`) for map mesh appearance only (deferred/non-blocking unless explicitly promoted).
 
 Out of scope:
 - Ligand selection/pose controls.
@@ -90,6 +92,29 @@ Layout constraints:
 - Text labels must not overlap.
 - Controls must remain within panel bounds at supported widths.
 - Mobile behavior follows collapsed controls pattern from `docs/specs/viewer-core-spec.md`.
+
+### 5.1 Optional Exploratory Wireframe Parity Note (`M5.2c` Deferred)
+Objective:
+- Keep triangulated wireframe representation while improving visual parity with approved/reference SILCS wireframe screenshots for overlap inspection.
+
+Scope boundaries:
+- Allowed:
+  - rendering-parameter tuning for map wireframes (for example opacity/alpha, line visibility, depth-cue settings).
+  - consistent tuning across Primary and Advanced rows, with `Exclusion Map` remaining fixed gray.
+- Not allowed:
+  - changing map ID-to-label mapping,
+  - changing default iso values,
+  - changing toggle/load/cache behavior,
+  - adding/removing controls or changing tab layout.
+
+Reference artifacts for parity review:
+- `docs/screenshots/GUI/GUI_3fly_ligand_apolar_fragmap.png` (official reference snapshot)
+- `docs/screenshots/Bugs/3fly_ligand_fragmaps_apolar.png` (current app comparison snapshot)
+
+If this optional exploration is reactivated, acceptance intent for that pass is:
+- Wireframe edges remain clearly visible (triangulated look preserved).
+- Rendered density/legibility is closer to approved/reference look for the same map and iso context.
+- Existing behavior contracts from `M5.1`-`M5.2b` remain unchanged.
 
 ## 6. State and Data Contracts
 Core types:
@@ -238,6 +263,7 @@ FragMap controls are accepted when all checks pass:
 14. Map failures are isolated to affected row and surfaced with toast + retry.
 15. UI labels and controls remain non-overlapping and in-bounds at supported widths.
 16. Row legends and rendered surfaces use the canonical map-color mapping defined in Section 4.1.
+17. Optional exploration guardrail: if deferred `M5.2c` parity work is reactivated, it must change rendering parameters only and must not change map IDs, default iso values, or map/protein/ligand behavior contracts.
 
 AC intent coverage:
 - AC-2 behavior intent: map show/hide updates are fast and preserve camera.

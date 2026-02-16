@@ -3,17 +3,19 @@
 This packet tracks the M5 sliced design gates under `docs/screenshots/Design_previews/m5-fragmap-controls/`.
 
 ## Gate Status
-- Active slice: `M5.2b Protein Visibility Toggle`
-- Gate state: `APPROVED UI PREVIEW` (Prompt A approved; Prompt B unblocked)
-- Required token to unblock Prompt B: satisfied for `M5.2b`
+- Active slice: `M5.3 Advanced Rows + Exclusion Map`
+- Gate state: `BLOCKED-DESIGN` (awaiting explicit `APPROVED UI PREVIEW` for `M5.3` Prompt A)
+- Required token to unblock Prompt B: pending (`APPROVED UI PREVIEW` for `M5.3`)
 
 ## Scope for This Packet Revision
 In scope:
-- Historical record: completed `M5.2a` Prompt-A wireframe preview artifacts and approval evidence.
-- Current execution scope: `M5.2b` Prompt B runtime implementation only (Prompt A approved).
+- Historical record: completed `M5.2a` and `M5.2b` Prompt-A artifacts and approval evidence.
+- Current execution scope: `M5.3` Prompt A preview artifacts (design-only gate for Advanced rows + Exclusion behavior).
+- Deferred exploratory scope: `M5.2c` parity artifacts retained for optional later investigation; non-blocking for required M5 flow.
 
 Out of scope in this revision:
-- `M5.4+` behavior:
+- `M5.3+` behavior:
+  - Advanced/Exclusion behavior runtime scope (`M5.3`),
   - per-map iso controls runtime behavior (`M5.4`),
   - bulk action runtime behavior (`M5.5`),
   - reliability/error-isolation runtime contracts (`M5.6`).
@@ -28,8 +30,10 @@ Out of scope in this revision:
 - `desktop/m5.2a-wireframe-rendering-states.svg`: single multi-panel `M5.2a` page covering default/loading/empty/error/success for wireframe rendering conversion (including fixed gray `Exclusion Map` style).
 - `m5.2b-preview-index.md`: `M5.2b` state checklist, artifact matrix, open UI questions, and traceability.
 - `desktop/m5.2b-protein-visibility-states.svg`: single multi-panel `M5.2b` page covering default/loading/empty/error/success for protein visibility toggle behavior.
-- `m5.3-preview-index.md`: `M5.3` planned state checklist for the slice after `M5.2b` closure.
+- `m5.2c-preview-index.md`: `M5.2c` state checklist, artifact matrix, open UI questions, and traceability.
+- `desktop/m5.2c-wireframe-parity-states.svg`: single multi-panel `M5.2c` page covering default/loading/empty/error/success for wireframe parity tuning scope.
+- `m5.3-preview-index.md`: `M5.3` planned state checklist for the current active required slice.
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Execute `M5.2b` Prompt B implementation only (protein visibility toggle runtime behavior) within approved slice scope.
+- Review `M5.3` Prompt A artifacts and provide explicit `APPROVED UI PREVIEW` (or revision feedback).

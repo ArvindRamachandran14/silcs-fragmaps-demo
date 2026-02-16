@@ -1,0 +1,242 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1540" viewBox="0 0 1900 1540" role="img" aria-labelledby="title desc">
+  <title id="title">M5.2c wireframe parity tuning states</title>
+  <desc id="desc">M5.2c Prompt A preview showing default, loading, empty, error, and success states for wireframe parity tuning while preserving M5.1-M5.2b behavior contracts.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f4f5f7; }
+      .card { fill: #ffffff; stroke: #cfd8dc; stroke-width: 1.5; }
+      .heading { font: 700 22px Arial, sans-serif; fill: #102027; }
+      .subhead { font: 700 15px Arial, sans-serif; fill: #263238; }
+      .body { font: 13px Arial, sans-serif; fill: #37474f; }
+      .muted { font: 12px Arial, sans-serif; fill: #607d8b; }
+      .button { fill: #eceff1; stroke: #b0bec5; stroke-width: 1; }
+      .button-disabled { fill: #f5f5f5; stroke: #d7d7d7; stroke-width: 1; }
+      .checkbox { fill: #ffffff; stroke: #607d8b; stroke-width: 1.2; }
+      .checkbox-on { fill: #e8f5e9; stroke: #2e7d32; stroke-width: 1.2; }
+      .divider { stroke: #e0e0e0; stroke-width: 1; }
+      .helper { fill: #f8fbff; stroke: #bbdefb; stroke-width: 1; }
+      .warn { fill: #fff8e1; stroke: #ffcc80; stroke-width: 1; }
+      .error { fill: #ffebee; stroke: #ef9a9a; stroke-width: 1; }
+      .good { fill: #e8f5e9; stroke: #a5d6a7; stroke-width: 1; }
+      .chip { fill: #eceff1; stroke: #b0bec5; stroke-width: 1; }
+      .legend { stroke: #455a64; stroke-width: 0.6; }
+      .tab-active { fill: #3f51b5; stroke: #2c3a8c; stroke-width: 1; }
+      .tab-inactive { fill: #eceff1; stroke: #c7d0d6; stroke-width: 1; }
+      .tab-text-active { font: 700 12px Arial, sans-serif; fill: #ffffff; }
+      .tab-text { font: 700 12px Arial, sans-serif; fill: #5f6b73; }
+      .viewer { fill: #f6f8fa; stroke: #c5d0d9; stroke-width: 1; }
+      .protein { fill: none; stroke: #273b96; stroke-width: 3; stroke-linecap: round; opacity: 0.95; }
+      .wire-ref { fill: none; stroke: #5f8f63; stroke-width: 1.15; }
+      .wire-cur { fill: none; stroke: #8eb392; stroke-width: 0.8; opacity: 0.65; }
+      .wire-target { fill: none; stroke: #5f8f63; stroke-width: 1.45; opacity: 0.96; }
+      .ghost { fill: none; stroke: #b0bec5; stroke-width: 1.1; stroke-dasharray: 3 3; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1900" height="1540"/>
+  <text class="heading" x="48" y="44">M5.2c Prompt A: Wireframe Parity Tuning (Appearance-Only Pass)</text>
+  <text class="muted" x="48" y="68">Scope lock: tune wireframe rendering appearance toward reference parity. Do not change map IDs/default iso/control behavior from M5.1-M5.2b.</text>
+
+  <!-- A Default -->
+  <g transform="translate(40,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">A. Default</text>
+    <text class="muted" x="20" y="54">No maps visible; parity mode is armed for first visible render</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="39" y="128">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="body" x="146" y="128">Reset defaults</text>
+    <rect class="button" x="255" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="276" y="128">Reset view</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="180">Primary 3</text>
+
+    <rect class="checkbox" x="20" y="196" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="204" r="6" fill="#1976d2"/>
+    <text class="body" x="68" y="208">Generic Donor</text>
+
+    <rect class="checkbox" x="20" y="228" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="236" r="6" fill="#d32f2f"/>
+    <text class="body" x="68" y="240">Generic Acceptor</text>
+
+    <rect class="checkbox" x="20" y="260" width="16" height="16"/>
+    <circle class="legend" cx="54" cy="268" r="6" fill="#2e7d32"/>
+    <text class="body" x="68" y="272">Generic Apolar</text>
+
+    <rect class="helper" x="20" y="302" width="520" height="204" rx="6"/>
+    <text class="body" x="36" y="328">Parity references for M5.2c review:</text>
+    <text class="muted" x="36" y="350">1) Official reference snapshot (SILCS GUI)</text>
+    <text class="muted" x="36" y="370">2) Current app snapshot (pre-tuning)</text>
+    <text class="muted" x="36" y="390">3) Tuned target snapshot (this slice)</text>
+    <text class="muted" x="36" y="418">Behavior remains unchanged in this slice:</text>
+    <text class="muted" x="52" y="438">- toggle/load/cache flow unchanged</text>
+    <text class="muted" x="52" y="456">- map ids, labels, and default iso values unchanged</text>
+    <text class="muted" x="52" y="474">- protein/ligand controls unchanged</text>
+  </g>
+
+  <!-- B Loading -->
+  <g transform="translate(670,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">B. Loading</text>
+    <text class="muted" x="20" y="54">First map load still follows M5.2 loading lock; parity applies when draw completes</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button-disabled" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="muted" x="39" y="128">Hide all</text>
+    <rect class="button-disabled" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="muted" x="146" y="128">Reset defaults</text>
+    <rect class="button-disabled" x="255" y="108" width="95" height="30" rx="5"/>
+    <text class="muted" x="276" y="128">Reset view</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="180">Primary 3</text>
+
+    <rect class="checkbox-on" x="20" y="196" width="16" height="16"/>
+    <text class="body" x="24" y="209">✓</text>
+    <circle class="legend" cx="54" cy="204" r="6" fill="#2e7d32"/>
+    <text class="body" x="68" y="208">Generic Apolar</text>
+    <text class="muted" x="520" y="208" text-anchor="end">loading first use...</text>
+
+    <rect class="button-disabled" x="20" y="224" width="520" height="28" rx="5"/>
+    <text class="muted" x="36" y="243">Other rows temporarily disabled while current load resolves (unchanged from M5.2).</text>
+
+    <rect class="warn" x="20" y="272" width="520" height="234" rx="6"/>
+    <text class="body" x="36" y="298">Render-intent while loading:</text>
+
+    <polyline class="wire-cur" points="42,338 66,320 104,340 78,376 44,364 42,338"/>
+    <line class="wire-cur" x1="66" y1="320" x2="78" y2="376"/>
+    <line class="wire-cur" x1="44" y1="364" x2="104" y2="340"/>
+    <text class="muted" x="122" y="346">Current (pre-tuning): lighter/washed wireframe edges</text>
+
+    <polyline class="wire-target" points="42,404 66,386 104,406 78,442 44,430 42,404"/>
+    <line class="wire-target" x1="66" y1="386" x2="78" y2="442"/>
+    <line class="wire-target" x1="44" y1="430" x2="104" y2="406"/>
+    <text class="muted" x="122" y="412">Target (M5.2c): clearer edge contrast and triangle legibility</text>
+
+    <text class="muted" x="36" y="476">No control-state changes are introduced in this loading state.</text>
+  </g>
+
+  <!-- C Empty -->
+  <g transform="translate(1300,100)">
+    <rect class="card" x="0" y="0" width="560" height="650" rx="8"/>
+    <text class="subhead" x="20" y="34">C. Empty</text>
+    <text class="muted" x="20" y="54">0 visible maps; parity tuning persists for next visible render</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="button" x="20" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="39" y="128">Hide all</text>
+    <rect class="button" x="125" y="108" width="120" height="30" rx="5"/>
+    <text class="body" x="146" y="128">Reset defaults</text>
+    <rect class="button" x="255" y="108" width="95" height="30" rx="5"/>
+    <text class="body" x="276" y="128">Reset view</text>
+
+    <line class="divider" x1="20" y1="154" x2="540" y2="154"/>
+    <text class="subhead" x="20" y="180">State Summary</text>
+
+    <rect class="helper" x="20" y="196" width="520" height="136" rx="6"/>
+    <text class="body" x="36" y="222">No visible FragMaps.</text>
+    <text class="muted" x="36" y="244">If cached maps are shown again, render with M5.2c parity-tuned wireframe params.</text>
+    <text class="muted" x="36" y="266">Camera and control contracts remain unchanged.</text>
+    <text class="muted" x="36" y="288">Exclusion map remains fixed-gray wireframe and iso-disabled.</text>
+
+    <rect class="viewer" x="20" y="350" width="520" height="156" rx="6"/>
+    <text class="muted" x="34" y="378">Viewer mock: empty map state, parity tuning not visible until map is shown.</text>
+  </g>
+
+  <!-- D Error -->
+  <g transform="translate(40,820)">
+    <rect class="card" x="0" y="0" width="905" height="680" rx="8"/>
+    <text class="subhead" x="20" y="34">D. Error</text>
+    <text class="muted" x="20" y="54">Parity tuning mismatch detected or row load failure; failure remains row-local</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="error" x="20" y="108" width="865" height="58" rx="6"/>
+    <text class="body" x="36" y="132">Parity check failed for Generic Apolar render profile. Revert to last-known-safe wireframe params for this row.</text>
+    <text class="muted" x="36" y="152">Other rows stay available; map/ligand/protein controls stay unchanged.</text>
+
+    <rect class="viewer" x="20" y="184" width="470" height="300" rx="6"/>
+    <path class="protein" d="M50 430 C110 260, 170 440, 230 280 C280 210, 330 390, 450 250"/>
+
+    <polyline class="wire-target" points="118,348 160,318 216,348 184,402 126,392 118,348"/>
+    <line class="wire-target" x1="160" y1="318" x2="184" y2="402"/>
+    <line class="wire-target" x1="126" y1="392" x2="216" y2="348"/>
+
+    <text class="muted" x="32" y="204">Viewer mock: unaffected row still renders with stable wireframe.</text>
+
+    <line class="divider" x1="510" y1="184" x2="885" y2="184"/>
+    <text class="subhead" x="510" y="210">Rows</text>
+
+    <rect class="checkbox-on" x="510" y="226" width="16" height="16"/>
+    <text class="body" x="514" y="239">✓</text>
+    <circle class="legend" cx="544" cy="234" r="6" fill="#1976d2"/>
+    <text class="body" x="558" y="238">Generic Donor</text>
+    <text class="muted" x="870" y="238" text-anchor="end">visible</text>
+
+    <rect class="button-disabled" x="510" y="258" width="375" height="36" rx="5"/>
+    <circle class="legend" cx="544" cy="276" r="6" fill="#2e7d32"/>
+    <text class="muted" x="558" y="280">Generic Apolar (temporarily disabled after parity/error check)</text>
+
+    <rect class="chip" x="510" y="310" width="375" height="28" rx="14"/>
+    <text class="muted" x="522" y="329">Retry/auto-recovery UX details remain deferred to M5.6.</text>
+  </g>
+
+  <!-- E Success -->
+  <g transform="translate(985,820)">
+    <rect class="card" x="0" y="0" width="875" height="680" rx="8"/>
+    <text class="subhead" x="20" y="34">E. Success</text>
+    <text class="muted" x="20" y="54">Parity-tuned wireframe appearance accepted against reference snapshots</text>
+
+    <rect class="tab-active" x="20" y="70" width="92" height="26" rx="5"/>
+    <text class="tab-text-active" x="43" y="87">FragMap</text>
+    <rect class="tab-inactive" x="118" y="70" width="80" height="26" rx="5"/>
+    <text class="tab-text" x="143" y="87">Ligand</text>
+
+    <rect class="viewer" x="20" y="108" width="510" height="340" rx="6"/>
+    <path class="ghost" d="M40 392 C95 222, 170 430, 236 264 C292 196, 360 360, 504 226"/>
+
+    <polyline class="wire-ref" points="140,326 184,296 240,326 208,386 148,374 140,326"/>
+    <line class="wire-ref" x1="184" y1="296" x2="208" y2="386"/>
+    <line class="wire-ref" x1="148" y1="374" x2="240" y2="326"/>
+
+    <polyline class="wire-target" points="250,282 284,262 326,286 300,334 254,324 250,282"/>
+    <line class="wire-target" x1="284" y1="262" x2="300" y2="334"/>
+    <line class="wire-target" x1="254" y1="324" x2="326" y2="286"/>
+
+    <polyline class="wire-target" points="320,350 356,330 404,356 372,410 324,398 320,350"/>
+    <line class="wire-target" x1="356" y1="330" x2="372" y2="410"/>
+    <line class="wire-target" x1="324" y1="398" x2="404" y2="356"/>
+
+    <text class="muted" x="34" y="130">Mock shows improved triangle-edge legibility and contrast while preserving map geometry contract.</text>
+
+    <line class="divider" x1="550" y1="108" x2="855" y2="108"/>
+    <text class="subhead" x="550" y="136">Acceptance Notes</text>
+
+    <rect class="good" x="550" y="156" width="305" height="104" rx="6"/>
+    <text class="body" x="566" y="182">Parity checks satisfied:</text>
+    <text class="muted" x="566" y="204">- wireframe triangle edges are clearer vs pre-tuning</text>
+    <text class="muted" x="566" y="224">- Exclusion remains fixed gray wireframe</text>
+    <text class="muted" x="566" y="244">- no control behavior change from M5.1-M5.2b</text>
+
+    <rect class="chip" x="550" y="278" width="305" height="28" rx="14"/>
+    <text class="muted" x="566" y="297">Ready for explicit `APPROVED UI PREVIEW` decision.</text>
+  </g>
+</svg>
