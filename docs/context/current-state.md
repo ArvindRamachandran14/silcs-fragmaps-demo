@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.6 Prompt B implemented; final M5 gate is PASS)
+Last updated: 2026-02-16 (M6 Prompt B implemented; M6 gate is PASS)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -187,7 +187,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Visible right-panel debug/context blocks were removed from the user UI (`Viewer Context`, lower `Reset view`, and camera contract/snapshot pre blocks); required validator selectors remain in a hidden diagnostics container for compatibility.
   - `src/pages/ViewerPage.vue` now passes canonical FragMap shell rows (manifest-mapped with fallback constants) into the controls panel.
   - Existing ligand behavior is preserved under the `Ligand` tab; M4 validators were updated to select that tab explicitly.
-  - `M5.6` reliability handling remains pending.
+  - `M5.6` reliability hardening is implemented (row-level failure isolation + retry + async stale-intent guards) and final `validate:m5` gate is passing.
 - Validation signal:
   - `npm run build` -> PASS (2026-02-16).
   - `npm run validate:m1` -> FAIL then PASS on rerun (known intermittent snackbar click interception).
@@ -218,14 +218,24 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - None for M5 gate.
 
 ### M6 Overview Page
-- Status: `not started`
+- Status: `completed`
 - Evidence:
-  - Current page is scaffold text only in `src/pages/HomePage.vue`.
-  - Required scientific narrative and required external link are absent.
+  - M6 Prompt-A preview packet produced and approved at `docs/screenshots/Design_previews/m6-overview-page/`.
+  - `src/pages/HomePage.vue` now implements the required overview narrative, primary CTA, and required external reference link.
+  - M6 narrative copy was revised to the approved scientific-first version, including explicit featured-ligand context (`p38_goldstein_05_2e`, `p38_goldstein_06_2f`, `p38_goldstein_07_2g`) and exploration guidance (`original/refined` poses, per-map FragMap toggle + iso adjustment).
+  - `scripts/validate-m6.js` implements M6 acceptance checks.
+  - M6 narrative contract alignment pass completed: `docs/specs/overview-page-spec.md` now allows scientific-first or product-first narrative ordering (still 1-2 paragraphs with required concept coverage), and `scripts/validate-m6.js` now accepts equivalent exploration wording (`baseline/original`, `map-assisted` or direct map-toggle inspection language).
+  - Minor wording polish applied to paragraph 1 for readability: "baseline pose of crystallographic ligand" -> "baseline pose of the crystal ligand".
+  - Removed literal backtick rendering around ligand IDs in overview narrative so IDs display as plain inline text names.
 - Validation signal:
-  - `not run` (no M6 gate command exists in `package.json`).
+  - `bash scripts/run_checks.sh` -> PASS through `validate-m6` (2026-02-16).
+  - `npm run validate:m6` -> first sandboxed run `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4184`), unsandboxed rerun -> PASS (2026-02-16).
+  - `npm run validate:m6` -> PASS after contract-alignment updates to `overview-page-spec` and validator concept matching (2026-02-16).
+  - `npm run validate:m6` -> PASS after applying the reviewer-authored final M6 narrative text in `src/pages/HomePage.vue` (2026-02-16).
+  - `npm run validate:m6` -> PASS after minor readability polish to M6 paragraph 1 wording (2026-02-16).
+  - `npm run validate:m6` -> PASS after removing literal backticks around ligand IDs in overview text (2026-02-16).
 - Gaps to exit criteria:
-  - Implement 1-2 paragraph required narrative + `Go to Viewer` CTA semantics + required external links per `docs/specs/overview-page-spec.md`.
+  - None for M6 gate.
 
 ### M7 Performance Instrumentation + AC Validation Evidence
 - Status: `not started`
@@ -255,24 +265,21 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - M4A and M4B are implemented: baseline/refined pose controls with in-place switching plus featured-ligand quick picks (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`) and camera-preserving ligand switches.
   - M4C full-list searchable ligand selector remains deferred.
 - FragMap controls:
-  - M5.1 shell, M5.2 Primary-3 runtime toggles, M5.2a wireframe rendering pass, M5.2b protein visibility toggle, M5.3 Advanced/Exclusion runtime behavior, M5.4 per-map iso controls, and M5.5 bulk actions are implemented (lazy-load + cache reuse + camera preservation + wireframe style conversion including fixed gray exclusion style + in-place protein show/hide + default-collapsed Advanced section flow + row-level iso clamp/revert + hidden-row iso persistence + bulk action reset/hide behavior).
+  - M5.1 shell, M5.2 Primary-3 runtime toggles, M5.2a wireframe rendering pass, M5.2b protein visibility toggle, M5.3 Advanced/Exclusion runtime behavior, M5.4 per-map iso controls, M5.5 bulk actions, M5.5a reset semantics refinement, and M5.6 reliability hardening are implemented (lazy-load + cache reuse + camera preservation + wireframe style conversion including fixed gray exclusion style + in-place protein show/hide + default-collapsed Advanced section flow + row-level iso clamp/revert + hidden-row iso persistence + bulk action reset/hide behavior + row-level retry/isolation + stale completion guards).
   - `M5.2c` parity investigation is documented as exploratory/deferred and not part of required milestone gating.
-  - `M5.5a` reset-semantics refinement is implemented; reliability hardening (`M5.6`) remains pending.
+  - Final M5 gate (`validate:m5`) is implemented and passing.
 - Overview page:
-  - Route and CTA scaffold exist; required narrative and links are not implemented.
+  - M6 contract is implemented: text-first narrative, `Go to Viewer` CTA (client-side navigation), and required RCSB 3FLY external link.
 - Performance/validation instrumentation:
-  - Milestone scripts exist through M5.5; AC instrumentation/evidence pipeline is not implemented.
+  - Milestone scripts exist through M6 plus final M5 umbrella validation; AC instrumentation/evidence pipeline is not implemented.
 
 ## Spec Divergence Register
 - `medium` - `docs/specs/ligand-workflow-spec.md` (M4C deferred scope):
   - Observed: searchable full-ligand selector and ordering behavior are not implemented.
   - Impact: deferred by plan; non-blocking for M5-M8 progression.
-- `high` - `docs/specs/fragmap-controls-spec.md`:
-  - Observed: M5.1 shell, M5.2 Primary-3 runtime, M5.2a wireframe rendering, M5.2b protein visibility toggle, M5.3 Advanced/Exclusion behavior, M5.4 per-map iso controls, M5.5 bulk actions, and M5.5a reset semantics are implemented. Reliability hardening (`M5.6`) is pending.
-  - Impact: M5 acceptance remains incomplete until `M5.6` failure-path/retry/async-guard checks are implemented and validated.
-- `high` - `docs/specs/overview-page-spec.md`:
-  - Observed: overview narrative and required external reference link are missing.
-  - Impact: PRD overview acceptance is not met.
+- `low` - `docs/specs/fragmap-controls-spec.md`:
+  - Observed: required M5 slices through `M5.6` are implemented and validated; optional `M5.2c` parity work remains deferred by plan.
+  - Impact: no blocker for M7 progression.
 - `medium` - `docs/specs/performance-and-validation-spec.md`:
   - Observed: no `docs/validation.md`, no AC runbook evidence outputs, no Safari evidence capture.
   - Impact: final AC sign-off impossible today.
@@ -281,7 +288,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Impact: deviates from v1 guidance emphasizing non-blocking toast behavior for core errors.
 - `medium` - `docs/plans/execution-plan.md` Section 1.1 command contract:
   - Observed: expected Playwright suite structure/commands are not present (`tests/e2e/...`, `playwright.config.ts`, `npm run test:e2e:*`, `npm run test:ac:*`).
-  - Impact: planned cross-browser AC automation path is currently unavailable; project currently relies on milestone validators through `validate:m5.5`.
+  - Impact: planned cross-browser AC automation path is currently unavailable; project currently relies on milestone validators through `validate:m5`.
 
 ## Validation Ledger (append-only)
 - 2026-02-15: Ran `npm run validate:m1` -> PASS.
@@ -370,9 +377,15 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.6` Prompt A and executed `M5.6` Prompt B runtime implementation. Updated `src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, and `src/viewer/nglStage.ts` for row-level failure isolation/retry and per-row async intent guards; added `scripts/validate-m5-6.js` and `scripts/validate-m5.js`; wired `validate:m5.6` and `validate:m5` in `package.json`; extended `scripts/run_checks.sh` through `validate:m5.6`. Validation evidence: `npm run build` -> PASS; `node scripts/validate-m5-6.js` -> PASS; `bash scripts/run_checks.sh` -> PASS through `validate:m5.6`; `npm run validate:m5` -> first sandboxed run `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4176`), unsandboxed rerun -> PASS.
 - 2026-02-16: Re-ran final M5 gate commands after context-doc cleanup. Validation evidence: `npm run validate:m5.6` -> first sandboxed run `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4183`), unsandboxed rerun -> PASS; `npm run validate:m5` unsandboxed rerun -> PASS (`M5.1`..`M5.6` all passed in sequence).
 - 2026-02-16: Populated `M6` prompt templates in `prompts/implementation.md` by adding Prompt A (design preview), Prompt B (post-approval implementation), verification prompt, and manual verification checklist aligned to `docs/plans/execution-plan.md` and `docs/specs/overview-page-spec.md`. Milestone validators were not run (`not run`; docs-only prompt-template update).
+- 2026-02-16: Executed `M6` Prompt A (design-preview only). Added `docs/screenshots/Design_previews/m6-overview-page/README.md`, `docs/screenshots/Design_previews/m6-overview-page/m6-preview-index.md`, `docs/screenshots/Design_previews/m6-overview-page/approval-log.md`, `docs/screenshots/Design_previews/m6-overview-page/desktop/m6-overview-states.svg`, and `docs/screenshots/Design_previews/m6-overview-page/mobile/m6-overview-states-mobile.svg`. Command evidence: `rg -n "A\\. Default|B\\. Loading|C\\. Empty|D\\. Error|E\\. Success" docs/screenshots/Design_previews/m6-overview-page/desktop/m6-overview-states.svg docs/screenshots/Design_previews/m6-overview-page/mobile/m6-overview-states-mobile.svg` -> PASS; `rg -n "BLOCKED-DESIGN|APPROVED UI PREVIEW|default|loading|empty|error|success" docs/screenshots/Design_previews/m6-overview-page/README.md docs/screenshots/Design_previews/m6-overview-page/m6-preview-index.md docs/screenshots/Design_previews/m6-overview-page/approval-log.md` -> PASS. Milestone validators were not run (`not run`; Prompt-A design-preview/docs-only update).
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M6` Prompt A and executed `M6` Prompt B runtime implementation. Updated `src/pages/HomePage.vue` with final M6 narrative/CTA/link behavior; added `scripts/validate-m6.js`; wired `validate:m6` and `prevalidate:m6` in `package.json`; extended `scripts/run_checks.sh` through `validate-m6`. Validation evidence: `bash scripts/run_checks.sh` -> PASS through `validate-m6`; `npm run validate:m6` -> first sandboxed run `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4184`), unsandboxed rerun -> PASS.
+- 2026-02-16: Aligned M6 overview copy contract before text revision: updated `docs/specs/overview-page-spec.md` paragraph-structure wording to allow scientific-first narrative order, and updated `scripts/validate-m6.js` concept checks to accept equivalent exploration phrasing (`baseline` or `original`; `map-assisted` or direct map-toggle inspection language). Validation evidence: `npm run validate:m6` -> PASS.
+- 2026-02-16: Applied reviewer-authored final M6 narrative text in `src/pages/HomePage.vue` (scientific-first framing + explicit featured-ligand IDs + original/refined/FragMap/iso exploration guidance). Validation evidence: `npm run validate:m6` -> PASS.
+- 2026-02-16: Applied a minor M6 readability polish in `src/pages/HomePage.vue` ("baseline pose of crystallographic ligand" -> "baseline pose of the crystal ligand"). Validation evidence: `npm run validate:m6` -> PASS.
+- 2026-02-16: Removed literal backtick rendering around ligand IDs in M6 overview narrative (`src/pages/HomePage.vue`) so ligand identifiers display as plain inline names. Validation evidence: `npm run validate:m6` -> PASS.
 
 ## Open Risks
-- `M6` overview-page implementation is not started; active next gate is `M6` Prompt A design-preview approval.
+- `M7` instrumentation/evidence pipeline is not started and remains the next major delivery risk.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.

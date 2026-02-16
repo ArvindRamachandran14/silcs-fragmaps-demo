@@ -5,6 +5,91 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Remove literal backtick glyphs from M6 ligand identifier text
+- Decision: keep the approved M6 narrative content and replace markdown-style backtick wrappers around ligand IDs with plain inline text in the rendered overview page.
+- Why: Vue template text does not parse markdown; backticks were displayed literally and reduced readability.
+- Alternatives considered:
+  - keep current content with literal backticks;
+  - switch IDs to styled `<code>` UI tokens (rejected to keep visual treatment simple).
+- Evidence:
+  - `src/pages/HomePage.vue`
+  - `scripts/validate-m6.js`
+- Validation/risk impact: `npm run validate:m6` passes; no functional behavior changes.
+
+### 2026-02-16 - Apply minor readability polish to final M6 paragraph wording
+- Decision: keep the approved M6 narrative content unchanged in scope and apply a single wording polish in paragraph 1 ("baseline pose of the crystal ligand") for clearer readability.
+- Why: reviewer requested a low-risk copy polish that improves phrasing without changing requirements coverage.
+- Alternatives considered:
+  - leave the original sentence unchanged;
+  - rewrite a larger section of paragraph 1 (rejected to keep churn minimal).
+- Evidence:
+  - `src/pages/HomePage.vue`
+  - `scripts/validate-m6.js`
+- Validation/risk impact: `npm run validate:m6` passes after the edit; no functional behavior changes.
+
+### 2026-02-16 - Adopt reviewer-authored final M6 overview narrative copy
+- Decision: replace prior M6 overview paragraph text with the reviewer-authored narrative (scientific-first framing) while preserving existing CTA/link behavior and the 1-2 paragraph contract.
+- Why: the revised copy better matches the intended Overview/Introduction framing and explicitly calls out featured ligand scope and viewer exploration actions.
+- Alternatives considered:
+  - keep prior M6 wording and only adjust minor sentence structure;
+  - postpone copy replacement until M7 to avoid another M6 touch.
+- Evidence:
+  - `src/pages/HomePage.vue`
+  - `scripts/validate-m6.js`
+  - `docs/specs/overview-page-spec.md`
+- Validation/risk impact: `npm run validate:m6` passes after the copy update; no functional viewer/runtime behavior changes.
+
+### 2026-02-16 - Align M6 overview spec and validator contract to allow revised narrative wording
+- Decision: update M6 overview documentation/validation contract so paragraph order can be scientific-first or product-first, and concept checks accept equivalent exploration wording (`baseline` or `original`; `map-assisted` or direct map-toggle inspection language).
+- Why: reviewer-provided M6 copy direction is clearer and PRD-aligned, but it partially conflicted with rigid paragraph-order wording and overly literal validator text matching.
+- Alternatives considered:
+  - keep strict product-first paragraph requirement and update only Home copy to match old wording;
+  - bypass validator updates and rely on manual review for wording variants.
+- Evidence:
+  - `docs/specs/overview-page-spec.md`
+  - `scripts/validate-m6.js`
+- Validation/risk impact: `npm run validate:m6` passes after the contract update. Scope is limited to M6 narrative wording contract; no viewer runtime behavior changes.
+
+### 2026-02-16 - Accept M6 Prompt-A preview and unblock Prompt-B implementation
+- Decision: accept M6 Prompt-A artifacts via explicit in-thread `APPROVED UI PREVIEW` token and advance to M6 Prompt-B implementation scope.
+- Why: M6 is user-facing content/UI and requires design-gate approval before runtime implementation.
+- Alternatives considered:
+  - keep M6 in `BLOCKED-DESIGN` and request additional Prompt-A revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m6-overview-page/README.md`
+  - `docs/screenshots/Design_previews/m6-overview-page/m6-preview-index.md`
+  - `docs/screenshots/Design_previews/m6-overview-page/approval-log.md`
+- Validation/risk impact: no runtime behavior changed in this approval-record update; Prompt-B implementation became permitted for M6.
+
+### 2026-02-16 - Implement M6 overview narrative/CTA/link contract and add M6 validator
+- Decision: complete M6 Prompt B by implementing a text-first Home/Overview page with exactly two narrative paragraphs covering required concepts, a primary `Go to Viewer` CTA (client-side `/viewer` navigation), and required RCSB 3FLY external link opening in a new tab; add repeatable M6 gate validation.
+- Why: this satisfies `docs/specs/overview-page-spec.md` acceptance checks and closes M6 before M7 work.
+- Alternatives considered:
+  - keep scaffold placeholder content and defer narrative/link behavior;
+  - implement overview text without adding a dedicated `validate:m6` command contract.
+- Evidence:
+  - `src/pages/HomePage.vue`
+  - `scripts/validate-m6.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: `bash scripts/run_checks.sh` passes through M6; `npm run validate:m6` first sandboxed run was `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4184`) and unsandboxed rerun passed. M6 is now complete; next required scope is M7.
+
+### 2026-02-16 - Execute M6 Prompt A as docs-only overview preview and keep Prompt B blocked pending approval
+- Decision: produce M6 Prompt-A design artifacts (`default/loading/empty/error/success`) under `docs/screenshots/Design_previews/m6-overview-page/` with both desktop and mobile mockups, and keep M6 implementation blocked until explicit `APPROVED UI PREVIEW`.
+- Why: M6 is a user-facing UI/content milestone and must pass the UI-first design gate before coding.
+- Alternatives considered:
+  - implement M6 runtime directly without Prompt-A mockups;
+  - create only one desktop artifact and defer mobile preview.
+- Evidence:
+  - `docs/screenshots/Design_previews/m6-overview-page/README.md`
+  - `docs/screenshots/Design_previews/m6-overview-page/m6-preview-index.md`
+  - `docs/screenshots/Design_previews/m6-overview-page/approval-log.md`
+  - `docs/screenshots/Design_previews/m6-overview-page/desktop/m6-overview-states.svg`
+  - `docs/screenshots/Design_previews/m6-overview-page/mobile/m6-overview-states-mobile.svg`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: docs-only design update; no runtime behavior changes and no milestone validators run in this step. M6 Prompt B remains blocked pending explicit approval token.
+
 ### 2026-02-16 - Populate M6 Prompt A/B and verification templates in implementation prompts
 - Decision: replace M6 TODO placeholders in `prompts/implementation.md` with concrete Prompt A (design preview), Prompt B (post-approval implementation), verification prompt, and manual verification checklist aligned to M6 execution/spec contracts.
 - Why: M6 workflow needs the same prompt-driven gate structure used for M4/M5 so implementation can proceed without ad-hoc prompt drafting.

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1240" viewBox="0 0 1800 1240" role="img" aria-label="M6 overview page desktop state previews">
+  <rect width="1800" height="1240" fill="#eef2f7"/>
+  <text x="60" y="52" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1c2a39">M6 Overview Page - Desktop Prompt A</text>
+
+  <g transform="translate(40,90)">
+    <rect x="0" y="0" width="845" height="350" rx="14" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="28" y="40" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#1f2e3c">A. Default</text>
+    <text x="28" y="82" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#243447">Visualize FragMaps and Ligand Analysis</text>
+    <rect x="28" y="104" width="790" height="104" rx="8" fill="#f6f9fc" stroke="#d6e0ec"/>
+    <text x="44" y="136" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">Paragraph 1: product framing + P38 MAP Kinase (3FLY) scientific context.</text>
+    <text x="44" y="160" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">Paragraph 2: FragMap interpretation value + what users can inspect in Viewer.</text>
+    <text x="44" y="184" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">Includes crystal ligand context and map-assisted pose assessment language.</text>
+    <rect x="28" y="230" width="170" height="44" rx="10" fill="#2f6db0"/>
+    <text x="58" y="258" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="230" y="258" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#335b8a">RCSB 3FLY: rcsb.org/structure/3FLY (new tab)</text>
+  </g>
+
+  <g transform="translate(915,90)">
+    <rect x="0" y="0" width="845" height="350" rx="14" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="28" y="40" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#1f2e3c">B. Loading</text>
+    <text x="28" y="82" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#243447">Preparing overview content...</text>
+    <rect x="28" y="108" width="780" height="22" rx="10" fill="#dde5f0"/>
+    <rect x="28" y="142" width="760" height="22" rx="10" fill="#dde5f0"/>
+    <rect x="28" y="176" width="735" height="22" rx="10" fill="#dde5f0"/>
+    <rect x="28" y="230" width="170" height="44" rx="10" fill="#b8c4d6"/>
+    <text x="58" y="258" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="230" y="258" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#647b95">External links disabled while loading</text>
+  </g>
+
+  <g transform="translate(40,470)">
+    <rect x="0" y="0" width="845" height="350" rx="14" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="28" y="40" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#1f2e3c">C. Empty</text>
+    <text x="28" y="84" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#5d7188">Overview narrative is currently unavailable.</text>
+    <text x="28" y="116" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#5d7188">Please continue to the Viewer while content refreshes.</text>
+    <rect x="28" y="156" width="170" height="44" rx="10" fill="#2f6db0"/>
+    <text x="58" y="184" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="230" y="184" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#647b95">RCSB link hidden when no narrative data exists</text>
+  </g>
+
+  <g transform="translate(915,470)">
+    <rect x="0" y="0" width="845" height="350" rx="14" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="28" y="40" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#1f2e3c">D. Error</text>
+    <rect x="28" y="70" width="790" height="56" rx="10" fill="#fff2f2" stroke="#efb0b0"/>
+    <text x="44" y="104" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#8f2a2a">External link could not be opened. CTA navigation remains available.</text>
+    <rect x="28" y="150" width="790" height="86" rx="8" fill="#f6f9fc" stroke="#d6e0ec"/>
+    <text x="44" y="182" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">Narrative remains visible and interactive despite link-open error.</text>
+    <text x="44" y="206" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">No blocking modal; users can continue to Viewer.</text>
+    <rect x="28" y="250" width="170" height="44" rx="10" fill="#2f6db0"/>
+    <text x="58" y="278" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="700">Go to Viewer</text>
+  </g>
+
+  <g transform="translate(40,850)">
+    <rect x="0" y="0" width="1720" height="350" rx="14" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="28" y="40" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#1f2e3c">E. Success</text>
+    <text x="28" y="84" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#243447">Visualize FragMaps and Ligand Analysis</text>
+    <rect x="28" y="104" width="1670" height="104" rx="8" fill="#f6f9fc" stroke="#d6e0ec"/>
+    <text x="44" y="136" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">Two-paragraph final narrative includes: 3FLY relevance, Crystal Ligand context, SILCS FragMaps meaning,</text>
+    <text x="44" y="160" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">binding interpretation value, and user exploration scope for baseline/refined pose and map-assisted inspection.</text>
+    <text x="44" y="184" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#33485c">Page is text-first, CTA is primary, and required external references are present and non-blocking.</text>
+    <rect x="28" y="230" width="170" height="44" rx="10" fill="#2f6db0"/>
+    <text x="58" y="258" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="230" y="258" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#335b8a">PDB 3FLY (RCSB) link opens in a new tab</text>
+    <text x="28" y="308" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#647b95">M6 Prompt A scope: design-preview only (no runtime behavior implementation in this step).</text>
+  </g>
+</svg>

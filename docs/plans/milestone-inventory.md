@@ -733,22 +733,40 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ## M6 - Overview Page Narrative + CTA + External Links
 
 ### Summary
-- Pending.
+- Prompt A artifacts were produced and approved via explicit `APPROVED UI PREVIEW`.
+- Prompt B runtime implementation is complete for overview narrative + CTA + required external link behavior.
+- Sequential regression is green through `validate:m6`.
 
 ### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M6 and why.` |
+| `docs/screenshots/Design_previews/m6-overview-page/README.md` | Created | M6 preview packet front page. | Added gate status, scope boundaries, packet structure, and final gate-complete state. |
+| `docs/screenshots/Design_previews/m6-overview-page/approval-log.md` | Created | M6 review decision ledger. | Recorded explicit `APPROVED UI PREVIEW` and Prompt-B completion notes. |
+| `docs/screenshots/Design_previews/m6-overview-page/m6-preview-index.md` | Created | M6 Prompt-A index and checklist. | Added scope lock, state coverage checklist, artifact matrix, traceability, and final approval state. |
+| `docs/screenshots/Design_previews/m6-overview-page/desktop/m6-overview-states.svg` | Created | Desktop Prompt-A state artifact. | Added multi-panel desktop state sheet with `A. Default`, `B. Loading`, `C. Empty`, `D. Error`, `E. Success`. |
+| `docs/screenshots/Design_previews/m6-overview-page/mobile/m6-overview-states-mobile.svg` | Created | Mobile Prompt-A state artifact. | Added multi-panel mobile state sheet with `A. Default`, `B. Loading`, `C. Empty`, `D. Error`, `E. Success`. |
+| `src/pages/HomePage.vue` | Updated | Home/overview route content component. | Implemented final M6 narrative (2 paragraphs, required concepts), primary `Go to Viewer` CTA, and required RCSB 3FLY external link with new-tab behavior. |
+| `scripts/validate-m6.js` | Created | M6 milestone validator. | Added checks for narrative concept coverage, CTA client-side navigation, external-link contract, and text-first overview constraints. |
+| `package.json` | Updated | Validation command contract. | Added `validate:m6` and `prevalidate:m6` scripts. |
+| `scripts/run_checks.sh` | Updated | Sequential local regression runner. | Extended single-build suite through `node scripts/validate-m6.js`. |
 
 ### Commands Run
-- Pending.
+- `rg -n "A\\. Default|B\\. Loading|C\\. Empty|D\\. Error|E\\. Success" docs/screenshots/Design_previews/m6-overview-page/desktop/m6-overview-states.svg docs/screenshots/Design_previews/m6-overview-page/mobile/m6-overview-states-mobile.svg` -> PASS.
+- `rg -n "BLOCKED-DESIGN|APPROVED UI PREVIEW|default|loading|empty|error|success" docs/screenshots/Design_previews/m6-overview-page/README.md docs/screenshots/Design_previews/m6-overview-page/m6-preview-index.md docs/screenshots/Design_previews/m6-overview-page/approval-log.md` -> PASS.
+- `bash scripts/run_checks.sh` -> PASS (sequential through `validate-m6`; includes one expected `validate-m1` retry).
+- `npm run validate:m6` -> first sandboxed run `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4184`), unsandboxed rerun -> PASS.
 
 ### Gate Checklist
-- Design Preview Gate approved (for UI scope): Pending.
-- Pending.
+- Prompt-A artifacts produced for M6 in the correct packet path: PASS.
+- Default/loading/empty/error/success state coverage exists in Prompt-A artifacts: PASS.
+- Desktop and mobile mockups are both present: PASS.
+- Prompt-A preview for M6 approved (`APPROVED UI PREVIEW`): PASS.
+- Prompt-B implementation stayed within M6 scope boundary: PASS.
+- M6 acceptance checks for narrative/CTA/link/text-first behavior validated: PASS.
+- Sequential regression (`m1`..`m6`) is green: PASS.
 
 ### Residual Risks/Blockers
-- Pending.
+- No blocker remains for M6. Next required milestone is `M7`.
 
 ---
 

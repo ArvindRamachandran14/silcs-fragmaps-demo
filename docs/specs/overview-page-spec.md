@@ -28,8 +28,9 @@ Out of scope:
 The page must use exactly 1-2 paragraphs and cover all required concepts below.
 
 ### Paragraph Structure Requirement
-- Paragraph 1: open with product-oriented framing of the demo purpose, then transition into scientific context.
-- Paragraph 2: focus mainly on scientific interpretation value, then close with product-oriented guidance on what users can do in the viewer.
+- Narrative order is flexible as long as all required concepts are covered in 1-2 paragraphs.
+- Paragraph 1 should establish demo context for P38 MAP Kinase (3FLY), with product framing and scientific framing allowed in either order.
+- Paragraph 2 should explain interpretation value from SILCS FragMaps and close with practical viewer exploration guidance.
 
 ### Required Concepts (from PRD)
 Each item must be explicitly addressed in the narrative:
@@ -37,7 +38,7 @@ Each item must be explicitly addressed in the narrative:
 - The crystal ligand context being shown (`3fly_cryst_lig`, displayed as `Crystal Ligand`).
 - What SILCS FragMaps represent.
 - Why FragMaps help interpret ligand binding / pose quality.
-- What users can explore in the demo (ligand comparison, baseline vs refined pose interpretation, map-assisted inspection).
+- What users can explore in the demo (ligand comparison/switching, baseline or original vs refined pose interpretation, map-assisted or direct map-toggle inspection).
 
 ### Content Scope Constraint
 - Include only required PRD concepts.

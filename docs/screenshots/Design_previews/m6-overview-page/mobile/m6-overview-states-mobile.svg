@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="2580" viewBox="0 0 980 2580" role="img" aria-label="M6 overview page mobile state previews">
+  <rect width="980" height="2580" fill="#eef2f7"/>
+  <text x="34" y="48" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1c2a39">M6 Overview Page - Mobile Prompt A</text>
+
+  <g transform="translate(30,90)">
+    <rect x="0" y="0" width="920" height="460" rx="16" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="24" y="44" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1f2e3c">A. Default</text>
+    <text x="24" y="88" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#243447">Visualize FragMaps and Ligand Analysis</text>
+    <rect x="24" y="108" width="872" height="184" rx="8" fill="#f6f9fc" stroke="#d6e0ec"/>
+    <text x="40" y="144" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#33485c">Two paragraphs with required M6 concepts.</text>
+    <text x="40" y="176" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#33485c">Includes 3FLY, Crystal Ligand, FragMap meaning,</text>
+    <text x="40" y="208" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#33485c">binding interpretation value, and Viewer guidance.</text>
+    <rect x="24" y="320" width="240" height="58" rx="12" fill="#2f6db0"/>
+    <text x="58" y="358" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="24" y="420" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#335b8a">RCSB 3FLY link (opens new tab)</text>
+  </g>
+
+  <g transform="translate(30,580)">
+    <rect x="0" y="0" width="920" height="440" rx="16" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="24" y="44" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1f2e3c">B. Loading</text>
+    <text x="24" y="88" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#243447">Preparing overview content...</text>
+    <rect x="24" y="118" width="850" height="30" rx="12" fill="#dde5f0"/>
+    <rect x="24" y="164" width="840" height="30" rx="12" fill="#dde5f0"/>
+    <rect x="24" y="210" width="790" height="30" rx="12" fill="#dde5f0"/>
+    <rect x="24" y="282" width="240" height="58" rx="12" fill="#b8c4d6"/>
+    <text x="58" y="320" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="24" y="380" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#647b95">Links are hidden until load completes.</text>
+  </g>
+
+  <g transform="translate(30,1050)">
+    <rect x="0" y="0" width="920" height="420" rx="16" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="24" y="44" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1f2e3c">C. Empty</text>
+    <text x="24" y="98" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#5d7188">Narrative content is not available.</text>
+    <text x="24" y="134" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#5d7188">User can still continue to Viewer.</text>
+    <rect x="24" y="196" width="240" height="58" rx="12" fill="#2f6db0"/>
+    <text x="58" y="234" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="24" y="302" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#647b95">No blocking modal. Page remains usable.</text>
+  </g>
+
+  <g transform="translate(30,1500)">
+    <rect x="0" y="0" width="920" height="460" rx="16" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="24" y="44" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1f2e3c">D. Error</text>
+    <rect x="24" y="72" width="872" height="92" rx="10" fill="#fff2f2" stroke="#efb0b0"/>
+    <text x="40" y="112" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#8f2a2a">External link failed to open. CTA still works.</text>
+    <rect x="24" y="188" width="240" height="58" rx="12" fill="#2f6db0"/>
+    <text x="58" y="226" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="24" y="302" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#647b95">Link errors are non-blocking in M6 contract.</text>
+  </g>
+
+  <g transform="translate(30,1988)">
+    <rect x="0" y="0" width="920" height="540" rx="16" fill="#ffffff" stroke="#b8c4d6"/>
+    <text x="24" y="44" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" fill="#1f2e3c">E. Success</text>
+    <text x="24" y="90" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#243447">Final text-first overview content is ready.</text>
+    <rect x="24" y="116" width="872" height="220" rx="8" fill="#f6f9fc" stroke="#d6e0ec"/>
+    <text x="40" y="156" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#33485c">Both narrative paragraphs are present and readable.</text>
+    <text x="40" y="188" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#33485c">CTA is primary and visible without deep scrolling.</text>
+    <text x="40" y="220" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#33485c">Required 3FLY link is available and opens in new tab.</text>
+    <rect x="24" y="370" width="240" height="58" rx="12" fill="#2f6db0"/>
+    <text x="58" y="408" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#ffffff" font-weight="700">Go to Viewer</text>
+    <text x="24" y="474" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#647b95">M6 Prompt A scope: design preview only; implementation is blocked until approval.</text>
+  </g>
+</svg>
