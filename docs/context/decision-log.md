@@ -5,6 +5,33 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Run docs-only consistency alignment across M5.1 packet/specs/plans/context/prompts
+- Decision: reconcile cross-document drift by synchronizing M5.1 approval state, Prompt-B readiness, tab-framework wording, and featured-ligand subset wording in all authoritative docs.
+- Why: docs audit identified conflicting status/scope statements that could cause incorrect implementation scope and handoff ambiguity.
+- Alternatives considered: defer non-blocking wording fixes until after M5.1 Prompt B implementation.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+  - `docs/specs/viewer-core-spec.md`
+  - `docs/specs/fragmap-controls-spec.md`
+  - `docs/specs/ligand-workflow-spec.md`
+  - `docs/plans/technical-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `prompts/implementation.md`
+  - `docs/context/current-state.md`
+  - `docs/context/next-agent-brief.md`
+- Validation/risk impact: reduces documentation ambiguity before M5.1 Prompt B implementation; no runtime behavior changes.
+
+### 2026-02-16 - Encode approved M5.1 two-tab contract directly in plan files
+- Decision: update `docs/plans/execution-plan.md` and `docs/plans/milestone-inventory.md` so M5.1 explicitly includes the right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls.
+- Why: reviewer requested explicit plan-level wording so M5.1 implementation scope is unambiguous without relying only on preview-packet docs.
+- Alternatives considered: keep tab contract documented only in preview artifacts/context notes.
+- Evidence:
+  - `docs/plans/execution-plan.md` (M5 ordered table and M5.1 slice scope row)
+  - `docs/plans/milestone-inventory.md` (M5.1 slice tracker/scope text and gate checklist)
+- Validation/risk impact: reduces scope ambiguity before Prompt B implementation; no runtime behavior changes in this docs-only update.
+
 ### 2026-02-16 - Simplify M5.1 state-sheet tabs to match two-tab context framework
 - Decision: finalize the M5.1 state-sheet preview with the same simplified tab strip as the context image: `FragMap` (active) and `Ligand` (inactive placeholder) only.
 - Why: reviewer requested removal of extra tab complexity to prevent confusion before implementation and to keep packet artifacts internally consistent.

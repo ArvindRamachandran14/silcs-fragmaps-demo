@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.1 two-tab artifact alignment)
+Last updated: 2026-02-16 (docs consistency audit alignment)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -101,11 +101,11 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Add implementation and validation only if stretch scope is reactivated.
 
 ### M5 FragMap Controls (Sliced: M5.1..M5.6)
-- Status: `not started`
+- Status: `in progress (M5.1 Prompt A approved; Prompt B pending)`
 - Evidence:
   - M5 execution is now locked to six slices (`M5.1` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
-  - Active next scope is `M5.1` Prompt A (design preview only).
+  - Active next scope is `M5.1` Prompt B (implementation) after explicit in-thread `APPROVED UI PREVIEW`.
   - Prompt-A packet artifacts now exist for `M5.1`:
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg` (multi-state shell page with simplified two-tab right-panel framework: `FragMap` + `Ligand`).
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg` (full-viewer placement context page aligned to the same simplified `FragMap` + `Ligand` tabs).
@@ -163,9 +163,6 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Milestone scripts exist through M4B; AC instrumentation/evidence pipeline is not implemented.
 
 ## Spec Divergence Register
-- `medium` - `docs/specs/ligand-workflow-spec.md` Section 4 canonical featured set:
-  - Observed: spec text still references a larger canonical featured set, while approved M4B implementation is intentionally constrained to 4 featured chips (`Crystal Ligand`, `05_2e`, `06_2f`, `07_2g`).
-  - Impact: implementation follows approved preview/plan decision, but spec wording should be reconciled to avoid future ambiguity.
 - `medium` - `docs/specs/ligand-workflow-spec.md` (M4C deferred scope):
   - Observed: searchable full-ligand selector and ordering behavior are not implemented.
   - Impact: deferred by plan; non-blocking for M5-M8 progression.
@@ -230,9 +227,11 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Incorporated reviewer feedback requiring `GUI_Layout.png`-style tabbed right-panel framework for M5.1 previews. Updated both M5.1 artifacts (`m5.1-fragmap-panel-shell-states.svg`, `m5.1-viewer-context-placement.svg`) to show `FragMap` active with `Protein` / `Ligand` / `Components` inactive placeholders, and updated packet docs (`README.md`, `m5.1-preview-index.md`, `approval-log.md`). Validation commands were not run (`not run`; design-preview-doc update only).
 - 2026-02-16: Clarified reviewer intent that A/B/C/D/E in the M5.1 state sheet are mutually exclusive view states (not simultaneous UI), and simplified only the context-placement tab strip to `FragMap` + `Ligand` per feedback. Updated `desktop/m5.1-viewer-context-placement.svg`, `m5.1-preview-index.md`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
 - 2026-02-16: Completed M5.1 artifact consistency pass so both state and context images use the same simplified two-tab framework (`FragMap` + `Ligand`). Updated `desktop/m5.1-fragmap-panel-shell-states.svg`, `desktop/m5.1-viewer-context-placement.svg`, packet docs (`README.md`, `m5.1-preview-index.md`, `approval-log.md`), and context records. Validation command evidence for this pass: `git status --short` -> PASS; `rg -n ">Protein</text>|>Components</text>" docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg docs/screenshots/Design_previews/m5-fragmap-controls/m5.1-preview-index.md docs/screenshots/Design_previews/m5-fragmap-controls/README.md` -> PASS (`no matches`).
+- 2026-02-16: Updated plan docs to encode the approved M5.1 two-tab contract directly in milestone scope wording (`FragMap` + `Ligand`, with `Ligand` preserving existing M4B controls) and marked M5.1 Prompt-A design gate approved in the milestone inventory section. Command evidence: `rg -n "M5\\.1|FragMap \\+ Ligand|two-tab framework"` across `docs/plans/execution-plan.md` and `docs/plans/milestone-inventory.md` -> PASS. No milestone validators were run (`not run`; docs-only planning alignment update).
+- 2026-02-16: Completed docs-only consistency audit and reconciled cross-doc mismatches: M5.1 approval state synchronized across preview packet files, M5.1 scope wording synchronized to Prompt B in context docs, M5.1 tab-framework contract propagated into specs/prompts, and featured-ligand subset wording (`Crystal Ligand` + `05_2e`/`06_2f`/`07_2g`) synchronized across specs/plans/context. Command evidence: targeted `rg -n` consistency scans across `docs/` and `prompts/` -> PASS. No milestone validators were run (`not run`; docs-only alignment update).
 
 ## Open Risks
-- Major feature milestones remain incomplete: M5 slices (`M5.1`..`M5.6`) and M6 are not started while M1-M4B are complete.
+- Major feature milestones remain incomplete: M5 implementation slices (`M5.1` Prompt B onward through `M5.6`) and M6 are not started while M1-M4B are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.

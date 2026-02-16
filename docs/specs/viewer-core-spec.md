@@ -36,6 +36,7 @@ Layout direction must follow the structure emphasis in `docs/screenshots/GUI/GUI
 - dominant central viewport
 - side controls region
 - lightweight top navigation/header
+- shared right-controls framework (`M5.1+`) with two tabs: `FragMap` and `Ligand`
 
 Desktop contract:
 - Top bar/header across full width.
@@ -44,6 +45,7 @@ Desktop contract:
 - Viewport remains the visual priority.
 - At common desktop widths (>=1280 px), layout must keep the controls panel fully visible with no right-edge clipping.
 - Viewer shell must not introduce page-level horizontal scrolling in standard desktop fullscreen usage.
+- Right controls tab switching (`FragMap` <-> `Ligand`) occurs in-place with no route navigation or full page reload.
 
 Mobile/small-screen contract:
 - `NglViewport` remains primary visible region.
@@ -131,6 +133,7 @@ Viewer core is accepted when all checks pass:
 8. Core errors are surfaced via non-blocking toast behavior; no persistent inline error panel.
 9. Viewer includes a compact caption/sidebar context block that updates in place with viewer state changes.
 10. Desktop fullscreen layout keeps controls panel fully visible and avoids page-level horizontal overflow.
+11. Right controls framework exposes `FragMap` and `Ligand` tabs (`M5.1+`) and tab switching is in-place (no route change/reload).
 
 ## 11. Traceability
 - PRD mapping: `2.B Interactive Visualization Page (Required)` for viewer availability and control environment.

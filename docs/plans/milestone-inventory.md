@@ -305,7 +305,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### Slice Tracker
 | Slice | Scope | Design Gate | Implementation Gate | Status |
 |---|---|---|---|---|
-| `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) | Pending | Pending | Not started |
+| `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | Pending | In progress |
 | `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | Pending | Pending | Not started |
 | `M5.3` | Advanced rows + Exclusion map fixed behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
@@ -315,7 +315,8 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### M5.1 - FragMap Panel Shell
 
 #### Summary
-- Pending.
+- Prompt A is approved; Prompt B implementation is pending.
+- Approved design contract for this slice includes right-panel tabs (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
@@ -326,8 +327,9 @@ Use this file to track implementation and gate evidence for each milestone in `d
 - Pending.
 
 #### Gate Checklist
-- Prompt A preview for `M5.1` approved (`APPROVED UI PREVIEW`): Pending.
+- Prompt A preview for `M5.1` approved (`APPROVED UI PREVIEW`): PASS (approved in-thread, 2026-02-16).
 - Prompt B implementation stayed within `M5.1` scope boundary: Pending.
+- Right-panel tab framework (`FragMap` + `Ligand`) is present and `Ligand` tab preserves existing M4B controls: Pending.
 - No M1-M4B regressions after `M5.1` checks: Pending.
 
 #### Residual Risks/Blockers

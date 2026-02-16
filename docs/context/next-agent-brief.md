@@ -1,14 +1,14 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.1 two-tab artifact alignment)
+Last updated: 2026-02-16 (docs consistency audit alignment)
 
 ## Current Milestone Target
 - Active target: `M5.1 FragMap Panel Shell` (M1-M4B validated complete; M5 now runs as slices `M5.1`..`M5.6`).
-- Baseline branch state at takeover: `dev` is synced with `origin/dev` (`0` ahead / `0` behind), latest pushed commit `5f45c74`.
+- Baseline branch state at takeover: `dev` is synced with `origin/dev` (`0` ahead / `0` behind), latest pushed commit `4fc1b8a`.
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: active scope remains `M5.1` Prompt A (design preview only), and slice ordering is `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: active scope is now `M5.1` Prompt B (post-approval implementation), and slice ordering is `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -30,8 +30,8 @@ Last updated: 2026-02-16 (M5.1 two-tab artifact alignment)
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Finalize `M5.1` Prompt-A review with the current packet artifacts and obtain explicit `APPROVED UI PREVIEW`.
-2. Implement `M5.1` Prompt B only (panel shell; no runtime map engine yet), then run sequential regression.
+1. Implement `M5.1` Prompt B only (panel shell; no runtime map engine yet), including the approved right-panel two-tab framework (`FragMap` + `Ligand`) and preserving existing M4B ligand controls under `Ligand`.
+2. Run sequential regression (`validate:m1` -> `validate:m4b`) after M5.1 Prompt-B edits.
 3. Repeat Prompt A/B loop for `M5.2` through `M5.6`, one slice at a time.
 4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
 5. Keep `M4C` documented as deferred stretch scope.
@@ -40,7 +40,8 @@ Last updated: 2026-02-16 (M5.1 two-tab artifact alignment)
 - State artifact now simplified to `FragMap` + `Ligand` tabs: `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg`.
 - Context-placement artifact uses the same `FragMap` + `Ligand` tabs: `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg`.
 - Packet docs updated: `README.md`, `m5.1-preview-index.md`, `approval-log.md`.
-- Approval token remains pending: `APPROVED UI PREVIEW`.
+- Plan docs now explicitly encode this tab contract in M5.1 scope: `docs/plans/execution-plan.md`, `docs/plans/milestone-inventory.md`.
+- Approval token received in-thread: `APPROVED UI PREVIEW`.
 
 ## Exact Commands To Run Next
 - `npm run build`
@@ -90,4 +91,4 @@ Last updated: 2026-02-16 (M5.1 two-tab artifact alignment)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Review the now-consistent M5.1 packet (state page + context page both on `FragMap` + `Ligand`), then obtain explicit `APPROVED UI PREVIEW` before starting Prompt-B implementation.
+- Execute M5.1 Prompt B implementation with the approved tabbed shell (`FragMap` + `Ligand`) while keeping map runtime behaviors out of scope in this slice.

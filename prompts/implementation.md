@@ -597,6 +597,7 @@ Precondition:
 
 Scope:
 - M5.1 only: FragMap panel shell.
+- Include right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B ligand controls.
 - Include Primary/Advanced sections with canonical labels/colors and all-hidden defaults.
 - No runtime map load/toggle engine, no advanced behavior wiring, no iso controls, no reliability hardening in this slice.
 - Preserve M1-M4B behavior contracts.

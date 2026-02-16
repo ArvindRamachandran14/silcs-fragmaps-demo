@@ -8,7 +8,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 ## 1. Executive Summary
 - Build a static SPA with two routes: `Home/Overview` and `Interactive Viewer`.
 - Use `NGL Viewer` for protein/ligand rendering and volumetric `.dx` FragMap overlays.
-- Implement ligand workflow incrementally: `M4A` single-ligand core, then `M4B` curated featured set (`3fly_cryst_lig` shown as `Crystal Ligand` + 5); defer full-list searchable access to `M4C` stretch scope.
+- Implement ligand workflow incrementally: `M4A` single-ligand core, then `M4B` curated featured subset (`3fly_cryst_lig` shown as `Crystal Ligand` + 3); defer full-list searchable access to `M4C` stretch scope.
 - Follow a Vue architecture with `Vue Router + Vuex + Vuetify`.
 - Meet performance via lazy loading, caching, single-map-first render, and controlled iso updates.
 - Deploy to GitHub Pages with reproducible local validation checklist mapped to AC-1..AC-6.
@@ -21,18 +21,16 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Data loading: static assets served from app `public/assets`, fetched on demand.
 - State management: Vuex module with typed state/actions/mutations.
 - Scope decision: require featured-ligand path for baseline delivery and defer full searchable selection to `M4C` (non-blocking for M5-M8).
-- Featured ligands (`3fly_cryst_lig` shown as `Crystal Ligand` + 5) for guided flow:
+- Featured ligands (`3fly_cryst_lig` shown as `Crystal Ligand` + 3) for guided flow:
 - `3fly_cryst_lig` (display label: `Crystal Ligand`)
 - `p38_goldstein_05_2e`
 - `p38_goldstein_06_2f`
 - `p38_goldstein_07_2g`
-- `p38_goldstein_08_2h`
-- `p38_goldstein_09_2i`
 - Full exploratory set remains defined for deferred `M4C`: all 30 provided ligand IDs plus `3fly_cryst_lig` (displayed as `Crystal Ligand`) via searchable autocomplete/dropdown.
 - UI decision: M4A/M4B ship without full-list autocomplete; keep no local file-upload control in v1.
 - Runtime format policy: protein `.pdb` primary, ligands `.sdf` primary with `.pdb` fallback only when needed, FragMaps `.dx` primary.
 - FragMaps used at runtime: `.dx` only (all 8 maps). `.map` retained but not parsed in v1.
-- UX patterns use sidebar controls + viewport-first layout; requirements come only from PRD and repository specs.
+- UX patterns use sidebar controls + viewport-first layout; for M5.1+ the right controls region uses a two-tab framework (`FragMap`, `Ligand`).
 
 ### 2.1 Authority Note
 - Authoritative implementation inputs for this project are:
@@ -43,6 +41,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 ## 3. System Architecture
 - Route 1: `HomePage.vue` with scientific narrative and interaction instructions.
 - Route 2: `ViewerPage.vue` split into `ControlsPanel.vue` and `NglViewport.vue`.
+- Right controls framework (`M5.1+`): two tabs, `FragMap` and `Ligand`, with `Ligand` preserving existing M4B ligand controls.
 - Core modules:
 - `data/manifest.ts` for typed asset definitions.
 - `viewer/nglStage.ts` for stage lifecycle.
@@ -137,6 +136,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Implementation: `NglViewport` initialization + `3fly.pdb` load at route entry.
 - PRD Requirement: show different ligands and baseline/refined without reload.
 - Implementation: typed ligand manifest + featured quick-picks + in-place component swap + pose-visibility controls (baseline-only, refined-only, both-visible, or both-hidden) using `.sdf` as primary and `.pdb` fallback only when required. Full searchable selector is deferred to `M4C`.
+- UI Framework Requirement (approved M5.1 direction): right controls region supports in-place `FragMap` / `Ligand` tab navigation, with `Ligand` preserving existing M4B controls.
 - PRD Requirement: show/hide individual FragMap surfaces.
 - Implementation: map checklist controls + per-map component cache + visibility toggle + bulk actions (`Hide all`, `Reset defaults`, `Reset view`).
 - PRD Requirement: iso-value adjustment with fast response.
@@ -218,7 +218,7 @@ Companion planning artifacts in `docs/plans` must mirror this document's framewo
 - Framework fixed: Vue 2 + TypeScript + Vue Router + Vuex + Vuetify 2.
 - Viewer fixed: NGL.
 - Hosting fixed: GitHub Pages.
-- Ligand scope fixed for required path: `M4A` single ligand + `M4B` featured set (`3fly_cryst_lig` displayed as `Crystal Ligand` + 5).
+- Ligand scope fixed for required path: `M4A` single ligand + `M4B` featured subset (`3fly_cryst_lig` displayed as `Crystal Ligand` + 3).
 - Deferred stretch scope: `M4C` enables full provided ligand selection via searchable selector.
 - Pose visibility fixed: users can view baseline only, refined only, both simultaneously, or temporarily hide both for decluttered context.
 - Protein runtime format fixed: `.pdb` primary.

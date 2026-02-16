@@ -19,6 +19,7 @@ Resolution adopted across docs:
 ## 3. Scope / Out of Scope
 In scope:
 - Right-panel FragMap controls.
+- Placement within shared right-panel two-tab framework (`FragMap`, `Ligand`) for `M5.1+`, with FragMap behavior defined under the `FragMap` tab.
 - `Primary 3 + Advanced full list` organization.
 - Per-map checkbox visibility controls.
 - Per-map iso controls for iso-adjustable GFE maps.
@@ -75,11 +76,12 @@ Use structure direction from:
 - `docs/screenshots/Ideas/fragmap-primary3-advanced-per-map-iso.svg`
 
 Control layout order:
-1. Action row: `Hide all`, `Reset defaults`, `Reset view`.
-2. `Primary 3` section (always visible).
-3. `Advanced` section (expandable, includes remaining maps).
-4. Per-map row controls include `visibility checkbox`, `map label`, and per-map iso controls (`-`, numeric value, `+`) for iso-adjustable GFE maps.
-5. `Exclusion Map` row remains visibility-toggleable but its iso controls are disabled/read-only (no editable value).
+1. Shared tab strip context (`M5.1+`): `FragMap` tab active with `Ligand` as sibling tab.
+2. Action row: `Hide all`, `Reset defaults`, `Reset view`.
+3. `Primary 3` section (always visible).
+4. `Advanced` section (expandable, includes remaining maps).
+5. Per-map row controls include `visibility checkbox`, `map label`, and per-map iso controls (`-`, numeric value, `+`) for iso-adjustable GFE maps.
+6. `Exclusion Map` row remains visibility-toggleable but its iso controls are disabled/read-only (no editable value).
 
 Layout constraints:
 - Viewport remains dominant over control panel.
@@ -205,20 +207,21 @@ Empty map state:
 
 ## 13. Spec-Level Acceptance Checks
 FragMap controls are accepted when all checks pass:
-1. Panel includes `Primary 3` and expandable `Advanced` full list.
-2. Canonical 3FLY map-to-label mapping in this spec is used.
-3. All maps default hidden on first viewer-ready state.
-4. Single map toggle-on lazy-loads only that map and caches it.
-5. Subsequent toggles reuse cache and do not re-fetch/re-parse unnecessarily.
-6. Per-map iso controls exist for iso-adjustable GFE map rows and update only intended map surfaces.
-7. `Exclusion Map` row does not expose editable iso controls and renders as fixed translucent gray volume.
-8. No global iso control appears.
-9. `Hide all`, `Reset defaults`, and `Reset view` behaviors match this spec.
-10. Map toggle and iso update actions happen with no page reload.
-11. Camera preserved for map toggle/iso updates; only `Reset view` changes camera.
-12. Map failures are isolated to affected row and surfaced with toast + retry.
-13. UI labels and controls remain non-overlapping and in-bounds at supported widths.
-14. Row legends and rendered surfaces use the canonical map-color mapping defined in Section 4.1.
+1. Right controls framework exposes `FragMap` and `Ligand` tabs (`M5.1+`), and FragMap controls are rendered under the `FragMap` tab.
+2. Panel includes `Primary 3` and expandable `Advanced` full list.
+3. Canonical 3FLY map-to-label mapping in this spec is used.
+4. All maps default hidden on first viewer-ready state.
+5. Single map toggle-on lazy-loads only that map and caches it.
+6. Subsequent toggles reuse cache and do not re-fetch/re-parse unnecessarily.
+7. Per-map iso controls exist for iso-adjustable GFE map rows and update only intended map surfaces.
+8. `Exclusion Map` row does not expose editable iso controls and renders as fixed translucent gray volume.
+9. No global iso control appears.
+10. `Hide all`, `Reset defaults`, and `Reset view` behaviors match this spec.
+11. Map toggle and iso update actions happen with no page reload.
+12. Camera preserved for map toggle/iso updates; only `Reset view` changes camera.
+13. Map failures are isolated to affected row and surfaced with toast + retry.
+14. UI labels and controls remain non-overlapping and in-bounds at supported widths.
+15. Row legends and rendered surfaces use the canonical map-color mapping defined in Section 4.1.
 
 AC intent coverage:
 - AC-2 behavior intent: map show/hide updates are fast and preserve camera.

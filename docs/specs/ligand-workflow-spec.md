@@ -10,7 +10,7 @@ This spec focuses on ligand controls and pose visibility behavior only.
 
 ## 2. Scope / Out of Scope
 In scope:
-- Right-panel ligand workflow UI.
+- Right-panel ligand workflow UI (under `Ligand` tab in the shared two-tab controls framework for `M5.1+`).
 - Ligand selection via featured quick-picks (required now) and searchable dropdown (deferred).
 - Pose visibility controls using checkboxes (`baseline`, `refined`).
 - Support for `baseline-only`, `refined-only`, `both-visible`, and `both-unchecked`.
@@ -79,13 +79,14 @@ Deterministic ordering rules (deferred to `M4C`):
 Use `docs/screenshots/GUI/GUI_ligand_analysis.png`, `docs/screenshots/GUI/GUI_ligand_dropdown.png`, `docs/screenshots/Ideas/ligand-controls-wireframe-collapsed-square.svg.png`, and `docs/screenshots/Ideas/ligand-controls-wireframe-expanded-square.svg.png` as structure references.
 
 Right-panel ligand section order:
-1. `Featured quick picks` chips (Crystal Ligand + 5 featured ligands).
-   - Canonical featured ligand IDs: `3fly_cryst_lig`, `p38_goldstein_05_2e`, `p38_goldstein_06_2f`, `p38_goldstein_07_2g`, `p38_goldstein_08_2h`, `p38_goldstein_09_2i`.
+1. Shared tab strip context (`M5.1+`): `Ligand` tab contains ligand workflow controls, with `FragMap` as sibling tab.
+2. `Featured quick picks` chips (Crystal Ligand + 3 featured ligands).
+   - Canonical featured ligand IDs: `3fly_cryst_lig`, `p38_goldstein_05_2e`, `p38_goldstein_06_2f`, `p38_goldstein_07_2g`.
    - Display label mapping: ligand ID `3fly_cryst_lig` must be shown to users as `Crystal Ligand`.
-2. `Search all ligands` searchable dropdown (deferred to `M4C`).
-3. `Pose visibility` checkboxes for `Baseline` and `Refined`.
-4. Compact comparison legend (shown when both checked).
-5. `Zoom` action button.
+3. `Search all ligands` searchable dropdown (deferred to `M4C`).
+4. `Pose visibility` checkboxes for `Baseline` and `Refined`.
+5. Compact comparison legend (shown when both checked).
+6. `Zoom` action button.
 
 UI constraints:
 - Keep ligand workflow controls grouped in one panel section.
@@ -191,7 +192,7 @@ Empty state (both unchecked):
 9. No GFE panel, frame control, or local upload control appears in v1 ligand workflow.
 
 ### 10.2 M4B Required Checks
-1. Right-panel ligand section contains featured quick-pick chips (`Crystal Ligand` + canonical featured set).
+1. Right-panel ligand section contains featured quick-pick chips (`Crystal Ligand` + canonical featured subset in Section 4).
 2. Users can switch ligands via featured quick picks only.
 3. Ligand switches are in-place with no page reload.
 4. Camera is preserved on ligand switch.

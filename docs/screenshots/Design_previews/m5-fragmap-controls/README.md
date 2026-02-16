@@ -4,8 +4,8 @@ This packet tracks the M5 sliced design gates under `docs/screenshots/Design_pre
 
 ## Gate Status
 - Active slice: `M5.1 FragMap Panel Shell`
-- Gate state: `BLOCKED-DESIGN`
-- Required token to unblock Prompt B: `APPROVED UI PREVIEW`
+- Gate state: `APPROVED UI PREVIEW`
+- Required token to unblock Prompt B: `APPROVED UI PREVIEW` (received)
 
 ## Scope for This Packet Revision
 In scope:
@@ -25,5 +25,4 @@ Out of scope in this revision:
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Review `m5.1-preview-index.md` and `desktop/m5.1-fragmap-panel-shell-states.svg`.
-- Reply with `APPROVED UI PREVIEW` to allow `M5.1` Prompt B implementation.
+- Design gate is approved; proceed with `M5.1` Prompt B implementation within scope boundaries.
