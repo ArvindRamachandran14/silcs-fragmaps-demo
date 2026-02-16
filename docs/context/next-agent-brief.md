@@ -1,15 +1,15 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.3 wireframe contract docs-aligned)
+Last updated: 2026-02-16 (M5.2a insertion and wireframe contract docs-aligned)
 
 ## Current Milestone Target
-- Active target: `M5.3 Advanced Rows + Exclusion Behavior` (M1-M4B and M5.1-M5.2 validated complete; M5 continues as slices `M5.1`..`M5.6`).
-- Baseline branch state at takeover: `M5.2` implementation is committed; current working tree contains docs-only `M5.3` rendering-contract alignment updates not yet committed in this window.
+- Active target: `M5.2a Wireframe Rendering Pass` (M1-M4B and M5.1-M5.2 validated complete; M5 continues as slices `M5.1`, `M5.2`, `M5.2a`, `M5.3`, `M5.4`, `M5.5`, `M5.6`).
+- Baseline branch state at takeover: `M5.2` implementation is committed; current working tree contains docs-only `M5.2a` planning/render-contract alignment updates not yet committed in this window.
 - M5.2 Prompt-A packet is approved, and M5.2 Prompt-B runtime implementation is complete with reviewer-locked behavior set (B/A/B).
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1` and `M5.2` Prompt B are complete, active scope is now `M5.3` Prompt A (design preview), and slice ordering remains `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: `M5.1` and `M5.2` Prompt B are complete, active scope is now `M5.2a` Prompt A (design preview), and slice ordering remains `M5.1` -> `M5.2` -> `M5.2a` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -25,17 +25,18 @@ Last updated: 2026-02-16 (M5.3 wireframe contract docs-aligned)
 - Progression rule:
   - `M4C` is not a blocker for `M5`, `M6`, `M7`, or `M8` unless explicitly re-promoted.
 - M5 slicing rule:
-  - Execute M5 as `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+  - Execute M5 as `M5.1` -> `M5.2` -> `M5.2a` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
   - Run Prompt A and Prompt B per slice.
   - Prompt B for a slice cannot start without that slice's `APPROVED UI PREVIEW`.
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.3` Prompt A (design preview only) for Advanced rows + Exclusion behavior and update the M5 preview packet with the locked wireframe rendering contract.
-2. Obtain explicit `APPROVED UI PREVIEW` for `M5.3` before any `M5.3` runtime implementation.
-3. Implement `M5.3` Prompt B only after approval, then run sequential regression (`validate:m1` -> `validate:m5.2`).
-4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
-5. Keep `M4C` documented as deferred stretch scope.
+1. Execute `M5.2a` Prompt A (design preview only) for wireframe rendering pass and update the M5 preview packet.
+2. Obtain explicit `APPROVED UI PREVIEW` for `M5.2a` before any `M5.2a` runtime implementation.
+3. Implement `M5.2a` Prompt B only after approval, then run sequential regression through the highest available validator (`validate:m1` -> `validate:m5.2`, then add/use `validate:m5.2a`).
+4. Execute `M5.3` Prompt A/B only after `M5.2a` gate closure.
+5. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
+6. Keep `M4C` documented as deferred stretch scope.
 
 ## M5.1 Implementation Status
 - `M5.1` Prompt B is implemented in code:
@@ -57,8 +58,8 @@ Last updated: 2026-02-16 (M5.3 wireframe contract docs-aligned)
 - Gate evidence: `npm run build` PASS, `npm run validate:m1` FAIL then PASS on rerun, `npm run validate:m2` PASS, `npm run validate:m3` PASS, `npm run validate:m4a` PASS, `npm run validate:m4b` PASS, `npm run validate:m5.1` PASS, `npm run validate:m5.2` PASS (first sandboxed attempt `ENV-BLOCKED`; unsandboxed rerun passed after validator timing fix).
 - Fresh rerun note (same day): full unsandboxed `bash scripts/run_checks.sh` rerun showed transient `viewer-ready-state` timeout noise in `validate:m4b`/`validate:m5.2`; both passed on immediate sequential rerun (`npm run validate:m4b`, `npm run validate:m5.2`). Do not parallelize validator reruns to avoid port collisions.
 
-## M5.3 Design Contract Note
-- Rendering direction is now docs-locked before `M5.3` implementation:
+## M5.2a Design Contract Note
+- Rendering direction is now docs-locked before `M5.2a` implementation:
   - FragMaps use triangulated wireframe isosurface rendering (polygon edges visible).
   - `Exclusion Map` follows the same wireframe rendering direction with fixed gray styling.
   - `Exclusion Map` remains iso-disabled/non-editable.
@@ -94,7 +95,7 @@ Last updated: 2026-02-16 (M5.3 wireframe contract docs-aligned)
 
 ## Known Divergences To Resolve Before M5
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
-- FragMap runtime behavior beyond M5.2 (Advanced/Exclusion, per-map iso controls, bulk actions, reliability hardening) remains unimplemented.
+- FragMap runtime behavior beyond M5.2 remains unimplemented (`M5.2a` wireframe pass, `M5.3` Advanced/Exclusion behavior, `M5.4` per-map iso controls, `M5.5` bulk actions, `M5.6` reliability hardening).
 - Performance evidence framework (`docs/specs/performance-and-validation-spec.md`) is unimplemented.
 - Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
 
@@ -118,4 +119,4 @@ Last updated: 2026-02-16 (M5.3 wireframe contract docs-aligned)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.3` Prompt A (design preview only) and produce/update the M5.3 preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/` using the locked wireframe contract (including `Exclusion Map`), then request explicit `APPROVED UI PREVIEW`.
+- Execute `M5.2a` Prompt A (design preview only) and produce/update the M5.2a preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/` for wireframe rendering pass (including `Exclusion Map`), then request explicit `APPROVED UI PREVIEW`.

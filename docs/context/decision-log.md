@@ -5,6 +5,21 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Insert `M5.2a` mini-slice to isolate wireframe rendering change before `M5.3`
+- Decision: add a dedicated `M5.2a` slice between `M5.2` and `M5.3` for rendering-style conversion only (triangulated wireframe), without bundling this visual change into `M5.3` behavior work.
+- Why: this reduces integration risk by separating representation-style change from upcoming Advanced/Exclusion control behavior, keeping gate evidence and rollback boundaries cleaner.
+- Alternatives considered:
+  - fold wireframe conversion into `M5.3` and keep existing six-slice order;
+  - renumber all downstream slices (`M5.3` -> `M5.4`, etc.), causing broader doc churn.
+- Evidence:
+  - `docs/plans/execution-plan.md`
+  - `docs/plans/milestone-inventory.md`
+  - `prompts/implementation.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2a-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: isolates rendering-risk from behavior-risk; no runtime changes in this docs-only update.
+
 ### 2026-02-16 - Lock FragMap rendering contract to triangulated wireframe style for all rows (including Exclusion)
 - Decision: update the M5 FragMap rendering contract from filled/translucent surface wording to triangulated wireframe isosurface wording, and explicitly apply it to `Exclusion Map` as fixed gray wireframe with iso controls still disabled.
 - Why: reviewer requested visual parity with reference SILCS screenshots that show edge-visible triangulated mesh-like map rendering rather than blob-like translucent fills.
