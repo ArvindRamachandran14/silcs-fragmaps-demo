@@ -43,6 +43,7 @@ Last updated: 2026-02-16 (`M5.6` Prompt B complete; final M5 gate PASS)
   - `M4C` is non-blocking for `M6`, `M7`, and `M8` unless explicitly re-promoted.
 
 ## Priority Tasks (ordered)
+0. Use the now-populated M6 prompt templates in `prompts/implementation.md` (Prompt A / Prompt B / verify) as the canonical execution entry point.
 1. Execute `M6` Prompt A only (design-preview artifacts + gate checklist), then wait for explicit `APPROVED UI PREVIEW`.
 2. Execute `M6` Prompt B only after approval and run sequential regression (`validate:m1` through `validate:m6` when command contract exists).
 3. Keep `M4C` and `M5.2c` documented as deferred/non-blocking.

@@ -5,6 +5,18 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Populate M6 Prompt A/B and verification templates in implementation prompts
+- Decision: replace M6 TODO placeholders in `prompts/implementation.md` with concrete Prompt A (design preview), Prompt B (post-approval implementation), verification prompt, and manual verification checklist aligned to M6 execution/spec contracts.
+- Why: M6 workflow needs the same prompt-driven gate structure used for M4/M5 so implementation can proceed without ad-hoc prompt drafting.
+- Alternatives considered:
+  - keep TODO placeholders and draft M6 prompts ad hoc in-thread each time;
+  - add only a single combined M6 prompt without Prompt A/Prompt B separation.
+- Evidence:
+  - `prompts/implementation.md`
+  - `docs/plans/execution-plan.md`
+  - `docs/specs/overview-page-spec.md`
+- Validation/risk impact: docs-only prompt-template update; no runtime behavior changes and no milestone validators required in this step.
+
 ### 2026-02-16 - Accept M5.6 Prompt-A preview and unblock Prompt-B runtime slice
 - Decision: accept `M5.6` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.6` Prompt-B implementation scope.
 - Why: reviewer approval satisfies the UI-first design gate for `M5.6`, allowing reliability hardening and final M5 gate execution.

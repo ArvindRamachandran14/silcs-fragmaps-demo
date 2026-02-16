@@ -1138,18 +1138,110 @@ Return format:
 
 ## M6 - Overview Page Narrative + CTA + External Links
 
-### Prompt to assign M6
+### Prompt A to assign M6 (Design Preview only)
 ```text
-TODO: Add M6 implementation prompt.
+Implement Prompt A only for M6 from docs/plans/execution-plan.md.
+
+Scope:
+- M6 design-preview only.
+- Produce/update only M6 preview artifacts in `docs/screenshots/Design_previews/m6-overview-page/`.
+- Include key states for M6 page: default, loading, empty, error, success.
+- M6 scope: overview narrative layout + required external links + primary CTA placement only.
+- Do not implement runtime text/route/link behavior in Prompt A.
+
+Required deliverables:
+1) files created/updated
+2) preview checklist coverage (default/loading/empty/error/success)
+3) open UI questions
+4) approval state (`BLOCKED-DESIGN` until `APPROVED UI PREVIEW`)
+
+Return format:
+- M6 status: BLOCKED-DESIGN/PASS
+- Gate checklist
+- Files changed
+- Residual risks/blockers
+```
+
+### Prompt B to assign M6 (Post-approval implementation only)
+```text
+Implement Prompt B only for M6 from docs/plans/execution-plan.md.
+
+Precondition:
+- M6 Prompt A is approved with explicit `APPROVED UI PREVIEW`.
+
+Scope:
+- M6 only: overview page narrative + CTA + required external link behavior.
+- Implement `src/pages/HomePage.vue` content to satisfy `docs/specs/overview-page-spec.md`.
+- Narrative must be exactly 1-2 paragraphs and include required concepts.
+- Primary CTA label must be `Go to Viewer` and route client-side to `/viewer`.
+- Required external link (`https://www.rcsb.org/structure/3FLY`) must open in a new tab.
+- Preserve M1-M5 behavior contracts.
+
+Required deliverables:
+1) files created/updated
+2) behavior deltas per file
+3) commands run
+4) M6 gate evidence with pass/fail per acceptance checks
+5) residual risks/blockers
+6) update docs/plans/milestone-inventory.md (M6 section)
+
+Return format:
+- M6 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist
+- Files changed
+- Command outputs summary
+- Residual risks/blockers
 ```
 
 ### Prompt to verify M6
 ```text
-TODO: Add M6 verification prompt.
+Use this only after Prompt B implementation starts.
+
+If work is still in Prompt A (DESIGN PREVIEW ONLY), do not run validation scripts.
+Return:
+- M6 status: BLOCKED-DESIGN
+- preview checklist coverage
+- missing approval token (`APPROVED UI PREVIEW`)
+
+If Prompt B implementation has started, run M6 gate verification and return a PASS/FAIL table with evidence.
+
+Sequential regression commands:
+- `npm run validate:m1`
+- `npm run validate:m2`
+- `npm run validate:m3`
+- `npm run validate:m4a`
+- `npm run validate:m4b`
+- `npm run validate:m5`
+- `<m6-specific validator command if added>`
+
+M6 gate items to verify:
+1) `/` renders overview content with no runtime errors.
+2) Narrative is exactly 1-2 paragraphs and includes required concepts from `docs/specs/overview-page-spec.md`.
+3) `Go to Viewer` CTA routes to `/viewer` without full page reload.
+4) Required external link to `https://www.rcsb.org/structure/3FLY` exists and opens in a new tab.
+5) Overview remains text-first (no viewer/control UI on Home page).
+
+Return format:
+- M6 status: PASS/FAIL/ENV-BLOCKED/BLOCKED-DESIGN
+- Gate checklist table
+- Files changed
+- Commands run
+- Risks/blockers and fixes
 ```
 
 ### Manual verification for M6
-- TODO
+- Run sequential regression through M5 baseline:
+  - `npm run validate:m1`
+  - `npm run validate:m2`
+  - `npm run validate:m3`
+  - `npm run validate:m4a`
+  - `npm run validate:m4b`
+  - `npm run validate:m5`
+- Open `/` and confirm:
+  - exactly 1-2 narrative paragraphs,
+  - `Go to Viewer` CTA is keyboard-focusable and navigates client-side to `/viewer`,
+  - required external link points to RCSB 3FLY and opens in a new tab,
+  - page remains text-first with no interactive viewer controls.
 
 ## M7 - Performance Instrumentation + AC Validation Evidence
 
