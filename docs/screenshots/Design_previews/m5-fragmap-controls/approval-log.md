@@ -7,16 +7,16 @@
 - Decision: `APPROVED UI PREVIEW`
 
 ## Review Record (M5.2)
-- Date: Pending
-- Reviewer: Pending
-- Thread/message reference: Pending
-- Decision: `BLOCKED-DESIGN` (awaiting explicit `APPROVED UI PREVIEW`)
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16
+- Decision: `APPROVED UI PREVIEW`
 
 ## Comments (M5.1)
 - Reviewer approved the M5.1 Prompt-A preview packet and confirmed progression to Prompt B.
 
 ## Comments (M5.2)
-- Prompt-A preview artifacts for `M5.2` are prepared and awaiting review.
+- Prompt-A preview artifacts for `M5.2` were approved and unblocked for Prompt B.
 - Reviewer preference lock (in-thread): mixed decision set for M5.2 UI behavior:
   - temporary Primary-row lock during first-load,
   - inline `Loaded from cache` success text for explicit/debuggable confirmation,
@@ -37,3 +37,4 @@
   - loading panel now shows temporary lock for non-loading Primary rows,
   - success panel now uses inline `Loaded from cache` confirmation for explicit/debuggable review,
   - retry remains deferred to `M5.6` reliability scope.
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for M5.2 Prompt A.

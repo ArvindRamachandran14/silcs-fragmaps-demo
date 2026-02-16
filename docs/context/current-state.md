@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.2 Prompt-A decision lock refined)
+Last updated: 2026-02-16 (M5.2 Prompt B implementation complete)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -101,12 +101,18 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - Add implementation and validation only if stretch scope is reactivated.
 
 ### M5 FragMap Controls (Sliced: M5.1..M5.6)
-- Status: `in progress (M5.1 Prompt B complete; M5.2 Prompt A pending)`
+- Status: `in progress (M5.1 and M5.2 Prompt B complete; M5.3 Prompt A pending)`
 - Evidence:
   - M5 execution is now locked to six slices (`M5.1` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
-  - Active next scope is `M5.2` Prompt A (design preview only) after closing `M5.1` implementation gate.
+  - Active next scope is `M5.3` Prompt A (design preview only) after closing `M5.2` implementation gate.
   - `M5.2` Prompt-A artifacts were added (`README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`) and now reflect the reviewer-locked behavior set: loading row lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
+  - `M5.2` Prompt-B runtime implementation is now in place:
+    - Primary-3 rows are interactive in `src/components/ControlsPanel.vue`, with loading-lock disable behavior, inline row status text, and row-level error display hooks.
+    - Primary-3 toggle orchestration was added in `src/pages/ViewerPage.vue` with lazy first-load, cache status (`Loaded from cache`), row-level disable-on-failure handling, and `visibleFragMapIds` synchronization.
+    - `src/viewer/nglStage.ts` now supports FragMap lazy loading/caching and camera-preserving visibility updates via `setFragMapVisibility`, including deterministic query-based failure injection for validation (`m5FailMap`) and map-load delay control (`m5MapLoadMs`).
+    - `scripts/validate-m5-2.js` + `package.json` command wiring (`validate:m5.2`, `prevalidate:m5.2`) were added.
+    - `scripts/validate-m5-1.js` was updated so shell checks remain valid after M5.2 enables Primary rows.
   - Prompt-A packet artifacts now exist for `M5.1`:
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg` (multi-state shell page with simplified two-tab right-panel framework: `FragMap` + `Ligand`).
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg` (full-viewer placement context page aligned to the same simplified `FragMap` + `Ligand` tabs).
@@ -124,9 +130,10 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - `npm run validate:m4a` -> PASS (2026-02-16).
   - `npm run validate:m4b` -> PASS (2026-02-16).
   - `npm run validate:m5.1` -> PASS (2026-02-16; first sandboxed attempt `ENV-BLOCKED` due localhost bind restriction, unsandboxed rerun passed).
+  - `npm run validate:m5.2` -> first attempt `ENV-BLOCKED` in sandbox (`listen EPERM 127.0.0.1:4177`), unsandboxed rerun initially FAIL (validator timing), final rerun PASS after validator wait fix (2026-02-16).
   - Post-cleanup rerun: `npm run build` -> PASS, `npm run validate:m3` -> PASS, `npm run validate:m4a` -> PASS, `npm run validate:m4b` -> PASS, `npm run validate:m5.1` -> PASS (2026-02-16).
 - Gaps to exit criteria:
-  - Implement map UI/state/runtime behavior from `docs/specs/fragmap-controls-spec.md` Sections 8-11 across `M5.2`..`M5.6`.
+  - Implement remaining map UI/state/runtime behavior from `docs/specs/fragmap-controls-spec.md` Sections 8-11 across `M5.3`..`M5.6`.
 
 ### M6 Overview Page
 - Status: `not started`
@@ -243,9 +250,11 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Added dedicated M5.1 slice validator `scripts/validate-m5-1.js` and command wiring in `package.json` (`validate:m5.1`, `prevalidate:m5.1`) so shell-contract checks remain repeatable during later M5 slices. Command evidence: first `npm run validate:m5.1` attempt -> `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4176` in sandbox), unsandboxed rerun -> PASS.
 - 2026-02-16: Applied right-panel UI cleanup per reviewer feedback by removing visible `Viewer Context`, lower `Reset view`, and camera contract/snapshot blocks from `src/components/ControlsPanel.vue` while preserving hidden diagnostics selectors needed by existing validators. Updated `src/pages/ViewerPage.vue` props/events accordingly. Validation evidence in this window: `npm run build` PASS; `npm run validate:m3` PASS; `npm run validate:m4a` PASS; `npm run validate:m4b` PASS; `npm run validate:m5.1` PASS.
 - 2026-02-16: Updated M5.2 Prompt-A preview decisions per reviewer feedback: changed success feedback from toast-only to inline `Loaded from cache` text (`Option A`) while keeping loading lock (`Option B`) and retry deferral (`Option B`). Updated packet files: `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
+- 2026-02-16: Implemented M5.2 Prompt B (Primary-3 visibility engine only). Updated `src/components/ControlsPanel.vue`, `src/pages/ViewerPage.vue`, `src/viewer/nglStage.ts`, and `src/store/modules/viewer.ts` for in-place toggle handling, lazy first-load, cache reuse, inline cache-hit text, row-level disable-on-failure, and camera-preserving map visibility updates. Added `scripts/validate-m5-2.js` and script wiring in `package.json`; updated `scripts/validate-m5-1.js`/`scripts/run_checks.sh` for sequential slice checks. Validation evidence: `npm run build` PASS; `npm run validate:m1` FAIL then PASS on rerun; `npm run validate:m2` PASS; `npm run validate:m3` PASS; `npm run validate:m4a` PASS; `npm run validate:m4b` PASS; `npm run validate:m5.1` PASS; `npm run validate:m5.2` first sandboxed attempt `ENV-BLOCKED`, unsandboxed rerun initially FAIL (validator timing), final rerun PASS after validator wait fix.
+- 2026-02-16: Re-ran post-approval sequential validation for M5.2 gate in this handoff window. Sandbox run of `bash scripts/run_checks.sh` produced expected `ENV-BLOCKED` local-port failures (`listen EPERM`) for Playwright-backed validators; unsandboxed rerun passed `build`, `validate:m1`, `validate:m2`, `validate:m3`, `validate:m4a`, and `validate:m5.1`. Interim unsandboxed run showed transient `viewer-ready-state` timeouts in `validate:m4b` and `validate:m5.2`, plus one parallel rerun collision (`validate:m4b` `EADDRINUSE` when validators were launched concurrently). Final sequential unsandboxed reruns passed: `npm run validate:m4b` -> PASS and `npm run validate:m5.2` -> PASS.
 
 ## Open Risks
-- Major feature milestones remain incomplete: M5 implementation slices (`M5.2` through `M5.6`) and M6 are not started while M1-M4B and M5.1 are complete.
+- Major feature milestones remain incomplete: M5 implementation slices (`M5.3` through `M5.6`) and M6 are not started while M1-M4B and M5.1-M5.2 are complete.
 - M4C (full list/search/ordering) is deferred by plan and does not block M5-M8.
 - Baseline validators currently pass after rebuild; intermittent harness instability remains a residual risk during future UI integrations.
 - M4A validator depends on SwiftShader-enabled Playwright launch args for reliable headless runs.

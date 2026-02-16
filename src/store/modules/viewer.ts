@@ -156,6 +156,9 @@ const mutations: MutationTree<ViewerState> = {
 
     currentState.refinedPoseError = payload.error;
   },
+  setVisibleFragMapIds(currentState, visibleIds: string[]) {
+    currentState.visibleFragMapIds = [...visibleIds];
+  },
 };
 
 const viewerModule: Module<ViewerState, RootState> = {

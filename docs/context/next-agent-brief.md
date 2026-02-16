@@ -1,15 +1,15 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.2 Prompt-A preview updated)
+Last updated: 2026-02-16 (M5.2 Prompt B implemented)
 
 ## Current Milestone Target
-- Active target: `M5.2 Primary-3 Visibility Engine` (M1-M4B and M5.1 validated complete; M5 continues as slices `M5.1`..`M5.6`).
-- Baseline branch state at takeover: working tree contains local `M5.1` implementation updates not yet committed in this window.
-- M5.2 Prompt-A packet is updated and still awaiting gate approval; reviewer-locked preview behavior set is now: loading lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
+- Active target: `M5.3 Advanced Rows + Exclusion Behavior` (M1-M4B and M5.1-M5.2 validated complete; M5 continues as slices `M5.1`..`M5.6`).
+- Baseline branch state at takeover: working tree contains local `M5.2` implementation updates not yet committed in this window.
+- M5.2 Prompt-A packet is approved, and M5.2 Prompt-B runtime implementation is complete with reviewer-locked behavior set (B/A/B).
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
-- Milestone alignment confirmed against execution plan Section 3.1: `M5.1` Prompt B is complete, active scope is now `M5.2` Prompt A (design preview), and slice ordering remains `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
+- Milestone alignment confirmed against execution plan Section 3.1: `M5.1` and `M5.2` Prompt B are complete, active scope is now `M5.3` Prompt A (design preview), and slice ordering remains `M5.1` -> `M5.2` -> `M5.3` -> `M5.4` -> `M5.5` -> `M5.6`.
 
 ## Mandatory Execution Policy
 - Use local host-terminal outputs as authoritative gate evidence.
@@ -31,9 +31,9 @@ Last updated: 2026-02-16 (M5.2 Prompt-A preview updated)
   - Preview packet path/structure is locked to `docs/screenshots/Design_previews/m5-fragmap-controls/` with one front page plus one page per slice.
 
 ## Priority Tasks (ordered)
-1. Execute `M5.2` Prompt A (design preview only) for Primary-3 visibility engine and update the M5 preview packet.
-2. Obtain explicit `APPROVED UI PREVIEW` for `M5.2` before any `M5.2` runtime implementation.
-3. Implement `M5.2` Prompt B only after approval, then run sequential regression (`validate:m1` -> `validate:m4b`).
+1. Execute `M5.3` Prompt A (design preview only) for Advanced rows + Exclusion behavior and update the M5 preview packet.
+2. Obtain explicit `APPROVED UI PREVIEW` for `M5.3` before any `M5.3` runtime implementation.
+3. Implement `M5.3` Prompt B only after approval, then run sequential regression (`validate:m1` -> `validate:m5.2`).
 4. Add/enable `validate:m5` during `M5.6` and run full sequential regression through `validate:m5`.
 5. Keep `M4C` documented as deferred stretch scope.
 
@@ -45,6 +45,17 @@ Last updated: 2026-02-16 (M5.2 Prompt-A preview updated)
 - M4 validators were updated for deterministic tabbed UI checks:
   - `scripts/validate-m4a.js`, `scripts/validate-m4b.js`.
 - Gate evidence: `npm run validate:m1` (PASS on rerun after known intermittent first-run fail), `npm run validate:m2` PASS, `npm run validate:m3` PASS, `npm run validate:m4a` PASS, `npm run validate:m4b` PASS, targeted M5.1 shell check PASS.
+
+## M5.2 Implementation Status
+- `M5.2` Prompt A approved with explicit in-thread `APPROVED UI PREVIEW`.
+- `M5.2` Prompt B is implemented in code:
+  - `src/components/ControlsPanel.vue`: Primary-3 runtime toggles enabled, row status/error text shown, loading-lock disable behavior applied, Advanced rows kept disabled.
+  - `src/pages/ViewerPage.vue`: Primary-3 toggle orchestration added (lazy first load, cache reuse status, row disable-on-failure, visible-map synchronization).
+  - `src/viewer/nglStage.ts`: FragMap visibility API added with lazy load/cache, camera-preserving updates, and deterministic query hooks (`m5FailMap`, `m5MapLoadMs`) for validation.
+  - `src/store/modules/viewer.ts`: `setVisibleFragMapIds` mutation added.
+  - `scripts/validate-m5-2.js`: new M5.2 validator; `scripts/validate-m5-1.js` adjusted for post-M5.2 shell expectations.
+- Gate evidence: `npm run build` PASS, `npm run validate:m1` FAIL then PASS on rerun, `npm run validate:m2` PASS, `npm run validate:m3` PASS, `npm run validate:m4a` PASS, `npm run validate:m4b` PASS, `npm run validate:m5.1` PASS, `npm run validate:m5.2` PASS (first sandboxed attempt `ENV-BLOCKED`; unsandboxed rerun passed after validator timing fix).
+- Fresh rerun note (same day): full unsandboxed `bash scripts/run_checks.sh` rerun showed transient `viewer-ready-state` timeout noise in `validate:m4b`/`validate:m5.2`; both passed on immediate sequential rerun (`npm run validate:m4b`, `npm run validate:m5.2`). Do not parallelize validator reruns to avoid port collisions.
 
 ## Exact Commands To Run Next
 - `npm run build`
@@ -61,6 +72,8 @@ Last updated: 2026-02-16 (M5.2 Prompt-A preview updated)
   - Current signal: PASS (post-cleanup rerun 2026-02-16).
 - `npm run validate:m5.1`
   - Current signal: PASS (post-cleanup rerun 2026-02-16; first sandboxed attempt earlier in session was `ENV-BLOCKED` on localhost bind, unsandboxed run passed).
+- `npm run validate:m5.2`
+  - Current signal: PASS (first sandboxed attempt `ENV-BLOCKED` on localhost bind; unsandboxed rerun passed after validator timing wait fix).
 
 ## Stop/Go Criteria For M5
 - Stop if the active slice Design Preview Gate is not approved (`BLOCKED-DESIGN`).
@@ -74,7 +87,7 @@ Last updated: 2026-02-16 (M5.2 Prompt-A preview updated)
 
 ## Known Divergences To Resolve Before M5
 - Overview page content divergence (`docs/specs/overview-page-spec.md`) remains open.
-- FragMap runtime behavior beyond M5.1 shell (M5.2+ toggles/load/iso/bulk/reliability) remains unimplemented.
+- FragMap runtime behavior beyond M5.2 (Advanced/Exclusion, per-map iso controls, bulk actions, reliability hardening) remains unimplemented.
 - Performance evidence framework (`docs/specs/performance-and-validation-spec.md`) is unimplemented.
 - Execution-plan Playwright command contract (`test:e2e:*`, `test:ac:*`, `playwright.config.ts`, `tests/e2e/*`) is not yet implemented.
 
@@ -98,4 +111,4 @@ Last updated: 2026-02-16 (M5.2 Prompt-A preview updated)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Review the updated `M5.2` Prompt-A artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/` and obtain explicit `APPROVED UI PREVIEW` before any `M5.2` Prompt-B implementation.
+- Execute `M5.3` Prompt A (design preview only) and produce/update the M5.3 preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/`, then request explicit `APPROVED UI PREVIEW`.

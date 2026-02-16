@@ -5,6 +5,44 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Treat milestone validators as strictly sequential (no parallel launch) to avoid false gate failures
+- Decision: run Playwright-backed milestone validators one at a time (`validate:m1` -> `validate:mN`) and avoid parallel validator launches in the same window.
+- Why: concurrent runs caused non-product failures (`EADDRINUSE` on shared localhost ports), and even sequential runs can show occasional startup timing noise that needs clean reruns for authoritative evidence.
+- Alternatives considered:
+  - keep parallel reruns for faster turnaround when multiple validators fail;
+  - relax gate enforcement when one validator fails due port contention.
+- Evidence:
+  - `scripts/run_checks.sh`
+  - command outcomes in `docs/context/current-state.md` Validation Ledger (2026-02-16 rerun entry)
+- Validation/risk impact: reduces false negatives in milestone gate checks and keeps pass/fail signals attributable to product behavior instead of harness contention.
+
+### 2026-02-16 - Implement M5.2 Primary-3 runtime as lazy-loaded, cache-reused, camera-preserving toggles
+- Decision: implement only `M5.2` scope by enabling runtime toggles for Primary-3 rows in the FragMap tab, with first-load lazy map creation, cached reuse on subsequent toggles, row-level disable on load failure, and camera preservation across map show/hide operations.
+- Why: this is the approved `M5.2` Prompt-B contract and advances FragMap runtime behavior without crossing into `M5.3+` scope.
+- Alternatives considered:
+  - keep Primary rows non-interactive until `M5.3`;
+  - implement broader runtime behavior (Advanced/Exclusion rows, bulk actions, retry UX) in this slice.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `src/viewer/nglStage.ts`
+  - `src/store/modules/viewer.ts`
+  - `scripts/validate-m5-2.js`
+  - `package.json`
+- Validation/risk impact: sequential regression through `validate:m1`..`validate:m5.2` is green (with known `validate:m1` intermittent rerun behavior and initial `validate:m5.2` sandbox `ENV-BLOCKED`), establishing a stable baseline for `M5.3`.
+
+### 2026-02-16 - Lock M5.2 UI behavior to B/A/B for implementation verification phase
+- Decision: keep `Option B` loading lock behavior, switch success feedback to `Option A` inline text (`Loaded from cache`) for explicit debug visibility, and keep retry timing at `Option B` (deferred to `M5.6`).
+- Why: reviewer requested explicit, persistent runtime confirmation for cache-hit behavior during M5.2 verification while preserving the earlier loading and retry scope boundaries.
+- Alternatives considered:
+  - retain `Option B` toast-only success feedback;
+  - add inline retry immediately in M5.2.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2-primary3-visibility-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: improves manual observability during rollout; minor UI noise is acceptable for this slice and can be adjusted later.
+
 ### 2026-02-16 - Lock M5.2 Prompt-A review behavior to B/A/B (loading lock / inline success text / retry deferred)
 - Decision: update M5.2 Prompt-A preview artifacts so Primary-row loading behavior stays on `Option B` (temporarily lock non-loading Primary rows), success feedback switches to `Option A` (inline `Loaded from cache` text), and retry timing remains `Option B` (defer inline retry UX to `M5.6`).
 - Why: reviewer requested explicit/debuggable inline success confirmation during M5.2 review while preserving previous lock choices for loading and retry timing.

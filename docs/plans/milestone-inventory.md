@@ -306,7 +306,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | Slice | Scope | Design Gate | Implementation Gate | Status |
 |---|---|---|---|---|
 | `M5.1` | Panel shell only (Primary/Advanced sections, labels/colors, all-hidden defaults) plus right-panel two-tab framework (`FragMap` + `Ligand`) with `FragMap` active by default and `Ligand` preserving existing M4B controls | PASS | PASS | Completed |
-| `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | Pending | Pending | Not started |
+| `M5.2` | Primary-3 visibility engine (toggle + lazy load + cache reuse + camera preserved) | PASS | PASS | Completed |
 | `M5.3` | Advanced rows + Exclusion map fixed behavior | Pending | Pending | Not started |
 | `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
@@ -350,24 +350,44 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### M5.2 - Primary-3 Visibility Engine
 
 #### Summary
-- Pending.
+- Prompt A is approved; Prompt B implementation is complete.
+- Added Primary-3 in-place visibility toggles with lazy first-load, cache reuse, and camera-preservation behavior.
+- Locked M5.2 behavior decisions from approved preview:
+  - loading lock `Option B` (temporarily disable non-loading Primary rows during first-load),
+  - success feedback `Option A` (inline `Loaded from cache`),
+  - retry UI deferred to `M5.6`.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.2 and why.` |
+| `src/components/ControlsPanel.vue` | Updated | Right controls panel UI shell and ligand workflow controls. | Enabled Primary-3 runtime checkbox toggles, added row-level status/error text hooks, enforced loading-lock disable behavior, kept Advanced rows disabled, and updated M5 scope note for Primary-3-only runtime behavior. |
+| `src/pages/ViewerPage.vue` | Updated | Viewer route orchestration and controls-panel wiring. | Added Primary-3 runtime state orchestration, toggle handler wiring, lazy-load/cache status updates, row disable-on-failure behavior, visible-map state commits, and map-failure/query wiring for deterministic validation. |
+| `src/viewer/nglStage.ts` | Updated | NGL stage lifecycle and camera orchestration. | Added FragMap visibility API with lazy map loading, cache reuse, forced map-failure injection (`m5FailMap`), optional minimum map-load delay (`m5MapLoadMs`), and camera-preserving map show/hide updates. |
+| `src/store/modules/viewer.ts` | Updated | Vuex viewer state for route-level viewer behavior. | Added mutation `setVisibleFragMapIds` so M5.2 map visibility state remains canonical and observable in diagnostics/validators. |
+| `scripts/validate-m5-2.js` | Created | Automated M5.2 milestone validator. | Added checks for Primary-vs-Advanced row enablement, first-load row lock, cache-hit inline status (`Loaded from cache`), camera preservation, row-level failure isolation, and no-route-reload interactions. |
+| `scripts/validate-m5-1.js` | Updated | Dedicated M5.1 shell validator. | Relaxed row-disable assertions so M5.1 shell checks remain valid after M5.2 enables Primary rows while still requiring Advanced rows disabled by default. |
+| `package.json` | Updated | Project script command contract. | Added `validate:m5.2` and `prevalidate:m5.2` command wiring. |
+| `scripts/run_checks.sh` | Updated | Local sequential gate runner. | Extended command list through `validate:m5.2`. |
 
 #### Commands Run
-- Pending.
+- `npm run build` -> PASS.
+- `npm run validate:m1` -> FAIL (intermittent snackbar click interception), rerun -> PASS.
+- `npm run validate:m2` -> PASS.
+- `npm run validate:m3` -> PASS.
+- `npm run validate:m4a` -> PASS.
+- `npm run validate:m4b` -> PASS.
+- `npm run validate:m5.1` -> PASS.
+- `npm run validate:m5.2` -> first run `ENV-BLOCKED` in sandbox (`listen EPERM 127.0.0.1:4177`), unsandboxed rerun -> FAIL (validator timing issue), final rerun after validator wait fix -> PASS.
 
 #### Gate Checklist
-- Prompt A preview for `M5.2` approved (`APPROVED UI PREVIEW`): Pending.
-- Prompt B implementation stayed within `M5.2` scope boundary: Pending.
-- Primary-3 toggles are in-place with lazy-first-load + cache reuse + camera preserved: Pending.
-- No regressions against completed slices (`M5.1`) and M1-M4B baseline: Pending.
+- Prompt A preview for `M5.2` approved (`APPROVED UI PREVIEW`): PASS (explicit in-thread approval on 2026-02-16).
+- Prompt B implementation stayed within `M5.2` scope boundary: PASS.
+- Primary-3 toggles are in-place with lazy-first-load + cache reuse + camera preserved: PASS.
+- No regressions against completed slices (`M5.1`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- `validate:m1` intermittently fails on first run due snackbar click interception, but rerun passes; continue to treat as harness flake until stabilized.
+- M5.2 intentionally excludes Advanced/Exclusion runtime behavior, iso controls, bulk actions, and reliability retry UX; these remain scoped to `M5.3`..`M5.6`.
 
 ### M5.3 - Advanced Rows + Exclusion Map
 

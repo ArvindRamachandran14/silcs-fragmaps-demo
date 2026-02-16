@@ -33,6 +33,7 @@ const FRAGMAP_ROW_IDS = [
   "3fly.tipo.gfe.dx",
   "3fly.excl.dx",
 ];
+const PRIMARY_ROW_IDS = FRAGMAP_ROW_IDS.slice(0, 3);
 
 function assert(condition, message) {
   if (!condition) {
@@ -180,10 +181,13 @@ async function run() {
       const checkboxSelector = `${rowSelector} input[type="checkbox"]`;
       await assertVisible(page, rowSelector, `Missing FragMap row ${rowId}.`);
 
-      const disabled = await page.isDisabled(checkboxSelector);
       const checked = await page.isChecked(checkboxSelector);
-      assert(disabled, `FragMap row ${rowId} checkbox must be disabled in M5.1.`);
       assert(!checked, `FragMap row ${rowId} checkbox must be unchecked by default.`);
+
+      if (!PRIMARY_ROW_IDS.includes(rowId)) {
+        const disabled = await page.isDisabled(checkboxSelector);
+        assert(disabled, `Advanced FragMap row ${rowId} should remain disabled by default.`);
+      }
     }
 
     await page.click(panelSelector("controls-tab-ligand"));
@@ -200,7 +204,8 @@ async function run() {
     console.log("M5.1 validation passed:");
     console.log("- FragMap tab is default active and Ligand tab is inactive by default");
     console.log("- FragMap shell action row is present and disabled by design in M5.1");
-    console.log("- Primary and Advanced canonical rows are present, disabled, and unchecked by default");
+    console.log("- Primary and Advanced canonical rows are present and unchecked by default");
+    console.log("- Advanced canonical rows remain disabled by default");
     console.log("- Ligand tab remains reachable and exposes existing ligand controls");
     console.log("- Tab switching is in-place (no route reload/navigation)");
   } finally {

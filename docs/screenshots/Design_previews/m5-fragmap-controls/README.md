@@ -4,8 +4,8 @@ This packet tracks the M5 sliced design gates under `docs/screenshots/Design_pre
 
 ## Gate Status
 - Active slice: `M5.2 Primary-3 Visibility Engine`
-- Gate state: `BLOCKED-DESIGN`
-- Required token to unblock Prompt B: `APPROVED UI PREVIEW` (pending for `M5.2`)
+- Gate state: `APPROVED UI PREVIEW`
+- Required token to unblock Prompt B: `APPROVED UI PREVIEW` (received for `M5.2`)
 
 ## Scope for This Packet Revision
 In scope:
@@ -32,4 +32,4 @@ Out of scope in this revision:
 - `approval-log.md`: gate decisions and review notes.
 
 ## Reviewer Action
-- Review the `M5.2` Prompt-A artifacts and provide explicit `APPROVED UI PREVIEW` to unblock `M5.2` Prompt B implementation.
+- Design gate is approved; `M5.2` Prompt B implementation may proceed within scope boundaries.

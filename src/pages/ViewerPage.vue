@@ -62,8 +62,13 @@
             :baseline-pose-error="viewerState.baselinePoseError"
             :refined-pose-error="viewerState.refinedPoseError"
             :visible-frag-map-ids="viewerState.visibleFragMapIds"
+            :frag-map-loading-row-id="fragMapLoadingRowId"
+            :frag-map-disabled-row-ids="fragMapDisabledRowIds"
+            :frag-map-status-by-id="fragMapStatusById"
+            :frag-map-error-by-id="fragMapErrorById"
             :camera-baseline="viewerState.cameraBaseline"
             :camera-snapshot="viewerState.cameraSnapshot"
+            @toggle-fragmap="handleFragMapToggle"
             @toggle-pose="handlePoseToggle"
             @select-featured-ligand="handleFeaturedLigandSwitch"
             @zoom-ligand="handleZoomLigand"
@@ -94,8 +99,13 @@
           :baseline-pose-error="viewerState.baselinePoseError"
           :refined-pose-error="viewerState.refinedPoseError"
           :visible-frag-map-ids="viewerState.visibleFragMapIds"
+          :frag-map-loading-row-id="fragMapLoadingRowId"
+          :frag-map-disabled-row-ids="fragMapDisabledRowIds"
+          :frag-map-status-by-id="fragMapStatusById"
+          :frag-map-error-by-id="fragMapErrorById"
           :camera-baseline="viewerState.cameraBaseline"
           :camera-snapshot="viewerState.cameraSnapshot"
+          @toggle-fragmap="handleFragMapToggle"
           @toggle-pose="handlePoseToggle"
           @select-featured-ligand="handleFeaturedLigandSwitch"
           @zoom-ligand="handleZoomLigand"
@@ -127,6 +137,7 @@ import { ViewerState, DEFAULT_LIGAND_ID } from "@/store/modules/viewer";
 import type { PoseKind } from "@/store/modules/viewer";
 import { StartupState } from "@/store/modules/startup";
 import {
+  getForcedFragMapFailuresFromQuery,
   getForcedPoseFailuresFromQuery,
   getMinLoadingMsFromQuery,
   getViewerM3DebugState,
@@ -155,17 +166,82 @@ interface FragMapShellRow {
   label: string;
   color: string;
   section: "primary" | "advanced";
+  dxUrl?: string;
+  defaultIso?: number;
+}
+
+interface FragMapPrimaryRuntimeState {
+  loaded: boolean;
+  loading: boolean;
+  disabled: boolean;
+  statusText: string | null;
+  error: string | null;
 }
 
 const M5_FRAGMAP_SHELL_ROWS: FragMapShellRow[] = [
-  { id: "3fly.hbdon.gfe.dx", label: "Generic Donor", color: "#1976d2", section: "primary" },
-  { id: "3fly.hbacc.gfe.dx", label: "Generic Acceptor", color: "#d32f2f", section: "primary" },
-  { id: "3fly.apolar.gfe.dx", label: "Generic Apolar", color: "#2e7d32", section: "primary" },
-  { id: "3fly.mamn.gfe.dx", label: "Positively Charged", color: "#f57c00", section: "advanced" },
-  { id: "3fly.acec.gfe.dx", label: "Negatively Charged", color: "#c2185b", section: "advanced" },
-  { id: "3fly.meoo.gfe.dx", label: "Hydroxyl Oxygen", color: "#0097a7", section: "advanced" },
-  { id: "3fly.tipo.gfe.dx", label: "Water Oxygen", color: "#f9a825", section: "advanced" },
-  { id: "3fly.excl.dx", label: "Exclusion Map", color: "#9e9e9e", section: "advanced" },
+  {
+    id: "3fly.hbdon.gfe.dx",
+    label: "Generic Donor",
+    color: "#1976d2",
+    section: "primary",
+    dxUrl: "/assets/maps/3fly.hbdon.gfe.dx",
+    defaultIso: -0.8,
+  },
+  {
+    id: "3fly.hbacc.gfe.dx",
+    label: "Generic Acceptor",
+    color: "#d32f2f",
+    section: "primary",
+    dxUrl: "/assets/maps/3fly.hbacc.gfe.dx",
+    defaultIso: -0.8,
+  },
+  {
+    id: "3fly.apolar.gfe.dx",
+    label: "Generic Apolar",
+    color: "#2e7d32",
+    section: "primary",
+    dxUrl: "/assets/maps/3fly.apolar.gfe.dx",
+    defaultIso: -1.0,
+  },
+  {
+    id: "3fly.mamn.gfe.dx",
+    label: "Positively Charged",
+    color: "#f57c00",
+    section: "advanced",
+    dxUrl: "/assets/maps/3fly.mamn.gfe.dx",
+    defaultIso: -1.2,
+  },
+  {
+    id: "3fly.acec.gfe.dx",
+    label: "Negatively Charged",
+    color: "#c2185b",
+    section: "advanced",
+    dxUrl: "/assets/maps/3fly.acec.gfe.dx",
+    defaultIso: -1.2,
+  },
+  {
+    id: "3fly.meoo.gfe.dx",
+    label: "Hydroxyl Oxygen",
+    color: "#0097a7",
+    section: "advanced",
+    dxUrl: "/assets/maps/3fly.meoo.gfe.dx",
+    defaultIso: -0.8,
+  },
+  {
+    id: "3fly.tipo.gfe.dx",
+    label: "Water Oxygen",
+    color: "#f9a825",
+    section: "advanced",
+    dxUrl: "/assets/maps/3fly.tipo.gfe.dx",
+    defaultIso: -0.3,
+  },
+  {
+    id: "3fly.excl.dx",
+    label: "Exclusion Map",
+    color: "#9e9e9e",
+    section: "advanced",
+    dxUrl: "/assets/maps/3fly.excl.dx",
+  },
 ];
 
 export default Vue.extend({
@@ -186,6 +262,8 @@ export default Vue.extend({
       featuredLigands: [] as FeaturedLigandChip[],
       showToast: false,
       toastMessage: "",
+      fragMapPrimaryRuntime: {} as Record<string, FragMapPrimaryRuntimeState>,
+      fragMapLoadingRowId: null as string | null,
     };
   },
   computed: {
@@ -214,10 +292,36 @@ export default Vue.extend({
             label: entry.label,
             color: entry.color,
             section: entry.section,
+            dxUrl: entry.dxUrl,
+            defaultIso: entry.defaultIso,
           } as FragMapShellRow,
         ]),
       );
       return M5_FRAGMAP_SHELL_ROWS.map((entry) => rowsById.get(entry.id) || entry);
+    },
+    primaryFragMapRows(): FragMapShellRow[] {
+      return this.fragMapShellRows.filter((entry) => entry.section === "primary");
+    },
+    fragMapDisabledRowIds(): string[] {
+      return Object.entries(this.fragMapPrimaryRuntime)
+        .filter(([, runtime]) => runtime.disabled)
+        .map(([rowId]) => rowId);
+    },
+    fragMapStatusById(): Record<string, string> {
+      return Object.entries(this.fragMapPrimaryRuntime).reduce((accumulator, [rowId, runtime]) => {
+        if (runtime.statusText) {
+          accumulator[rowId] = runtime.statusText;
+        }
+        return accumulator;
+      }, {} as Record<string, string>);
+    },
+    fragMapErrorById(): Record<string, string> {
+      return Object.entries(this.fragMapPrimaryRuntime).reduce((accumulator, [rowId, runtime]) => {
+        if (runtime.error) {
+          accumulator[rowId] = runtime.error;
+        }
+        return accumulator;
+      }, {} as Record<string, string>);
     },
   },
   mounted() {
@@ -233,6 +337,24 @@ export default Vue.extend({
       }
 
       return loadAssetManifest();
+    },
+    resetFragMapPrimaryRuntime() {
+      const nextState: Record<string, FragMapPrimaryRuntimeState> = {};
+      for (const row of this.primaryFragMapRows) {
+        nextState[row.id] = {
+          loaded: false,
+          loading: false,
+          disabled: false,
+          statusText: null,
+          error: null,
+        };
+      }
+      this.fragMapPrimaryRuntime = nextState;
+      this.fragMapLoadingRowId = null;
+      this.$store.commit("viewer/setVisibleFragMapIds", []);
+    },
+    getPrimaryFragMapRowById(rowId: string): FragMapShellRow | null {
+      return this.primaryFragMapRows.find((entry) => entry.id === rowId) || null;
     },
     getDefaultLigand(manifest: AssetManifest): LigandAsset {
       const ligand = manifest.ligands.find((entry) => entry.id === DEFAULT_LIGAND_ID);
@@ -330,12 +452,14 @@ export default Vue.extend({
       this.catastrophicError = null;
       this.manifest = null;
       this.featuredLigands = [];
+      this.resetFragMapPrimaryRuntime();
       this.$store.commit("viewer/setLoading");
 
       try {
         const manifest = await this.getManifest();
         this.manifest = manifest;
         this.featuredLigands = this.buildFeaturedLigands(manifest);
+        this.resetFragMapPrimaryRuntime();
         const defaultLigand = this.getDefaultLigand(manifest);
         const viewport = this.$refs.viewport as Vue & {
           getHostElement?: () => HTMLElement | null;
@@ -353,8 +477,10 @@ export default Vue.extend({
           refinedLigandUrl: defaultLigand.refinedSdfUrl,
           refinedLigandFallbackUrl: defaultLigand.refinedPdbFallbackUrl,
           forcedPoseFailures: getForcedPoseFailuresFromQuery(this.$route.query.m4FailPose),
+          forcedFragMapFailures: getForcedFragMapFailuresFromQuery(this.$route.query.m5FailMap),
           forceInitFailure: isForcedStageFailureFromQuery(this.$route.query.m3StageFail),
           minLoadingMs: getMinLoadingMsFromQuery(this.$route.query.m3LoadMs),
+          minFragMapLoadingMs: getMinLoadingMsFromQuery(this.$route.query.m5MapLoadMs),
         });
 
         if (currentSequence !== this.initSequence) {
@@ -429,6 +555,84 @@ export default Vue.extend({
     },
     async handlePoseToggle(payload: { kind: PoseKind; visible: boolean }) {
       await this.setPoseVisibility(payload.kind, payload.visible);
+    },
+    async handleFragMapToggle(payload: { id: string; visible: boolean }) {
+      if (!this.stageController || !this.manifest || this.viewerStatus !== "ready") {
+        return;
+      }
+
+      const row = this.getPrimaryFragMapRowById(payload.id);
+      if (!row) {
+        return;
+      }
+
+      const runtimeState = this.fragMapPrimaryRuntime[payload.id];
+      if (!runtimeState) {
+        return;
+      }
+
+      if (runtimeState.disabled || this.fragMapLoadingRowId) {
+        return;
+      }
+
+      const isCurrentlyVisible = this.viewerState.visibleFragMapIds.includes(payload.id);
+      if (isCurrentlyVisible === payload.visible) {
+        return;
+      }
+
+      const isFirstLoad = payload.visible && !runtimeState.loaded;
+      if (isFirstLoad) {
+        runtimeState.loading = true;
+        runtimeState.statusText = "Loading...";
+        runtimeState.error = null;
+        this.fragMapLoadingRowId = payload.id;
+      } else {
+        runtimeState.error = null;
+      }
+
+      try {
+        const visibilityResult = await this.stageController.setFragMapVisibility(
+          {
+            id: row.id,
+            dxUrl: row.dxUrl || `/assets/maps/${row.id}`,
+            color: row.color,
+            defaultIso: row.defaultIso,
+          },
+          payload.visible,
+        );
+
+        const nextVisibleIds = new Set(this.viewerState.visibleFragMapIds);
+        if (payload.visible) {
+          nextVisibleIds.add(payload.id);
+        } else {
+          nextVisibleIds.delete(payload.id);
+        }
+        this.$store.commit("viewer/setVisibleFragMapIds", Array.from(nextVisibleIds));
+        this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+
+        runtimeState.loaded = runtimeState.loaded || visibilityResult.firstLoad || visibilityResult.loadedFromCache;
+        runtimeState.disabled = false;
+        runtimeState.error = null;
+
+        if (payload.visible) {
+          runtimeState.statusText = visibilityResult.loadedFromCache ? "Loaded from cache" : "Loaded";
+        } else {
+          runtimeState.statusText = runtimeState.loaded ? "Cached" : null;
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        runtimeState.loading = false;
+        runtimeState.disabled = true;
+        runtimeState.error = message;
+        runtimeState.statusText = null;
+        this.toastMessage = `${row.label} failed to load: ${message}`;
+        this.showToast = true;
+      } finally {
+        runtimeState.loading = false;
+        if (this.fragMapLoadingRowId === payload.id) {
+          this.fragMapLoadingRowId = null;
+        }
+      }
     },
     async handleFeaturedLigandSwitch(ligandId: string) {
       if (!this.stageController || !this.manifest || this.viewerState.ligandSwitchLoading) {

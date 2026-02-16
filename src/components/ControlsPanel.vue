@@ -53,16 +53,38 @@
         <p class="controls-panel__muted mb-2" data-test-id="fragmap-default-hidden-note">
           All maps are hidden by default.
         </p>
-        <label
+        <div
           v-for="row in primaryFragMapRows"
           :key="row.id"
-          class="controls-panel__map-row"
+          class="controls-panel__map-row-group"
           :data-test-id="`fragmap-row-${row.id}`"
         >
-          <input type="checkbox" disabled>
-          <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
-          <span>{{ row.label }}</span>
-        </label>
+          <label class="controls-panel__map-row">
+            <input
+              :data-test-id="`fragmap-toggle-${row.id}`"
+              type="checkbox"
+              :checked="isFragMapRowChecked(row.id)"
+              :disabled="isFragMapRowDisabled(row)"
+              @change="onFragMapToggle(row.id, $event)"
+            >
+            <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
+            <span>{{ row.label }}</span>
+          </label>
+          <p
+            v-if="fragMapStatusText(row.id)"
+            class="controls-panel__map-status"
+            :data-test-id="`fragmap-row-status-${row.id}`"
+          >
+            {{ fragMapStatusText(row.id) }}
+          </p>
+          <p
+            v-if="fragMapErrorText(row.id)"
+            class="controls-panel__error"
+            :data-test-id="`fragmap-row-error-${row.id}`"
+          >
+            {{ fragMapErrorText(row.id) }}
+          </p>
+        </div>
       </div>
 
       <div class="controls-panel__fragmap-section mb-3" data-test-id="fragmap-advanced-section">
@@ -73,14 +95,19 @@
           class="controls-panel__map-row"
           :data-test-id="`fragmap-row-${row.id}`"
         >
-          <input type="checkbox" disabled>
+          <input
+            :data-test-id="`fragmap-toggle-${row.id}`"
+            type="checkbox"
+            :checked="isFragMapRowChecked(row.id)"
+            disabled
+          >
           <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
           <span>{{ row.label }}</span>
         </label>
       </div>
 
       <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
-        M5.1 shell only: map toggle/iso runtime behavior is intentionally deferred to later M5 slices.
+        M5.2 scope: Primary-3 toggles are active. Advanced/exclusion runtime behavior, iso controls, bulk actions, and reliability handling remain deferred.
       </p>
     </section>
 
@@ -279,6 +306,26 @@ export default Vue.extend({
       type: Array,
       required: true,
     },
+    fragMapLoadingRowId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    fragMapDisabledRowIds: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    fragMapStatusById: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    fragMapErrorById: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     cameraBaseline: {
       type: Object,
       required: true,
@@ -323,6 +370,32 @@ export default Vue.extend({
     onPoseCheckboxChange(kind: PoseKind, event: Event) {
       const target = event.target as HTMLInputElement;
       this.$emit("toggle-pose", { kind, visible: target.checked });
+    },
+    onFragMapToggle(rowId: string, event: Event) {
+      const target = event.target as HTMLInputElement;
+      this.$emit("toggle-fragmap", { id: rowId, visible: target.checked });
+    },
+    isFragMapRowChecked(rowId: string): boolean {
+      return (this.visibleFragMapIds as string[]).includes(rowId);
+    },
+    isFragMapRowDisabled(row: FragMapShellRow): boolean {
+      if (row.section !== "primary") {
+        return true;
+      }
+
+      if (this.fragMapLoadingRowId) {
+        return true;
+      }
+
+      return (this.fragMapDisabledRowIds as string[]).includes(row.id);
+    },
+    fragMapStatusText(rowId: string): string | null {
+      const statusById = this.fragMapStatusById as Record<string, string>;
+      return statusById[rowId] || null;
+    },
+    fragMapErrorText(rowId: string): string | null {
+      const errorById = this.fragMapErrorById as Record<string, string>;
+      return errorById[rowId] || null;
     },
   },
 });
@@ -399,7 +472,7 @@ export default Vue.extend({
   line-height: 1.2;
 }
 
-.controls-panel__map-row + .controls-panel__map-row {
+.controls-panel__map-row-group + .controls-panel__map-row-group {
   margin-top: 8px;
 }
 
@@ -408,6 +481,12 @@ export default Vue.extend({
   display: inline-block;
   height: 10px;
   width: 10px;
+}
+
+.controls-panel__map-status {
+  color: #64748b;
+  font-size: 11px;
+  margin: 4px 0 0 24px;
 }
 
 .controls-panel__muted {

@@ -13,6 +13,11 @@ interface SceneTransformSnapshot {
   orientation: any;
 }
 
+interface FragMapCacheEntry {
+  component: any;
+  representation: any;
+}
+
 export interface StageInitOptions {
   container: HTMLElement;
   proteinUrl: string;
@@ -20,8 +25,10 @@ export interface StageInitOptions {
   refinedLigandUrl?: string;
   refinedLigandFallbackUrl?: string;
   forcedPoseFailures?: PoseKind[];
+  forcedFragMapFailures?: string[];
   forceInitFailure?: boolean;
   minLoadingMs?: number;
+  minFragMapLoadingMs?: number;
 }
 
 export interface LigandSwitchOptions {
@@ -38,11 +45,25 @@ export interface LigandSwitchResult {
   refinedError: string | null;
 }
 
+export interface FragMapVisibilityOptions {
+  id: string;
+  dxUrl: string;
+  color: string;
+  defaultIso?: number;
+}
+
+export interface FragMapVisibilityResult {
+  visible: boolean;
+  firstLoad: boolean;
+  loadedFromCache: boolean;
+}
+
 export interface NglStageController {
   getCameraBaseline(): CameraSnapshot;
   getCameraSnapshot(): CameraSnapshot;
   setCameraSnapshot(snapshot: CameraSnapshot): void;
   setPoseVisibility(kind: PoseKind, visible: boolean): Promise<void>;
+  setFragMapVisibility(options: FragMapVisibilityOptions, visible: boolean): Promise<FragMapVisibilityResult>;
   switchLigand(options: LigandSwitchOptions): Promise<LigandSwitchResult>;
   zoomToLigand(): void;
   resetView(): void;
@@ -76,6 +97,7 @@ declare global {
 }
 
 const DEFAULT_MIN_LOADING_MS = 180;
+const DEFAULT_MIN_MAP_LOADING_MS = 0;
 
 export const CAMERA_BASELINE_SNAPSHOT: CameraSnapshot = {
   position: [25.4, -2.8, 18.6],
@@ -170,6 +192,16 @@ export function getForcedPoseFailuresFromQuery(queryValue: unknown): PoseKind[] 
   return Array.from(new Set(parsed));
 }
 
+export function getForcedFragMapFailuresFromQuery(queryValue: unknown): string[] {
+  const values = Array.isArray(queryValue) ? queryValue : [queryValue];
+  const parsed = values
+    .flatMap((entry) => (typeof entry === "string" ? entry.split(",") : []))
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+
+  return Array.from(new Set(parsed));
+}
+
 function toCameraSnapshotTuple(values: number[]): [number, number, number] {
   return [values[0], values[1], values[2]];
 }
@@ -257,6 +289,7 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
 
   const startedAt = performance.now();
   const minLoadingMs = options.minLoadingMs ?? DEFAULT_MIN_LOADING_MS;
+  const minFragMapLoadingMs = options.minFragMapLoadingMs ?? DEFAULT_MIN_MAP_LOADING_MS;
   const proteinRuntimeUrl = resolveRuntimeUrl(options.proteinUrl);
   const ligandRuntimeUrl = resolveRuntimeUrl(options.ligandUrl);
   let currentRefinedLigandUrl = options.refinedLigandUrl;
@@ -292,6 +325,8 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
   let baselineLigandRepresentation: any = null;
   let refinedLigandRepresentation: any = null;
   const forcedPoseFailures = new Set<PoseKind>(options.forcedPoseFailures || []);
+  const forcedFragMapFailures = new Set<string>(options.forcedFragMapFailures || []);
+  const fragMapCache = new Map<string, FragMapCacheEntry>();
   let baselinePoseVisible = true;
   let refinedPoseVisible = false;
 
@@ -379,6 +414,23 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     stage?.viewer?.requestRender?.();
   }
 
+  async function loadFragMapEntry(options: FragMapVisibilityOptions): Promise<FragMapCacheEntry> {
+    if (forcedFragMapFailures.has(options.id)) {
+      throw new Error(`Forced FragMap failure (${options.id}).`);
+    }
+
+    const component = await stage.loadFile(resolveRuntimeUrl(options.dxUrl), { defaultRepresentation: false });
+    const representation = component.addRepresentation("surface", {
+      color: options.color,
+      isolevel: typeof options.defaultIso === "number" ? options.defaultIso : -0.8,
+      opacity: 0.65,
+      opaqueBack: false,
+    });
+    component.setVisibility(false);
+
+    return { component, representation };
+  }
+
   let runtimeCameraBaseline = cloneCameraSnapshot(CAMERA_BASELINE_SNAPSHOT);
   try {
     const nglModule = (await import("ngl")) as any;
@@ -463,6 +515,49 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
       refinedLigandComponent?.setVisibility(visible);
       updatePoseStyles();
       stage?.viewer?.requestRender?.();
+    },
+    async setFragMapVisibility(options: FragMapVisibilityOptions, visible: boolean): Promise<FragMapVisibilityResult> {
+      const preservedCamera = readStageCameraSnapshot(stage, currentCamera);
+      const preservedTransform = readSceneTransformSnapshot(stage);
+      let firstLoad = false;
+      let loadedFromCache = false;
+      let cacheEntry = fragMapCache.get(options.id);
+
+      if (visible) {
+        if (!cacheEntry) {
+          firstLoad = true;
+          const loadStartedAt = performance.now();
+          cacheEntry = await loadFragMapEntry(options);
+          fragMapCache.set(options.id, cacheEntry);
+
+          const loadElapsedMs = performance.now() - loadStartedAt;
+          if (loadElapsedMs < minFragMapLoadingMs) {
+            await wait(minFragMapLoadingMs - loadElapsedMs);
+          }
+        } else {
+          loadedFromCache = true;
+        }
+
+        cacheEntry.component.setVisibility(true);
+      } else if (cacheEntry) {
+        cacheEntry.component.setVisibility(false);
+      }
+
+      if (preservedTransform) {
+        applySceneTransformSnapshot(stage, preservedTransform);
+      } else {
+        applyStageCameraSnapshot(stage, preservedCamera);
+      }
+
+      stage?.viewer?.requestRender?.();
+      currentCamera = readStageCameraSnapshot(stage, preservedCamera);
+      debugState.currentCamera = cloneCameraSnapshot(currentCamera);
+
+      return {
+        visible,
+        firstLoad,
+        loadedFromCache,
+      };
     },
     async switchLigand(options: LigandSwitchOptions): Promise<LigandSwitchResult> {
       if (forcedPoseFailures.has("baseline")) {
