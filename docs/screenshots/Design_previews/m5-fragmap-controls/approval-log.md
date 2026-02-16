@@ -36,6 +36,12 @@
 - Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
 - Decision: `APPROVED UI PREVIEW`
 
+## Review Record (M5.4)
+- Date: 2026-02-16
+- Reviewer: Project reviewer (in-thread)
+- Thread/message reference: In-thread approval message on 2026-02-16 (`APPROVED UI PREVIEW`)
+- Decision: `APPROVED UI PREVIEW`
+
 ## Comments (M5.1)
 - Reviewer approved the M5.1 Prompt-A preview packet and confirmed progression to Prompt B.
 
@@ -76,6 +82,12 @@
 - Prompt-B runtime implementation is complete for Advanced rows + Exclusion behavior.
 - `M5.2c` remains optional exploratory/deferred and does not block progression to required slices.
 
+## Comments (M5.4)
+- `M5.4` Prompt-A artifacts are now produced for per-map iso controls only.
+- Preview scope is constrained to row-level iso numeric behavior (`step/min/max/precision`, clamp/revert) with no global iso control.
+- `Exclusion Map` remains visibility-toggleable with disabled/non-editable iso in all M5.4 states.
+- Reviewer provided explicit `APPROVED UI PREVIEW`; Prompt B is now completed for `M5.4`.
+
 ## Revision Notes
 - 2026-02-16: Created initial M5 packet front page and M5.1 Prompt-A preview page with one multi-panel desktop SVG covering default/loading/empty/error/success.
 - 2026-02-16: Added supplemental context-placement artifact (`desktop/m5.1-viewer-context-placement.svg`) to show where the M5.1 panel sits in the full viewer layout; existing state artifact retained unchanged.
@@ -109,3 +121,6 @@
 - 2026-02-16: Executed `M5.3` Prompt A (design-preview only): added `desktop/m5.3-advanced-exclusion-wireframe-states.svg`, updated `m5.3-preview-index.md`, and refreshed packet front page (`README.md`) to reflect produced artifacts.
 - 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.3` Prompt A.
 - 2026-02-16: Completed `M5.3` Prompt B runtime implementation and advanced packet active gate to `M5.4` Prompt A.
+- 2026-02-16: Executed `M5.4` Prompt A (design-preview only): added `desktop/m5.4-per-map-iso-controls-states.svg`, created `m5.4-preview-index.md`, and refreshed packet front page (`README.md`) for M5.4 review.
+- 2026-02-16: Received explicit in-thread approval token `APPROVED UI PREVIEW` for `M5.4` Prompt A.
+- 2026-02-16: Completed `M5.4` Prompt B runtime implementation and advanced packet active gate to `M5.5` Prompt A.

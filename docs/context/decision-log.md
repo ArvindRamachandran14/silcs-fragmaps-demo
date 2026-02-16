@@ -5,6 +5,68 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Align M5.4 header row to explicit two-column table contract (`FragMap` + centered `GFE (kcal/mol)`)
+- Decision: render a visible `FragMap` column heading in Primary and Advanced sections and center `GFE (kcal/mol)` over the iso control/value column (rather than right-aligning to panel edge).
+- Why: reviewer feedback requested stronger visual column semantics and more direct units-to-value alignment.
+- Alternatives considered:
+  - keep only a right-aligned `GFE (kcal/mol)` label with no left column heading;
+  - place `FragMap` heading once at panel level instead of section-level headers.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `scripts/validate-m5-4.js`
+- Validation/risk impact: no change to runtime iso behavior; M5.4 and full sequential regression are green after the visual contract update.
+
+### 2026-02-16 - Refine M5.4 iso layout to inline row controls and add explicit `GFE (kcal/mol)` headings
+- Decision: update the M5.4 controls presentation so each row renders `- value +` inline with the map label (instead of a separate line below), and add visible `GFE (kcal/mol)` headings for Primary and Advanced sections.
+- Why: reviewer-confirmed usability feedback requested tighter row scanning and explicit units context parity with the reference SILCS GUI.
+- Alternatives considered:
+  - keep controls on a separate row under each map label;
+  - add units text only in helper copy without a section heading.
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `scripts/validate-m5-4.js`
+- Validation/risk impact: targeted M5.4 validator and full sequential regression are green; scope remains within M5.4 UI presentation (no change to iso semantics or runtime contracts).
+
+### 2026-02-16 - Accept M5.4 Prompt-A preview and unblock Prompt-B runtime slice
+- Decision: accept `M5.4` Prompt-A preview via explicit in-thread `APPROVED UI PREVIEW` token and advance to `M5.4` Prompt-B implementation scope.
+- Why: reviewer approval satisfies the UI-first design gate for `M5.4`, allowing runtime implementation of per-map iso controls.
+- Alternatives considered:
+  - keep `M5.4` in `BLOCKED-DESIGN` and request additional Prompt-A revisions.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.4-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: no runtime behavior changed in this approval-record update; Prompt-B implementation is now permitted for `M5.4` only.
+
+### 2026-02-16 - Implement M5.4 as per-map iso controls with row-level clamp/revert and Exclusion iso lock
+- Decision: complete `M5.4` Prompt B by adding row-level iso controls (`-`, value, `+`) for adjustable FragMap rows, enforcing numeric contract (`step 0.1`, `min -3.0`, `max 0.0`, precision `1`, clamp/revert), preserving Exclusion row non-editable iso behavior, and applying iso updates in place with camera preservation.
+- Why: this is the approved M5.4 slice scope and unblocks progression to bulk-action slice `M5.5`.
+- Alternatives considered:
+  - defer per-map iso controls and jump directly to bulk actions;
+  - introduce row-level retry/error-hardening in M5.4 (rejected to keep reliability work in M5.6).
+- Evidence:
+  - `src/components/ControlsPanel.vue`
+  - `src/pages/ViewerPage.vue`
+  - `src/viewer/nglStage.ts`
+  - `scripts/validate-m5-4.js`
+  - `package.json`
+  - `scripts/run_checks.sh`
+  - `docs/plans/milestone-inventory.md`
+- Validation/risk impact: sequential regression through `validate:m5.4` is green; next required slice is `M5.5`.
+
+### 2026-02-16 - Execute M5.4 Prompt A as a single multi-panel per-map-iso preview page
+- Decision: produce `M5.4` Prompt-A artifacts as one desktop multi-panel SVG (`default/loading/empty/error/success`) plus a dedicated `m5.4-preview-index.md`, while keeping milestone approval state at `BLOCKED-DESIGN` until explicit `APPROVED UI PREVIEW`.
+- Why: this satisfies the UI-first design gate for `M5.4` and keeps per-map iso controls reviewable before runtime implementation.
+- Alternatives considered:
+  - split `M5.4` previews into separate images per state;
+  - move directly to Prompt-B implementation without a completed Prompt-A artifact set.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.4-per-map-iso-controls-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.4-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: docs-only design artifact update; no runtime behavior changes in this window; Prompt B remains blocked pending explicit approval.
+
 ### 2026-02-16 - Optimize `run_checks.sh` to build once and execute validators directly
 - Decision: keep one upfront `npm run build` in `scripts/run_checks.sh`, then execute milestone validators via direct `node scripts/validate-*.js` commands (instead of `npm run validate:*` wrappers), while preserving command order and the existing one-time M1 retry.
 - Why: each `npm run validate:*` wrapper triggers `prevalidate:*` hooks that rebuild the app repeatedly, significantly lengthening full regression time.

@@ -312,7 +312,7 @@ Use this file to track implementation and gate evidence for each milestone in `d
 | `M5.2b` | Protein visibility toggle only (`Protein cartoon` show/hide in FragMap tab; default on) | PASS | PASS | Completed |
 | `M5.2c` | Optional/deferred wireframe parity investigation (docs + exploratory packet only; non-blocking) | N/A | N/A | Deferred exploratory |
 | `M5.3` | Advanced rows + Exclusion map fixed wireframe behavior | PASS | PASS | Completed |
-| `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | Pending | Pending | Not started |
+| `M5.4` | Per-map iso controls only (numeric contract for adjustable rows) | PASS | PASS | Completed |
 | `M5.5` | Bulk actions only (`Hide all`, `Reset defaults`, `Reset view`) | Pending | Pending | Not started |
 | `M5.6` | Reliability hardening (row-level failure isolation + retry + async race guards) + final M5 gate | Pending | Pending | Not started |
 
@@ -552,24 +552,48 @@ Use this file to track implementation and gate evidence for each milestone in `d
 ### M5.4 - Per-Map Iso Controls
 
 #### Summary
-- Pending.
+- Completed (`PASS`): per-map iso controls are implemented for all iso-adjustable FragMap rows with row-level numeric contract enforcement (`step/min/max/precision`, clamp/revert), hidden-row iso persistence, and in-place visible-map isolevel updates while preserving camera and route state.
 
 #### Files Created/Updated
 | File | Status | What it does | Milestone-specific delta |
 |---|---|---|---|
-| `TBD` | `Created/Updated` | `Describe file purpose.` | `Describe exactly what changed in M5.4 and why.` |
+| `src/components/ControlsPanel.vue` | Updated | Right-side controls UI for FragMap/Ligand tabs. | Added per-row iso controls (`-`, value, `+`) for adjustable rows, disabled fixed controls for Exclusion row, new iso events, and updated slice scope note for M5.4. |
+| `src/pages/ViewerPage.vue` | Updated | Viewer-page orchestration between controls/store/stage controller. | Added per-row iso state initialization and handlers, clamp/revert logic, hidden-row iso persistence, and visible-row in-place isolevel updates via stage API. |
+| `src/viewer/nglStage.ts` | Updated | NGL stage lifecycle and map/pose runtime APIs. | Added `setFragMapIso` API and `isoValue` propagation in `setFragMapVisibility` so cached maps render with current per-row iso while preserving camera. |
+| `scripts/validate-m5-4.js` | Created | Playwright milestone validator for M5.4 gate. | Added automated checks for per-row iso controls, clamp/revert behavior, Exclusion iso disable contract, hidden-row iso persistence, and no-global-iso contract. |
+| `package.json` | Updated | Command contract for build/validation scripts. | Added `validate:m5.4` and `prevalidate:m5.4`. |
+| `scripts/run_checks.sh` | Updated | Sequential local regression runner. | Extended sequential run through `node scripts/validate-m5-4.js`. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/m5.4-preview-index.md` | Created/Updated | M5.4 Prompt-A preview index. | Added M5.4 state checklist and set approval state to pass after explicit token + Prompt-B completion. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.4-per-map-iso-controls-states.svg` | Created | M5.4 Prompt-A state artifact. | Added multi-panel default/loading/empty/error/success preview for per-map iso controls. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/README.md` | Updated | M5 preview packet front page. | Recorded M5.4 completion and advanced active design gate to `M5.5` Prompt A. |
+| `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md` | Updated | M5 preview packet approval ledger. | Recorded explicit `APPROVED UI PREVIEW` for M5.4 and Prompt-B completion note. |
 
 #### Commands Run
-- Pending.
+- `npm run build` -> PASS.
+- `bash scripts/run_checks.sh` -> PASS.
+  - Includes sequential checks:
+    - `npm run build` -> PASS
+    - `node scripts/validate-m1.js` -> PASS
+    - `node scripts/validate-m2.js` -> PASS
+    - `node scripts/validate-m3.js` -> PASS
+    - `node scripts/validate-m4a.js` -> PASS
+    - `node scripts/validate-m4b.js` -> PASS
+    - `node scripts/validate-m5-1.js` -> PASS
+    - `node scripts/validate-m5-2.js` -> PASS
+    - `node scripts/validate-m5-2a.js` -> PASS
+    - `node scripts/validate-m5-2b.js` -> PASS
+    - `node scripts/validate-m5-3.js` -> PASS
+    - `node scripts/validate-m5-4.js` -> PASS
 
 #### Gate Checklist
-- Prompt A preview for `M5.4` approved (`APPROVED UI PREVIEW`): Pending.
-- Prompt B implementation stayed within `M5.4` scope boundary: Pending.
-- Per-map iso numeric contract matches spec in-place behavior: Pending.
-- No regressions against completed slices (`M5.1`-`M5.3`) and M1-M4B baseline: Pending.
+- Prompt A preview for `M5.4` approved (`APPROVED UI PREVIEW`): PASS.
+- Prompt B implementation stayed within `M5.4` scope boundary: PASS.
+- Per-map iso numeric contract matches spec in-place behavior: PASS.
+- No regressions against completed slices (`M5.1`-`M5.3`) and M1-M4B baseline: PASS.
 
 #### Residual Risks/Blockers
-- Pending.
+- Per-row retry/error recovery for iso update transport/runtime failures remains part of `M5.6` reliability hardening.
+- Bulk action behavior (`M5.5`) is still pending and remains the active next required slice.
 
 ### M5.5 - Bulk Actions
 

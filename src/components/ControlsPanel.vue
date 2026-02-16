@@ -65,23 +65,65 @@
         <p class="controls-panel__muted mb-2" data-test-id="fragmap-default-hidden-note">
           All maps are hidden by default.
         </p>
+        <div class="controls-panel__column-header-row">
+          <span class="controls-panel__column-header" data-test-id="fragmap-column-header-primary">FragMap</span>
+          <span class="controls-panel__iso-column-header" data-test-id="fragmap-gfe-header-primary">GFE (kcal/mol)</span>
+        </div>
         <div
           v-for="row in primaryFragMapRows"
           :key="row.id"
           class="controls-panel__map-row-group"
           :data-test-id="`fragmap-row-${row.id}`"
         >
-          <label class="controls-panel__map-row">
-            <input
-              :data-test-id="`fragmap-toggle-${row.id}`"
-              type="checkbox"
-              :checked="isFragMapRowChecked(row.id)"
-              :disabled="isFragMapRowDisabled(row)"
-              @change="onFragMapToggle(row.id, $event)"
-            >
-            <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
-            <span>{{ row.label }}</span>
-          </label>
+          <div class="controls-panel__map-row">
+            <label class="controls-panel__map-toggle">
+              <input
+                :data-test-id="`fragmap-toggle-${row.id}`"
+                type="checkbox"
+                :checked="isFragMapRowChecked(row.id)"
+                :disabled="isFragMapRowDisabled(row)"
+                @change="onFragMapToggle(row.id, $event)"
+              >
+              <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
+              <span class="controls-panel__map-label">{{ row.label }}</span>
+            </label>
+            <div class="controls-panel__iso-row" :data-test-id="`fragmap-iso-row-${row.id}`">
+              <button
+                type="button"
+                class="controls-panel__iso-action"
+                :data-test-id="`fragmap-iso-decrement-${row.id}`"
+                :disabled="isFragMapIsoControlDisabled(row)"
+                @click="onFragMapIsoStep(row.id, -1)"
+              >
+                -
+              </button>
+              <input
+                :data-test-id="`fragmap-iso-input-${row.id}`"
+                class="controls-panel__iso-input"
+                type="text"
+                inputmode="decimal"
+                :value="isIsoAdjustableRow(row) ? fragMapIsoValueText(row.id) : 'fixed'"
+                :disabled="isFragMapIsoControlDisabled(row)"
+                @change="onFragMapIsoInput(row.id, $event)"
+              >
+              <button
+                type="button"
+                class="controls-panel__iso-action"
+                :data-test-id="`fragmap-iso-increment-${row.id}`"
+                :disabled="isFragMapIsoControlDisabled(row)"
+                @click="onFragMapIsoStep(row.id, 1)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <p
+            v-if="!isIsoAdjustableRow(row)"
+            class="controls-panel__map-meta controls-panel__iso-note"
+            :data-test-id="`fragmap-row-iso-note-${row.id}`"
+          >
+            Iso is fixed; editable controls are disabled.
+          </p>
           <p
             v-if="fragMapStatusText(row.id)"
             class="controls-panel__map-status"
@@ -116,29 +158,64 @@
           v-show="advancedExpanded"
           data-test-id="fragmap-advanced-content"
         >
+          <div class="controls-panel__column-header-row">
+            <span class="controls-panel__column-header" data-test-id="fragmap-column-header-advanced">FragMap</span>
+            <span class="controls-panel__iso-column-header" data-test-id="fragmap-gfe-header-advanced">GFE (kcal/mol)</span>
+          </div>
           <div
             v-for="row in advancedFragMapRows"
             :key="row.id"
             class="controls-panel__map-row-group"
             :data-test-id="`fragmap-row-${row.id}`"
           >
-            <label class="controls-panel__map-row">
-              <input
-                :data-test-id="`fragmap-toggle-${row.id}`"
-                type="checkbox"
-                :checked="isFragMapRowChecked(row.id)"
-                :disabled="isFragMapRowDisabled(row)"
-                @change="onFragMapToggle(row.id, $event)"
-              >
-              <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
-              <span>{{ row.label }}</span>
-            </label>
+            <div class="controls-panel__map-row">
+              <label class="controls-panel__map-toggle">
+                <input
+                  :data-test-id="`fragmap-toggle-${row.id}`"
+                  type="checkbox"
+                  :checked="isFragMapRowChecked(row.id)"
+                  :disabled="isFragMapRowDisabled(row)"
+                  @change="onFragMapToggle(row.id, $event)"
+                >
+                <span class="controls-panel__map-swatch" :style="{ backgroundColor: row.color }" aria-hidden="true" />
+                <span class="controls-panel__map-label">{{ row.label }}</span>
+              </label>
+              <div class="controls-panel__iso-row" :data-test-id="`fragmap-iso-row-${row.id}`">
+                <button
+                  type="button"
+                  class="controls-panel__iso-action"
+                  :data-test-id="`fragmap-iso-decrement-${row.id}`"
+                  :disabled="isFragMapIsoControlDisabled(row)"
+                  @click="onFragMapIsoStep(row.id, -1)"
+                >
+                  -
+                </button>
+                <input
+                  :data-test-id="`fragmap-iso-input-${row.id}`"
+                  class="controls-panel__iso-input"
+                  type="text"
+                  inputmode="decimal"
+                  :value="isIsoAdjustableRow(row) ? fragMapIsoValueText(row.id) : 'fixed'"
+                  :disabled="isFragMapIsoControlDisabled(row)"
+                  @change="onFragMapIsoInput(row.id, $event)"
+                >
+                <button
+                  type="button"
+                  class="controls-panel__iso-action"
+                  :data-test-id="`fragmap-iso-increment-${row.id}`"
+                  :disabled="isFragMapIsoControlDisabled(row)"
+                  @click="onFragMapIsoStep(row.id, 1)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
             <p
-              v-if="isExclusionRow(row.id)"
-              class="controls-panel__map-meta"
+              v-if="!isIsoAdjustableRow(row)"
+              class="controls-panel__map-meta controls-panel__iso-note"
               :data-test-id="`fragmap-row-iso-note-${row.id}`"
             >
-              Iso is fixed; editable controls are disabled in this slice.
+              Iso is fixed; editable controls are disabled.
             </p>
             <p
               v-if="fragMapStatusText(row.id)"
@@ -166,7 +243,7 @@
       </div>
 
       <p class="controls-panel__muted mb-4" data-test-id="fragmap-shell-scope-note">
-        M5.3 scope: Advanced and Exclusion visibility flows are active. Iso controls, bulk actions, and reliability handling remain deferred.
+        M5.4 scope: per-map iso controls are active for adjustable rows. Bulk actions and reliability handling remain deferred.
       </p>
     </section>
 
@@ -299,6 +376,7 @@ interface FragMapShellRow {
   label: string;
   color: string;
   section: FragMapSection;
+  defaultIso?: number;
 }
 
 function formatCamera(snapshot: CameraSnapshot): string {
@@ -389,6 +467,11 @@ export default Vue.extend({
       required: false,
       default: () => ({}),
     },
+    fragMapIsoById: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     fragMapErrorById: {
       type: Object,
       required: false,
@@ -448,6 +531,13 @@ export default Vue.extend({
       const target = event.target as HTMLInputElement;
       this.$emit("toggle-fragmap", { id: rowId, visible: target.checked });
     },
+    onFragMapIsoStep(rowId: string, direction: -1 | 1) {
+      this.$emit("adjust-fragmap-iso", { id: rowId, direction });
+    },
+    onFragMapIsoInput(rowId: string, event: Event) {
+      const target = event.target as HTMLInputElement;
+      this.$emit("set-fragmap-iso", { id: rowId, value: target.value });
+    },
     isFragMapRowChecked(rowId: string): boolean {
       return (this.visibleFragMapIds as string[]).includes(rowId);
     },
@@ -469,12 +559,27 @@ export default Vue.extend({
     isExclusionRow(rowId: string): boolean {
       return rowId === "3fly.excl.dx";
     },
+    isIsoAdjustableRow(row: FragMapShellRow): boolean {
+      return !this.isExclusionRow(row.id) && typeof row.defaultIso === "number";
+    },
+    isFragMapIsoControlDisabled(row: FragMapShellRow): boolean {
+      return !this.isIsoAdjustableRow(row) || this.isFragMapRowDisabled(row);
+    },
+    fragMapIsoValueText(rowId: string): string {
+      const isoById = this.fragMapIsoById as Record<string, number>;
+      const value = isoById[rowId];
+      if (typeof value !== "number" || Number.isNaN(value)) {
+        return "";
+      }
+      return value.toFixed(1);
+    },
   },
 });
 </script>
 
 <style scoped>
 .controls-panel {
+  --fragmap-iso-column-width: 122px;
   border: 1px solid #d9dee7;
   border-radius: 10px;
   height: 100%;
@@ -581,14 +686,71 @@ export default Vue.extend({
 
 .controls-panel__map-row {
   align-items: center;
-  display: grid;
+  display: flex;
   gap: 8px;
-  grid-template-columns: auto auto 1fr;
+  justify-content: space-between;
   line-height: 1.2;
 }
 
 .controls-panel__map-row-group + .controls-panel__map-row-group {
   margin-top: 8px;
+}
+
+.controls-panel__map-toggle {
+  align-items: center;
+  display: flex;
+  flex: 1 1 auto;
+  gap: 8px;
+  min-width: 0;
+}
+
+.controls-panel__map-label {
+  min-width: 0;
+}
+
+.controls-panel__iso-row {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  justify-content: space-between;
+  margin: 0;
+  width: var(--fragmap-iso-column-width);
+}
+
+.controls-panel__iso-action {
+  background: #eef2f9;
+  border: 1px solid #ccd6e6;
+  border-radius: 4px;
+  color: #2a3d57;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  height: 22px;
+  line-height: 1;
+  padding: 0;
+  width: 22px;
+}
+
+.controls-panel__iso-action:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.controls-panel__iso-input {
+  border: 1px solid #ccd6e6;
+  border-radius: 4px;
+  color: #2a3d57;
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  height: 22px;
+  padding: 2px 6px;
+  width: 64px;
+}
+
+.controls-panel__iso-input:disabled {
+  background: #f3f4f6;
+  color: #94a3b8;
 }
 
 .controls-panel__map-swatch {
@@ -608,6 +770,31 @@ export default Vue.extend({
   color: #6b7280;
   font-size: 11px;
   margin: 4px 0 0 24px;
+}
+
+.controls-panel__column-header-row {
+  align-items: flex-end;
+  display: flex;
+  justify-content: space-between;
+  margin: -2px 0 6px;
+}
+
+.controls-panel__column-header {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.controls-panel__iso-column-header {
+  color: #64748b;
+  flex: 0 0 var(--fragmap-iso-column-width);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.controls-panel__iso-note {
+  margin-top: 4px;
 }
 
 .controls-panel__muted {

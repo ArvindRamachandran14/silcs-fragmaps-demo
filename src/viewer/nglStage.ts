@@ -64,6 +64,7 @@ export interface FragMapVisibilityOptions {
   dxUrl: string;
   color: string;
   defaultIso?: number;
+  isoValue?: number;
 }
 
 export interface FragMapVisibilityResult {
@@ -78,6 +79,7 @@ export interface NglStageController {
   setCameraSnapshot(snapshot: CameraSnapshot): void;
   setProteinVisibility(visible: boolean): void;
   setPoseVisibility(kind: PoseKind, visible: boolean): Promise<void>;
+  setFragMapIso(options: FragMapVisibilityOptions, isoValue: number): void;
   setFragMapVisibility(options: FragMapVisibilityOptions, visible: boolean): Promise<FragMapVisibilityResult>;
   switchLigand(options: LigandSwitchOptions): Promise<LigandSwitchResult>;
   zoomToLigand(): void;
@@ -457,6 +459,8 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
     const renderIso =
       options.id === EXCLUSION_MAP_ID
         ? EXCLUSION_MAP_ISOLEVEL
+        : typeof options.isoValue === "number"
+          ? options.isoValue
         : typeof options.defaultIso === "number"
           ? options.defaultIso
           : -0.8;
@@ -585,6 +589,35 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
       updatePoseStyles();
       stage?.viewer?.requestRender?.();
     },
+    setFragMapIso(options: FragMapVisibilityOptions, isoValue: number) {
+      if (options.id === EXCLUSION_MAP_ID) {
+        return;
+      }
+
+      const cacheEntry = fragMapCache.get(options.id);
+      if (!cacheEntry || !cacheEntry.representation?.setParameters) {
+        return;
+      }
+
+      const preservedCamera = readStageCameraSnapshot(stage, currentCamera);
+      const preservedTransform = readSceneTransformSnapshot(stage);
+
+      cacheEntry.representation.setParameters({ isolevel: isoValue });
+      const renderDebug = m5DebugState.fragMapRenderById[options.id];
+      if (renderDebug) {
+        renderDebug.isolevel = isoValue;
+      }
+
+      if (preservedTransform) {
+        applySceneTransformSnapshot(stage, preservedTransform);
+      } else {
+        applyStageCameraSnapshot(stage, preservedCamera);
+      }
+
+      stage?.viewer?.requestRender?.();
+      currentCamera = readStageCameraSnapshot(stage, preservedCamera);
+      debugState.currentCamera = cloneCameraSnapshot(currentCamera);
+    },
     async setFragMapVisibility(options: FragMapVisibilityOptions, visible: boolean): Promise<FragMapVisibilityResult> {
       const preservedCamera = readStageCameraSnapshot(stage, currentCamera);
       const preservedTransform = readSceneTransformSnapshot(stage);
@@ -605,6 +638,18 @@ export async function initializeNglStage(options: StageInitOptions): Promise<Ngl
           }
         } else {
           loadedFromCache = true;
+        }
+
+        if (
+          options.id !== EXCLUSION_MAP_ID &&
+          typeof options.isoValue === "number" &&
+          cacheEntry.representation?.setParameters
+        ) {
+          cacheEntry.representation.setParameters({ isolevel: options.isoValue });
+          const renderDebug = m5DebugState.fragMapRenderById[options.id];
+          if (renderDebug) {
+            renderDebug.isolevel = options.isoValue;
+          }
         }
 
         cacheEntry.component.setVisibility(true);

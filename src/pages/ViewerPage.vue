@@ -67,11 +67,14 @@
             :frag-map-loading-row-id="fragMapLoadingRowId"
             :frag-map-disabled-row-ids="fragMapDisabledRowIds"
             :frag-map-status-by-id="fragMapStatusById"
+            :frag-map-iso-by-id="fragMapIsoById"
             :frag-map-error-by-id="fragMapErrorById"
             :camera-baseline="viewerState.cameraBaseline"
             :camera-snapshot="viewerState.cameraSnapshot"
             @toggle-protein="handleProteinToggle"
             @toggle-fragmap="handleFragMapToggle"
+            @adjust-fragmap-iso="handleFragMapIsoStep"
+            @set-fragmap-iso="handleFragMapIsoInput"
             @toggle-pose="handlePoseToggle"
             @select-featured-ligand="handleFeaturedLigandSwitch"
             @zoom-ligand="handleZoomLigand"
@@ -107,11 +110,14 @@
           :frag-map-loading-row-id="fragMapLoadingRowId"
           :frag-map-disabled-row-ids="fragMapDisabledRowIds"
           :frag-map-status-by-id="fragMapStatusById"
+          :frag-map-iso-by-id="fragMapIsoById"
           :frag-map-error-by-id="fragMapErrorById"
           :camera-baseline="viewerState.cameraBaseline"
           :camera-snapshot="viewerState.cameraSnapshot"
           @toggle-protein="handleProteinToggle"
           @toggle-fragmap="handleFragMapToggle"
+          @adjust-fragmap-iso="handleFragMapIsoStep"
+          @set-fragmap-iso="handleFragMapIsoInput"
           @toggle-pose="handlePoseToggle"
           @select-featured-ligand="handleFeaturedLigandSwitch"
           @zoom-ligand="handleZoomLigand"
@@ -159,6 +165,11 @@ const M4B_FEATURED_LIGAND_IDS = [
   "p38_goldstein_06_2f",
   "p38_goldstein_07_2g",
 ];
+const M5_ISO_MIN = -3.0;
+const M5_ISO_MAX = 0.0;
+const M5_ISO_STEP = 0.1;
+const M5_ISO_PRECISION = 1;
+const M5_EXCLUSION_ROW_ID = "3fly.excl.dx";
 
 interface FeaturedLigandChip {
   id: string;
@@ -182,6 +193,16 @@ interface FragMapRuntimeState {
   disabled: boolean;
   statusText: string | null;
   error: string | null;
+}
+
+interface FragMapIsoStepPayload {
+  id: string;
+  direction: -1 | 1;
+}
+
+interface FragMapIsoInputPayload {
+  id: string;
+  value: string;
 }
 
 const M5_FRAGMAP_SHELL_ROWS: FragMapShellRow[] = [
@@ -270,6 +291,7 @@ export default Vue.extend({
       toastMessage: "",
       proteinVisibilityLoading: false,
       fragMapRuntime: {} as Record<string, FragMapRuntimeState>,
+      fragMapIsoById: {} as Record<string, number>,
       fragMapLoadingRowId: null as string | null,
     };
   },
@@ -342,6 +364,26 @@ export default Vue.extend({
 
       return loadAssetManifest();
     },
+    isIsoAdjustableRow(row: FragMapShellRow): boolean {
+      return row.id !== M5_EXCLUSION_ROW_ID && typeof row.defaultIso === "number";
+    },
+    normalizeIsoValue(candidate: number): number {
+      const clamped = Math.min(M5_ISO_MAX, Math.max(M5_ISO_MIN, candidate));
+      return Number(clamped.toFixed(M5_ISO_PRECISION));
+    },
+    resetFragMapIsoState() {
+      const nextIsoById: Record<string, number> = {};
+      for (const row of this.fragMapShellRows) {
+        if (this.isIsoAdjustableRow(row)) {
+          nextIsoById[row.id] = this.normalizeIsoValue(row.defaultIso as number);
+        }
+      }
+      this.fragMapIsoById = nextIsoById;
+    },
+    getFragMapIsoValue(rowId: string): number | null {
+      const value = this.fragMapIsoById[rowId];
+      return typeof value === "number" && !Number.isNaN(value) ? value : null;
+    },
     resetFragMapRuntime() {
       const nextState: Record<string, FragMapRuntimeState> = {};
       for (const row of this.fragMapShellRows) {
@@ -354,6 +396,7 @@ export default Vue.extend({
         };
       }
       this.fragMapRuntime = nextState;
+      this.resetFragMapIsoState();
       this.fragMapLoadingRowId = null;
       this.$store.commit("viewer/setVisibleFragMapIds", []);
     },
@@ -624,6 +667,7 @@ export default Vue.extend({
             dxUrl: row.dxUrl || `/assets/maps/${row.id}`,
             color: row.color,
             defaultIso: row.defaultIso,
+            isoValue: this.getFragMapIsoValue(row.id) ?? undefined,
           },
           payload.visible,
         );
@@ -660,6 +704,84 @@ export default Vue.extend({
           this.fragMapLoadingRowId = null;
         }
       }
+    },
+    async applyFragMapIsoValue(rowId: string, nextIso: number) {
+      const row = this.getFragMapRowById(rowId);
+      if (!row || !this.isIsoAdjustableRow(row)) {
+        return;
+      }
+
+      const normalizedIso = this.normalizeIsoValue(nextIso);
+      this.fragMapIsoById = {
+        ...this.fragMapIsoById,
+        [rowId]: normalizedIso,
+      };
+
+      if (!this.stageController || this.viewerStatus !== "ready") {
+        return;
+      }
+
+      if (!this.viewerState.visibleFragMapIds.includes(rowId)) {
+        return;
+      }
+
+      this.stageController.setFragMapIso(
+        {
+          id: row.id,
+          dxUrl: row.dxUrl || `/assets/maps/${row.id}`,
+          color: row.color,
+          defaultIso: row.defaultIso,
+          isoValue: normalizedIso,
+        },
+        normalizedIso,
+      );
+      this.$store.commit("viewer/setCameraSnapshot", this.stageController.getCameraSnapshot());
+    },
+    async handleFragMapIsoStep(payload: FragMapIsoStepPayload) {
+      const row = this.getFragMapRowById(payload.id);
+      if (!row || !this.isIsoAdjustableRow(row)) {
+        return;
+      }
+
+      const runtimeState = this.fragMapRuntime[payload.id];
+      if (runtimeState?.disabled || runtimeState?.loading || this.fragMapLoadingRowId) {
+        return;
+      }
+
+      const currentIso = this.getFragMapIsoValue(payload.id);
+      if (currentIso === null) {
+        return;
+      }
+
+      const nextIso = currentIso + payload.direction * M5_ISO_STEP;
+      await this.applyFragMapIsoValue(payload.id, nextIso);
+    },
+    async handleFragMapIsoInput(payload: FragMapIsoInputPayload) {
+      const row = this.getFragMapRowById(payload.id);
+      if (!row || !this.isIsoAdjustableRow(row)) {
+        return;
+      }
+
+      const runtimeState = this.fragMapRuntime[payload.id];
+      if (runtimeState?.disabled || runtimeState?.loading || this.fragMapLoadingRowId) {
+        return;
+      }
+
+      const lastValidIso = this.getFragMapIsoValue(payload.id);
+      if (lastValidIso === null) {
+        return;
+      }
+
+      const parsedValue = Number(payload.value);
+      if (!Number.isFinite(parsedValue)) {
+        this.fragMapIsoById = {
+          ...this.fragMapIsoById,
+          [payload.id]: lastValidIso,
+        };
+        return;
+      }
+
+      await this.applyFragMapIsoValue(payload.id, parsedValue);
     },
     async handleFeaturedLigandSwitch(ligandId: string) {
       if (!this.stageController || !this.manifest || this.viewerState.ligandSwitchLoading) {
