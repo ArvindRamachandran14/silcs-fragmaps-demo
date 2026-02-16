@@ -1,10 +1,11 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (M5.1 shell cleanup validated)
+Last updated: 2026-02-16 (M5.2 Prompt-A preview updated)
 
 ## Current Milestone Target
 - Active target: `M5.2 Primary-3 Visibility Engine` (M1-M4B and M5.1 validated complete; M5 continues as slices `M5.1`..`M5.6`).
 - Baseline branch state at takeover: working tree contains local `M5.1` implementation updates not yet committed in this window.
+- M5.2 Prompt-A packet is updated and still awaiting gate approval; reviewer-locked preview behavior set is now: loading lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
 
 ## Takeover Checkpoint
 - Required startup read order completed: `AGENTS.md` -> `docs/context/current-state.md` -> `docs/context/next-agent-brief.md` -> `docs/context/decision-log.md` -> `docs/plans/execution-plan.md`.
@@ -97,4 +98,4 @@ Last updated: 2026-02-16 (M5.1 shell cleanup validated)
 3. Refresh this brief with the exact next unresolved `M5.x` slice task.
 
 ## Immediate Next Concrete Step
-- Execute `M5.2` Prompt A (design preview only) and produce/update the M5.2 preview page in `docs/screenshots/Design_previews/m5-fragmap-controls/`, then request explicit `APPROVED UI PREVIEW`.
+- Review the updated `M5.2` Prompt-A artifacts in `docs/screenshots/Design_previews/m5-fragmap-controls/` and obtain explicit `APPROVED UI PREVIEW` before any `M5.2` Prompt-B implementation.

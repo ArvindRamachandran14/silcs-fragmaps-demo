@@ -5,6 +5,18 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Lock M5.2 Prompt-A review behavior to B/A/B (loading lock / inline success text / retry deferred)
+- Decision: update M5.2 Prompt-A preview artifacts so Primary-row loading behavior stays on `Option B` (temporarily lock non-loading Primary rows), success feedback switches to `Option A` (inline `Loaded from cache` text), and retry timing remains `Option B` (defer inline retry UX to `M5.6`).
+- Why: reviewer requested explicit/debuggable inline success confirmation during M5.2 review while preserving previous lock choices for loading and retry timing.
+- Alternatives considered:
+  - keep all three as `Option B` from the prior revision;
+  - switch only to toast messaging and inspect via dev tools.
+- Evidence:
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/m5.2-preview-index.md`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.2-primary3-visibility-states.svg`
+  - `docs/screenshots/Design_previews/m5-fragmap-controls/approval-log.md`
+- Validation/risk impact: improves visibility for manual debugging in Prompt-A review; slight UI noise is accepted temporarily and can be reverted post-validation.
+
 ### 2026-02-16 - Hide non-essential right-panel context/debug blocks while retaining validator hooks
 - Decision: remove visible right-panel `Viewer Context`, lower `Reset view`, and camera contract/snapshot debug blocks from the user-facing `Ligand` tab in `src/components/ControlsPanel.vue`, while preserving required `data-test-id` probes in a hidden diagnostics container.
 - Why: reviewer feedback requested a cleaner controls UI and identified these items as non-essential for normal user interaction in the M5.1 shell.

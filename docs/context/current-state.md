@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (M5.1 shell cleanup + validation refresh)
+Last updated: 2026-02-16 (M5.2 Prompt-A decision lock refined)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -106,6 +106,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
   - M5 execution is now locked to six slices (`M5.1` -> `M5.6`) with Prompt A + Prompt B per slice.
   - Preview packet structure is locked to one front page plus one page per slice at `docs/screenshots/Design_previews/m5-fragmap-controls/`.
   - Active next scope is `M5.2` Prompt A (design preview only) after closing `M5.1` implementation gate.
+  - `M5.2` Prompt-A artifacts were added (`README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`) and now reflect the reviewer-locked behavior set: loading row lock `Option B`, success feedback `Option A` (inline `Loaded from cache`), retry timing `Option B` (deferred to `M5.6`).
   - Prompt-A packet artifacts now exist for `M5.1`:
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-fragmap-panel-shell-states.svg` (multi-state shell page with simplified two-tab right-panel framework: `FragMap` + `Ligand`).
     - `docs/screenshots/Design_previews/m5-fragmap-controls/desktop/m5.1-viewer-context-placement.svg` (full-viewer placement context page aligned to the same simplified `FragMap` + `Ligand` tabs).
@@ -241,6 +242,7 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Implemented `M5.1` Prompt B in runtime UI scope. Updated `src/components/ControlsPanel.vue` to add the approved two-tab right-panel framework (`FragMap` default active, `Ligand` secondary), rendered FragMap shell rows for Primary/Advanced with canonical labels/colors and all-hidden defaults, and kept existing ligand controls in the `Ligand` tab. Updated `src/pages/ViewerPage.vue` to provide canonical FragMap shell row data (manifest-mapped with fallback constants). Updated `scripts/validate-m4a.js` and `scripts/validate-m4b.js` for deterministic desktop-panel selector scope plus explicit `Ligand` tab activation. Validation evidence: `npm run build` PASS; `npm run validate:m1` FAIL then PASS on rerun (known intermittent toast interception); `npm run validate:m2` PASS; `npm run validate:m3` PASS; `npm run validate:m4a` PASS; `npm run validate:m4b` PASS; targeted M5.1 shell Playwright check PASS.
 - 2026-02-16: Added dedicated M5.1 slice validator `scripts/validate-m5-1.js` and command wiring in `package.json` (`validate:m5.1`, `prevalidate:m5.1`) so shell-contract checks remain repeatable during later M5 slices. Command evidence: first `npm run validate:m5.1` attempt -> `ENV-BLOCKED` (`listen EPERM 127.0.0.1:4176` in sandbox), unsandboxed rerun -> PASS.
 - 2026-02-16: Applied right-panel UI cleanup per reviewer feedback by removing visible `Viewer Context`, lower `Reset view`, and camera contract/snapshot blocks from `src/components/ControlsPanel.vue` while preserving hidden diagnostics selectors needed by existing validators. Updated `src/pages/ViewerPage.vue` props/events accordingly. Validation evidence in this window: `npm run build` PASS; `npm run validate:m3` PASS; `npm run validate:m4a` PASS; `npm run validate:m4b` PASS; `npm run validate:m5.1` PASS.
+- 2026-02-16: Updated M5.2 Prompt-A preview decisions per reviewer feedback: changed success feedback from toast-only to inline `Loaded from cache` text (`Option A`) while keeping loading lock (`Option B`) and retry deferral (`Option B`). Updated packet files: `docs/screenshots/Design_previews/m5-fragmap-controls/README.md`, `m5.2-preview-index.md`, `desktop/m5.2-primary3-visibility-states.svg`, and `approval-log.md`. Validation commands were not run (`not run`; design-preview-doc update only).
 
 ## Open Risks
 - Major feature milestones remain incomplete: M5 implementation slices (`M5.2` through `M5.6`) and M6 are not started while M1-M4B and M5.1 are complete.
