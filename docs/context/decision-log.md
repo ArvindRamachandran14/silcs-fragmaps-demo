@@ -5,6 +5,38 @@ Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
 
+### 2026-02-16 - Simplify README opening tagline to concise scope wording
+- Decision: replace the README opening sentence with "Browser-based interactive visualization demo for P38 MAP Kinase (PDB: 3FLY) with SILCS FragMaps."
+- Why: reviewer requested removal of awkward phrasing and a cleaner first-line summary.
+- Alternatives considered:
+  - keep prior sentence with ligand-control wording;
+  - use a longer sentence with additional qualifiers (rejected for brevity).
+- Evidence:
+  - `README.md`
+- Validation/risk impact: documentation-only wording update; no runtime behavior changes.
+
+### 2026-02-16 - Refine README Project Overview sentence for clarity
+- Decision: update README Project Overview sentence to "client-side website for evaluating ligand pose quality using SILCS FragMaps" wording.
+- Why: reviewer requested a cleaner phrasing for submission readability.
+- Alternatives considered:
+  - keep prior "workflow for inspecting..." sentence;
+  - broader paragraph rewrite (rejected to keep scope minimal).
+- Evidence:
+  - `README.md`
+- Validation/risk impact: documentation-only wording update; no runtime behavior changes.
+
+### 2026-02-16 - Populate README live URL with deployed GitHub Pages address
+- Decision: replace README live URL placeholder with `https://arvindramachandran14.github.io/silcs-fragmaps-demo/`.
+- Why: submission packaging requires a concrete live URL, and repo deployment records already indicate this Pages endpoint.
+- Alternatives considered:
+  - leave placeholder unresolved pending manual lookup;
+  - defer URL population until post-merge on `main`.
+- Evidence:
+  - `README.md`
+  - `docs/plans/milestone-inventory.md` (existing live URL verification entry)
+  - `.github/workflows/deploy-pages.yml` (Pages deploy workflow configured for `main` and `dev`)
+- Validation/risk impact: documentation-only update; no runtime behavior changes.
+
 ### 2026-02-16 - Add explicit FragMap lazy-load/cache tradeoff notes to README
 - Decision: expand `README.md` Design Decisions section with explicit FragMap runtime tradeoffs: lazy first-load, cache reuse, in-place state updates, and row-level failure isolation/retry.
 - Why: reviewer requested clearer communication of performance-oriented implementation choices and their rationale.

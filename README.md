@@ -1,13 +1,13 @@
 # SILCS FragMaps Demo (3FLY)
 
-Browser-based interactive visualization demo for **P38 MAP Kinase (PDB: 3FLY)** using SILCS FragMaps and ligand pose controls.
+Browser-based interactive visualization demo for **P38 MAP Kinase (PDB: 3FLY)** with SILCS FragMaps.
 
 ## Submission Links
 - GitHub repository: `https://github.com/ArvindRamachandran14/silcs-fragmaps-demo`
-- Live URL: `ADD_LIVE_URL_HERE`
+- Live URL: `https://arvindramachandran14.github.io/silcs-fragmaps-demo/`
 
 ## Project Overview
-This prototype focuses on a lightweight, client-side workflow for inspecting ligand pose quality against SILCS FragMap interaction hotspots in the 3FLY binding site.
+This prototype focuses on a lightweight, client-side website for evaluating ligand pose quality using SILCS FragMaps in the 3FLY binding site.
 
 The app provides:
 - A **Home / Overview** page with scientific context and usage guidance.

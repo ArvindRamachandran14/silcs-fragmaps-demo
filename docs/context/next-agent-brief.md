@@ -41,7 +41,9 @@ Last updated: 2026-02-16 (submission-mode packaging pass; README drafted)
   - Explicit FragMap runtime tradeoff notes (lazy-load/cache reuse/in-place updates/retry isolation).
   - PRD requirement coverage mapping.
   - Design tradeoffs and known limitations.
-- Live URL field remains a placeholder pending final hosting target.
+  - Live URL populated: `https://arvindramachandran14.github.io/silcs-fragmaps-demo/`.
+  - Project Overview sentence refined for clearer submission wording.
+  - Opening README tagline simplified for concise scope statement.
 
 ## Scope Policy (Locked)
 - Deferred scope:
