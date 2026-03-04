@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-02-16 (post-M6 reset-view relocated into viewer panel)
+Last updated: 2026-02-27 (formal + informal execution reports exported)
 Audit type: one-time reconstruction audit after local thread-history loss
 
 ## Project Snapshot
@@ -397,6 +397,9 @@ Audit type: one-time reconstruction audit after local thread-history loss
 - 2026-02-16: Applied post-approval interaction-hint spacing refinement in `src/components/NglViewport.vue` so hint chips are smaller and centered as a group (matching reference layout intent) while preserving labels below each chip. Validation evidence: `npm run build` -> PASS; `npm run validate:m5` -> PASS; `npm run validate:m6` -> PASS.
 - 2026-02-16: Removed duplicate viewer sub-header `Home` button from `src/components/ViewerTopBar.vue` (kept `Reset view` only) and updated `scripts/validate-m3.js` to navigate via app-shell `nav-home`. Validation evidence: `npm run build` -> PASS; `npm run validate:m3` -> PASS; `npm run validate:m5` -> PASS; `npm run validate:m6` -> PASS. Note: an initial parallel validator launch produced asset-staging `ENOTEMPTY` collisions; sequential rerun produced authoritative PASS results.
 - 2026-02-16: Relocated `Reset view` from viewer sub-header into the viewer panel (`src/components/NglViewport.vue`) at top-left corner per UI feedback, removed sub-header action-row reset control in `src/components/ViewerTopBar.vue`, and rewired `src/pages/ViewerPage.vue` so the viewport emits the same reset handler. Validation evidence: `npm run validate:m3` -> PASS; `npm run validate:m5` -> PASS; `npm run validate:m6` -> PASS.
+
+- 2026-02-27: Created submission-readable project journey report artifacts at `docs/reports/project-execution-report.md` and `docs/reports/project-execution-report.pdf` from repository context/spec sources for handoff/reviewer sharing. Command evidence: `ls -lh docs/reports/project-execution-report.md docs/reports/project-execution-report.pdf` -> PASS. Milestone validators were not run (`not run`; docs/report export only).
+- 2026-02-27: Created an informal chronology-focused report artifact pair at `docs/reports/informal-project-order-report.md` and `docs/reports/informal-project-order-report.pdf`, focused on execution order and process flow for reviewer readability. Command evidence: `ls -lh docs/reports/informal-project-order-report.md docs/reports/informal-project-order-report.pdf` -> PASS. Milestone validators were not run (`not run`; docs/report export only).
 
 ## Open Risks
 - `M7` instrumentation/evidence pipeline is not started and remains the next major delivery risk.

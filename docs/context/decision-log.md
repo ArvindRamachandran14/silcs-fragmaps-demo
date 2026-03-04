@@ -1,9 +1,31 @@
 # Decision Log
 
-Last updated: 2026-02-16
+Last updated: 2026-02-27
 Purpose: persistent technical memory reconstructed from repo evidence.
 
 ## Explicit Documented Decisions
+
+### 2026-02-27 - Export an informal execution-order report as Markdown and PDF
+- Decision: create a second report artifact pair focused on chronological, informal project execution narrative, stored at `docs/reports/informal-project-order-report.md` and `docs/reports/informal-project-order-report.pdf`.
+- Why: reviewer requested a less formal, step-by-step account of how execution actually progressed (process setup -> specs/plans -> milestone delivery).
+- Alternatives considered:
+  - keep only the formal report pair;
+  - provide chronology only in chat with no repo-tracked files.
+- Evidence:
+  - `docs/reports/informal-project-order-report.md`
+  - `docs/reports/informal-project-order-report.pdf`
+- Validation/risk impact: documentation-only artifact export; no runtime behavior changes.
+
+### 2026-02-27 - Export project execution summary as both Markdown and PDF artifacts
+- Decision: generate a submission-readable project journey report from repo context/spec sources and store it in two formats: `docs/reports/project-execution-report.md` and `docs/reports/project-execution-report.pdf`.
+- Why: reviewer-facing handoff content is easier to share/review when available as both editable markdown and fixed-layout PDF.
+- Alternatives considered:
+  - markdown-only report output;
+  - ad hoc copy/paste report in chat without repo-tracked artifact files.
+- Evidence:
+  - `docs/reports/project-execution-report.md`
+  - `docs/reports/project-execution-report.pdf`
+- Validation/risk impact: documentation-only artifact export; no runtime behavior changes.
 
 ### 2026-02-16 - Move `Reset view` into the viewer panel (top-left) and remove it from sub-header row
 - Decision: relocate the `Reset view` action from `src/components/ViewerTopBar.vue` into `src/components/NglViewport.vue` as a top-left overlay control, while keeping the same `data-test-id` (`viewer-reset-view`) and event behavior.

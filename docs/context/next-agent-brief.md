@@ -1,6 +1,6 @@
 # Next Agent Brief
 
-Last updated: 2026-02-16 (post-M6 reset-view relocation complete)
+Last updated: 2026-02-27 (formal + informal execution reports exported)
 
 ## Current Milestone Target
 - Active target: post-M6 UI refinement and submission-ready stabilization using completed `M1`-`M6` functionality.
@@ -45,6 +45,12 @@ Last updated: 2026-02-16 (post-M6 reset-view relocation complete)
   - Project Overview sentence refined for clearer submission wording.
   - Opening README tagline simplified for concise scope statement.
   - Viewer interaction hints were added below the viewer stage with helper labels below each chip.
+- Added reusable submission report artifacts:
+  - `docs/reports/project-execution-report.md` (editable narrative report).
+  - `docs/reports/project-execution-report.pdf` (fixed-layout shareable export).
+- Added informal chronology report artifacts:
+  - `docs/reports/informal-project-order-report.md` (informal execution-order narrative).
+  - `docs/reports/informal-project-order-report.pdf` (shareable fixed-layout export).
 
 ## Recent UI Refinement Summary (Post-M6)
 - Prompt-A preview packet created at `docs/screenshots/Design_previews/m6-viewer-interaction-hints/` and approved with explicit `APPROVED UI PREVIEW`.
@@ -100,4 +106,4 @@ Last updated: 2026-02-16 (post-M6 reset-view relocation complete)
   - Required browser evidence (especially Safari sign-off requirements) cannot be collected under current tooling.
 
 ## Immediate Next Concrete Step
-- Perform a quick manual UI check of viewer interaction hints, then commit/push this post-M6 refinement if approved.
+- Share or attach `docs/reports/project-execution-report.*` and `docs/reports/informal-project-order-report.*` for reviewer consumption, then continue M7/M8 only if time allows.
